@@ -17,9 +17,7 @@ jobs:
         with:
           python-version: "3.10"
           cache: "poetry"
-      - name: Install
-        run: poetry install
       - name: Run flake8
         run: poetry run flake8 switchbot_api/
       - name: Run mypy
-        run: poetry run flake8 switchbot_api/
+        run: poetry run mypy switchbot_api/
