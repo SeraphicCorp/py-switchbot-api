@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "switchbot_api"
-version = "1.0.0"
+version = "1.0.1"
 description = "An asynchronous library to use Switchbot API"
 authors = ["Ravaka Razafimanantsoa <contact@ravaka.dev>"]
 license = "MIT"
 readme = "README.md"
 packages = [{include = "switchbot_api"}]
+repository = "https://github.com/SeraphicCorp/py-switchbot-api"
 
 [tool.poetry.dependencies]
 python = "^3.10"
