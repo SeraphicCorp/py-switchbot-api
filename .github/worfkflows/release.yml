@@ -1,0 +1,14 @@
+name: release
+on: release
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.17
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}

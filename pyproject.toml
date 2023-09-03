@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "switchbot_api"
+version = "1.0.0"
+description = "An asynchronous library to use Switchbot API"
+authors = ["Ravaka Razafimanantsoa <contact@ravaka.dev>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "switchbot_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.8.4"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.2"
+flake8 = "^6.0.0"
+black = "^23.1.0"
+coverage = "^7.2.1"
+parameterized = "^0.8.1"
+isort = "^5.12.0"
+mypy = "^1.4.1"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+pythonpath = ["switchbot_api"]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+skip_empty = true
+show_missing = true
+fail_under = 0
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

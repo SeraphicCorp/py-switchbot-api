@@ -1,0 +1,25 @@
+name: check
+on: push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+      - name: Install
+        run: poetry install
+      - name: Run flake8
+        run: poetry run flake8 switchbot_api/
+      - name: Run mypy
+        run: poetry run flake8 switchbot_api/
