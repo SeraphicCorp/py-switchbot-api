@@ -66,26 +66,30 @@ class PowerState(Enum):
     OFF = "off"
 
 
-class CommonCommands(Enum):
+class Commands(Enum):
+    pass
+
+
+class CommonCommands(Commands):
     """Common commands."""
 
     ON = "turnOn"
     OFF = "turnOff"
 
 
-class OthersCommands(Enum):
+class OthersCommands(Commands):
     """Others commands."""
 
     CUSTOMIZE = "customize"  # Command {user-defined button name}
 
 
-class AirConditionerCommands(Enum):
+class AirConditionerCommands(Commands):
     """xtending inherited Enum class "CommonCommands"pylint(invalid-enum-extensAir conditioner commands."""
 
     SET_ALL = "setAll"  # parameter: {temperature},{mode},{fan speed},{power state}
 
 
-class TVCommands(Enum):
+class TVCommands(Commands):
     """TV commands."""
 
     SET_CHANNEL = "SetChannel"
@@ -95,7 +99,7 @@ class TVCommands(Enum):
     CHANNEL_SUB = "channelSub"
 
 
-class DVDCommands(Enum):
+class DVDCommands(Commands):
     """DVD commands."""
 
     SET_MUTE = "setMute"
@@ -108,14 +112,14 @@ class DVDCommands(Enum):
     STOP = "Stop"
 
 
-class SpeakerCommands(Enum):
+class SpeakerCommands(Commands):
     """Speaker commands."""
 
     VOLUME_ADD = "volumeAdd"
     VOLUME_SUB = "volumeSub"
 
 
-class FanCommands(Enum):
+class FanCommands(Commands):
     """Fan commands."""
 
     SWING = "swing"
@@ -125,7 +129,7 @@ class FanCommands(Enum):
     HIGH_SPEED = "highSpeed"
 
 
-class LightCommands(Enum):
+class LightCommands(Commands):
     """Light commands."""
 
     BRIGHTNESS_UP = "brightnessUp"
