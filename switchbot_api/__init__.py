@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import logging
 import time
+from typing import TypeVar
 import uuid
 
 from aiohttp import ClientSession
@@ -13,7 +14,6 @@ from aiohttp import ClientSession
 _API_HOST = "https://api.switch-bot.com"
 
 _LOGGER = logging.getLogger(__name__)
-OBSERVED_DEVICE_TYPES = ["Remote", "Plug", "Plug Mini (US)", "Plug Mini (JP)"]
 NON_OBSERVED_REMOTE_TYPES = ["Others"]
 
 
@@ -84,9 +84,15 @@ class OthersCommands(Commands):
 
 
 class AirConditionerCommands(Commands):
-    """xtending inherited Enum class "CommonCommands"pylint(invalid-enum-extensAir conditioner commands."""
+    """Air conditioner commands."""
 
     SET_ALL = "setAll"  # parameter: {temperature},{mode},{fan speed},{power state}
+
+
+class HumidifierCommands(Commands):
+    """Humidifier commands."""
+
+    SET_MODE = "setMode"  # parameter: auto, set to Auto Mode, 101, set atomization efficiency to 34%,102, set atomization efficiency to 67%, 103, set atomization efficiency to 100%
 
 
 class TVCommands(Commands):
@@ -136,6 +142,9 @@ class LightCommands(Commands):
     BRIGHTNESS_DOWN = "brightnessDown"
 
 
+T = TypeVar("T", bound=CommonCommands)
+
+
 class SwitchBotAPI:
     """SwitchBot API."""
 
@@ -181,9 +190,7 @@ class SwitchBotAPI:
         """List devices."""
         body = await self._request_device("")
         _LOGGER.debug("Devices: %s", body)
-        devices = [
-            Device(**device) for device in body.get("deviceList") if device.get("deviceType") in OBSERVED_DEVICE_TYPES
-        ]
+        devices = [Device(**device) for device in body.get("deviceList")]
         remotes = [
             Remote(**remote)
             for remote in body.get("infraredRemoteList")
@@ -199,7 +206,7 @@ class SwitchBotAPI:
     async def send_command(
         self,
         device_id: str,
-        command: CommonCommands,
+        command: T,
         command_type: str = "command",
         parameters: dict | str = "default",
     ):
@@ -207,7 +214,7 @@ class SwitchBotAPI:
 
         Args:
             device_id (str): The ID of the device.
-            command (CommonCommands): The command to be sent.
+            command (extends CommonCommands): The command to be sent.
             command_type (str, optional): The type of the command. Defaults to "command".
             parameters (dict | str, optional): The parameters for the command. Defaults to "default".
 
