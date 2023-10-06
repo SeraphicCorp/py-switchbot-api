@@ -38,7 +38,7 @@ class Device:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs["deviceType"]
+        self.device_type = kwargs.get("deviceType", '-')
         self.hub_device_id = kwargs["hubDeviceId"]
 
 
@@ -55,7 +55,7 @@ class Remote:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs["remoteType"]
+        self.device_type = kwargs.get("remoteType", '-')
         self.hub_device_id = kwargs["hubDeviceId"]
 
 
