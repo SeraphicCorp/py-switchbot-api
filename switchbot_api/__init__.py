@@ -38,7 +38,7 @@ class Device:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs.get("deviceType", '-')
+        self.device_type = kwargs.get("deviceType", "-")
         self.hub_device_id = kwargs["hubDeviceId"]
 
 
@@ -55,7 +55,7 @@ class Remote:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs.get("remoteType", '-')
+        self.device_type = kwargs.get("remoteType", "-")
         self.hub_device_id = kwargs["hubDeviceId"]
 
 
@@ -180,10 +180,10 @@ class SwitchBotAPI:
             "nonce": str(nonce),
         }
 
-    async def _request_device(self, path: str = "", callback: str = "get", json=None):
+    async def _request(self, path: str = "", callback: str = "get", json=None):
         async with ClientSession() as session:
             async with getattr(session, callback)(
-                f"{_API_HOST}/v1.1/devices/{path}",
+                f"{_API_HOST}/v1.1/{path}",
                 headers=self.make_headers(self.token, self.secret),
                 json=json,
             ) as response:
@@ -197,7 +197,7 @@ class SwitchBotAPI:
 
     async def list_devices(self):
         """List devices."""
-        body = await self._request_device("")
+        body = await self._request("devices")
         _LOGGER.debug("Devices: %s", body)
         devices = [Device(**device) for device in body.get("deviceList")]
         remotes = [
@@ -209,8 +209,23 @@ class SwitchBotAPI:
 
     async def get_status(self, device_id: str):
         """No status for IR devices."""
-        body = await self._request_device(f"{device_id}/status")
+        body = await self._request(f"devices/{device_id}/status")
         return body
+
+    async def get_webook_configuration(self):
+        """List webhooks."""
+        json = {"action": "queryUrl"}
+        return await self._request("webhook/queryWebhook", callback="post", json=json)
+
+    async def setup_webhook(self, url: str):
+        """Setup webhook to receive device status updates."""
+        json = {"deviceList": "ALL", "action": "setupWebhook", "url": url}
+        await self._request("webhook/setupWebhook", callback="post", json=json)
+
+    async def delete_webhook(self, url: str):
+        """Delete webhook."""
+        json = {"action": "deleteWebhook", "url": url}
+        await self._request("webhook/deleteWebhook", callback="post", json=json)
 
     async def send_command(
         self,
@@ -239,4 +254,4 @@ class SwitchBotAPI:
             "command": command.value,
             "parameter": parameters,
         }
-        await self._request_device(f"{device_id}/commands", callback="post", json=json)
+        await self._request(f"devices/{device_id}/commands", callback="post", json=json)
