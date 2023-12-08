@@ -144,11 +144,11 @@ class LightCommands(Commands):
 
 class VacuumCommands(Commands):
     """Vacuum commands."""
-    
+
     START = "start"
     STOP = "stop"
     DOCK = "dock"
-    FAN_SPEED = "PowLevel"
+    POW_LEVEL = "PowLevel"
 
 
 T = TypeVar("T", bound=CommonCommands)
