@@ -1,7 +1,10 @@
 # Inspired from https://pypi.org/manage/account/publishing/
 
 name: Publish Python 🐍 distribution 📦 to PyPI
-on: release
+on:
+  release:
+    types:
+      - published
 
 concurrency:
   group: ${{ github.workflow }}
