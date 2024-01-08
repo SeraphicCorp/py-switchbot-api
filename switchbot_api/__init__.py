@@ -150,7 +150,7 @@ class CeilingLightCommands(Commands):
     """Ceiling light commands."""
 
     # 1-100
-    SET_BRIGHTNESS = "setBrightness" 
+    SET_BRIGHTNESS = "setBrightness"
     # 2700-6500
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
@@ -206,7 +206,7 @@ class SwitchBotAPI:
                 body = await response.json()
 
                 if response.status >= 400:
-                    raise CannotConnect() 
+                    raise CannotConnect()
                     
                 match body.get("statusCode"):
                     case 100:
@@ -217,7 +217,6 @@ class SwitchBotAPI:
                         _LOGGER.error("Error %s: %s", response.status, body)
                         raise CannotConnect()
                 
-
     async def list_devices(self):
         """List devices."""
         body = await self._request("devices")
