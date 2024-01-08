@@ -25,6 +25,10 @@ class InvalidAuth(Exception):
     """Invalid auth for the SwitchBot API."""
 
 
+class DeviceOffline(Exception):
+    """Device currently offline."""
+    
+
 @dataclass
 class Device:
     """Device."""
@@ -142,6 +146,15 @@ class LightCommands(Commands):
     BRIGHTNESS_DOWN = "brightnessDown"
 
 
+class CeilingLightCommands(Commands):
+    """Ceiling light commands."""
+
+    # 1-100
+    SET_BRIGHTNESS = "setBrightness" 
+    # 2700-6500
+    SET_COLOR_TEMPERATURE = "setColorTemperature"
+
+
 class VacuumCommands(Commands):
     """Vacuum commands."""
 
@@ -189,11 +202,21 @@ class SwitchBotAPI:
             ) as response:
                 if response.status == 403:
                     raise InvalidAuth()
+
                 body = await response.json()
-                if response.status >= 400 or body.get("statusCode") != 100:
-                    _LOGGER.error("Error %s: %s", response.status, body)
-                    raise CannotConnect()
-                return body.get("body")
+
+                if response.status >= 400:
+                    raise CannotConnect() 
+                    
+                match body.get("statusCode"):
+                    case 100:
+                        return body.get("body")
+                    case 171:
+                        raise DeviceOffline()
+                    case _:
+                        _LOGGER.error("Error %s: %s", response.status, body)
+                        raise CannotConnect()
+                
 
     async def list_devices(self):
         """List devices."""
