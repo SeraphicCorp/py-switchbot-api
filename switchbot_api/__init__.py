@@ -211,7 +211,11 @@ class SwitchBotAPI:
                 match body.get("statusCode"):
                     case 100:
                         return body.get("body")
-                    case 171:
+                    case 161 | 171:
+                        # SwitchBot docs claim that 161 is the code for device
+                        # being offline, and 171 for a _hub_ being offline.
+                        # In testing, the Plug Mini (JP) return 171 when not 
+                        # online too.
                         raise DeviceOffline()
                     case _:
                         _LOGGER.error("Error %s: %s", response.status, body)
