@@ -27,7 +27,7 @@ class InvalidAuth(Exception):
 
 class DeviceOffline(Exception):
     """Device currently offline."""
-    
+
 
 @dataclass
 class Device:
@@ -207,20 +207,20 @@ class SwitchBotAPI:
 
                 if response.status >= 400:
                     raise CannotConnect()
-                    
+
                 match body.get("statusCode"):
                     case 100:
                         return body.get("body")
                     case 161 | 171:
                         # SwitchBot docs claim that 161 is the code for device
                         # being offline, and 171 for a _hub_ being offline.
-                        # In testing, the Plug Mini (JP) return 171 when not 
+                        # In testing, the Plug Mini (JP) return 171 when not
                         # online too.
                         raise DeviceOffline()
                     case _:
                         _LOGGER.error("Error %s: %s", response.status, body)
                         raise CannotConnect()
-                
+
     async def list_devices(self):
         """List devices."""
         body = await self._request("devices")
