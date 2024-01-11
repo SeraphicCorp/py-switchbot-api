@@ -25,6 +25,10 @@ class InvalidAuth(Exception):
     """Invalid auth for the SwitchBot API."""
 
 
+class DeviceOffline(Exception):
+    """Device currently offline."""
+
+
 @dataclass
 class Device:
     """Device."""
@@ -142,6 +146,15 @@ class LightCommands(Commands):
     BRIGHTNESS_DOWN = "brightnessDown"
 
 
+class CeilingLightCommands(Commands):
+    """Ceiling light commands."""
+
+    # 1-100
+    SET_BRIGHTNESS = "setBrightness"
+    # 2700-6500
+    SET_COLOR_TEMPERATURE = "setColorTemperature"
+
+
 class VacuumCommands(Commands):
     """Vacuum commands."""
 
@@ -189,11 +202,24 @@ class SwitchBotAPI:
             ) as response:
                 if response.status == 403:
                     raise InvalidAuth()
+
                 body = await response.json()
-                if response.status >= 400 or body.get("statusCode") != 100:
-                    _LOGGER.error("Error %s: %s", response.status, body)
+
+                if response.status >= 400:
                     raise CannotConnect()
-                return body.get("body")
+
+                match body.get("statusCode"):
+                    case 100:
+                        return body.get("body")
+                    case 161 | 171:
+                        # SwitchBot docs claim that 161 is the code for device
+                        # being offline, and 171 for a _hub_ being offline.
+                        # In testing, the Plug Mini (JP) return 171 when not
+                        # online too.
+                        raise DeviceOffline()
+                    case _:
+                        _LOGGER.error("Error %s: %s", response.status, body)
+                        raise CannotConnect()
 
     async def list_devices(self):
         """List devices."""
