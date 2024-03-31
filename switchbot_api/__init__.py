@@ -145,6 +145,12 @@ class LightCommands(Commands):
     BRIGHTNESS_UP = "brightnessUp"
     BRIGHTNESS_DOWN = "brightnessDown"
 
+class LockCommands(Commands):
+    """Lock commands"""
+    
+    LOCK = "lock"
+    UNLOCK = "unlock"
+
 
 class CeilingLightCommands(Commands):
     """Ceiling light commands."""
