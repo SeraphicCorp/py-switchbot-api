@@ -1,4 +1,5 @@
 """Tools to query the SwitchBot API."""
+
 import base64
 from dataclasses import dataclass
 from enum import Enum
@@ -145,9 +146,10 @@ class LightCommands(Commands):
     BRIGHTNESS_UP = "brightnessUp"
     BRIGHTNESS_DOWN = "brightnessDown"
 
+
 class LockCommands(Commands):
     """Lock commands"""
-    
+
     LOCK = "lock"
     UNLOCK = "unlock"
 
