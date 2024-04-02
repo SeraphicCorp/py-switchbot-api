@@ -19,7 +19,7 @@ jobs:
     - name: Install poetry
       run: pipx install poetry
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.11"
         cache: "poetry"
@@ -28,7 +28,7 @@ jobs:
     - name: Build
       run: poetry build
     - name: Store the distribution packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
