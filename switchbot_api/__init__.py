@@ -285,7 +285,7 @@ class SwitchBotAPI:
         """
         json = {
             "commandType": command_type,
-            "command": command if isinstance(command, Commands) else command,
+            "command": command.value if isinstance(command, Commands) else command,
             "parameter": parameters,
         }
         await self._request(f"devices/{device_id}/commands", callback="post", json=json)
