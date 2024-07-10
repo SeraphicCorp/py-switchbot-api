@@ -1,14 +1,14 @@
 """Tools to query the SwitchBot API."""
 
 import base64
-from dataclasses import dataclass
-from enum import Enum
 import hashlib
 import hmac
 import logging
 import time
-from typing import TypeVar
 import uuid
+from dataclasses import dataclass
+from enum import Enum
+from typing import TypeVar
 
 from aiohttp import ClientSession
 
@@ -229,7 +229,7 @@ class SwitchBotAPI:
                         _LOGGER.error("Error %s: %s", response.status, body)
                         raise CannotConnect()
 
-    async def list_devices(self):
+    async def list_devices(self) -> list[Device | Remote]:
         """List devices."""
         body = await self._request("devices")
         _LOGGER.debug("Devices: %s", body)
@@ -264,7 +264,7 @@ class SwitchBotAPI:
     async def send_command(
         self,
         device_id: str,
-        command: T,
+        command: T | str,
         command_type: str = "command",
         parameters: dict | str = "default",
     ):
@@ -272,7 +272,7 @@ class SwitchBotAPI:
 
         Args:
             device_id (str): The ID of the device.
-            command (extends CommonCommands): The command to be sent.
+            command (string | extends CommonCommands): The command to be sent.
             command_type (str, optional): The type of the command. Defaults to "command".
             parameters (dict | str, optional): The parameters for the command. Defaults to "default".
 
@@ -285,7 +285,7 @@ class SwitchBotAPI:
         """
         json = {
             "commandType": command_type,
-            "command": command.value,
+            "command": command if isinstance(command, Commands) else command,
             "parameter": parameters,
         }
         await self._request(f"devices/{device_id}/commands", callback="post", json=json)
