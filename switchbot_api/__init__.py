@@ -172,6 +172,12 @@ class VacuumCommands(Commands):
     POW_LEVEL = "PowLevel"
 
 
+class BotCommands(Commands):
+    """Bot commands."""
+
+    PRESS = "press"
+
+
 T = TypeVar("T", bound=CommonCommands)
 
 
