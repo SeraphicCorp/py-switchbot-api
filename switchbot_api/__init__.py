@@ -220,6 +220,7 @@ class SwitchBotAPI:
                 body = await response.json()
 
                 if response.status >= 400:
+                    _LOGGER.error("Error %d: %s", response.status, body)
                     raise CannotConnect()
 
                 match body.get("statusCode"):
@@ -232,7 +233,7 @@ class SwitchBotAPI:
                         # online too.
                         raise DeviceOffline()
                     case _:
-                        _LOGGER.error("Error %s: %s", response.status, body)
+                        _LOGGER.error("Error %d: %s", response.status, body)
                         raise CannotConnect()
 
     async def list_devices(self) -> list[Device | Remote]:
