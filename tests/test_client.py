@@ -25,17 +25,10 @@ async def test_device_list(
     client: SwitchBotAPI,
     snapshot: SnapshotAssertion,
 ) -> None:
-    """Test searching for media."""
+    """Test listing devices."""
     responses.get(
         f"{MOCK_URL}/devices",
         status=200,
         body=load_fixture("device_list.json"),
     )
     assert await client.list_devices() == snapshot
-    # responses.assert_called_once_with(
-    #     f"{MOCK_URL}/search",
-    #     METH_GET,
-    #     headers=HEADERS,
-    #     params={"query": "frosty"},
-    #     json=None,
-    # )
