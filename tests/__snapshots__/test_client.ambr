@@ -1,0 +1,29 @@
+# serializer version: 1
+# name: test_device_list
+  list([
+    dict({
+      'device_id': 'D82812821F08',
+      'device_name': 'Hub 2 08',
+      'device_type': 'Hub 2',
+      'hub_device_id': '',
+    }),
+    dict({
+      'device_id': 'E2562C1DCC1A',
+      'device_name': 'Curtain 1A',
+      'device_type': 'Curtain3',
+      'hub_device_id': 'D82812821F08',
+    }),
+    dict({
+      'device_id': 'FCE84BB8B04F',
+      'device_name': 'Curtain 4F',
+      'device_type': 'Curtain',
+      'hub_device_id': '',
+    }),
+    dict({
+      'device_id': 'FF711F51601E',
+      'device_name': 'Curtain 1E',
+      'device_type': 'Curtain3',
+      'hub_device_id': 'D82812821F08',
+    }),
+  ])
+# ---

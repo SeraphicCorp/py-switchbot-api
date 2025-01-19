@@ -1,0 +1,46 @@
+{
+  "statusCode": 100,
+  "body": {
+    "deviceList": [
+      {
+        "deviceId": "D82812821F08",
+        "deviceName": "Hub 2 08",
+        "deviceType": "Hub 2",
+        "enableCloudService": true,
+        "hubDeviceId": ""
+      },
+      {
+        "deviceId": "E2562C1DCC1A",
+        "deviceName": "Curtain 1A",
+        "deviceType": "Curtain3",
+        "enableCloudService": true,
+        "hubDeviceId": "D82812821F08",
+        "calibrate": true,
+        "master": true,
+        "openDirection": "left"
+      },
+      {
+        "deviceId": "FCE84BB8B04F",
+        "deviceName": "Curtain 4F",
+        "deviceType": "Curtain",
+        "enableCloudService": false,
+        "hubDeviceId": "",
+        "curtainDevicesIds": [],
+        "calibrate": true,
+        "group": false,
+        "master": true
+      },
+      {
+        "deviceId": "FF711F51601E",
+        "deviceName": "Curtain 1E",
+        "deviceType": "Curtain3",
+        "enableCloudService": true,
+        "hubDeviceId": "D82812821F08",
+        "calibrate": true,
+        "master": true,
+        "openDirection": "left"
+      }
+    ],
+    "infraredRemoteList": []
+  }
+}
