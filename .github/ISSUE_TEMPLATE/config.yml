@@ -1,8 +1,6 @@
+---
 blank_issues_enabled: true
 contact_links:
-  - name: Report a bug with Z-Wave JS
-    url: https://github.com/home-assistant/core/issues
-    about: Please report issues with Z-Wave JS in the Home Assistant core repository unless a developer told you otherwise.
   - name: I have a question or need support
     url: https://www.home-assistant.io/help
     about: We use GitHub for tracking bugs, check the Home Assistant website for resources on getting help.
