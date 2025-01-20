@@ -256,8 +256,7 @@ class SwitchBotAPI:
 
     async def get_status(self, device_id: str) -> dict[str, Any]:
         """No status for IR devices."""
-        body = await self._request(f"devices/{device_id}/status")
-        return body
+        return await self._request(f"devices/{device_id}/status")
 
     async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
