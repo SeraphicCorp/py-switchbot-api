@@ -1,5 +1,7 @@
 """Tools to query the SwitchBot API."""
 
+from __future__ import annotations
+
 import base64
 from dataclasses import dataclass
 from enum import Enum
@@ -265,8 +267,7 @@ class SwitchBotAPI:
 
     async def get_status(self, device_id: str) -> dict[str, Any]:
         """No status for IR devices."""
-        body = await self._request(METH_GET, f"devices/{device_id}/status")
-        return body
+        return await self._request(METH_GET, f"devices/{device_id}/status")
 
     async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
