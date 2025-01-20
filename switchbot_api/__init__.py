@@ -66,7 +66,7 @@ class PowerState(Enum):
 
 
 class Commands(Enum):
-    pass
+    """Base command class."""
 
 
 class CommonCommands(Commands):
@@ -142,7 +142,7 @@ class LightCommands(Commands):
 
 
 class LockCommands(Commands):
-    """Lock commands"""
+    """Lock commands."""
 
     LOCK = "lock"
     UNLOCK = "unlock"
@@ -259,7 +259,7 @@ class SwitchBotAPI:
         return await self._request("webhook/queryWebhook", callback="post", json=json)
 
     async def setup_webhook(self, url: str) -> None:
-        """Setup webhook to receive device status updates."""
+        """Set up webhook to receive device status updates."""
         json = {"deviceList": "ALL", "action": "setupWebhook", "url": url}
         await self._request("webhook/setupWebhook", callback="post", json=json)
 
@@ -289,6 +289,7 @@ class SwitchBotAPI:
                 "command": "ボタン", // the name of the customized button
                 "parameter": "default"
             }
+
         """
         json = {
             "commandType": command_type,
