@@ -1,0 +1,15 @@
+{
+  "statusCode": 100,
+  "body": {
+    "version": "V6.3",
+    "calibrate": false,
+    "group": false,
+    "moving": false,
+    "battery": 0,
+    "slidePosition": 0,
+    "deviceId": "FCE84BB8B04F",
+    "deviceType": "Curtain",
+    "hubDeviceId": "000000000000"
+  },
+  "message": "success"
+}

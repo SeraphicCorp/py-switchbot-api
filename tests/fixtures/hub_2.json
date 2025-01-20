@@ -1,0 +1,13 @@
+{
+  "statusCode": 100,
+  "body": {
+    "version": "V2.3-1.4",
+    "temperature": 17.8,
+    "lightLevel": 1,
+    "humidity": 52,
+    "deviceId": "D82812821F08",
+    "deviceType": "Hub 2",
+    "hubDeviceId": "D82812821F08"
+  },
+  "message": "success"
+}

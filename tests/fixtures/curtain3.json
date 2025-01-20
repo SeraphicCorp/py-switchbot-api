@@ -1,0 +1,15 @@
+{
+  "statusCode": 100,
+  "body": {
+    "version": "V1.2",
+    "calibrate": true,
+    "group": false,
+    "moving": false,
+    "battery": 44,
+    "slidePosition": 0,
+    "deviceId": "FF711F51601E",
+    "deviceType": "Curtain3",
+    "hubDeviceId": "D82812821F08"
+  },
+  "message": "success"
+}
