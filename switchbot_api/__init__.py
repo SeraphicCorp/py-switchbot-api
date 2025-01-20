@@ -91,7 +91,11 @@ class AirConditionerCommands(Commands):
 class HumidifierCommands(Commands):
     """Humidifier commands."""
 
-    SET_MODE = "setMode"  # parameter: auto, set to Auto Mode, 101, set atomization efficiency to 34%,102, set atomization efficiency to 67%, 103, set atomization efficiency to 100%
+    # parameter: auto, set to Auto Mode
+    # 101, set atomization efficiency to 34%
+    # 102, set atomization efficiency to 67%
+    # 103, set atomization efficiency to 100%
+    SET_MODE = "setMode"
 
 
 class TVCommands(Commands):
@@ -280,8 +284,10 @@ class SwitchBotAPI:
         Args:
             device_id (str): The ID of the device.
             command (string | extends CommonCommands): The command to be sent.
-            command_type (str, optional): The type of the command. Defaults to "command".
-            parameters (dict | str, optional): The parameters for the command. Defaults to "default".
+            command_type (str, optional): The type of the command.
+            Defaults to "command".
+            parameters (dict | str, optional): The parameters for the command.
+            Defaults to "default".
 
         Example JSON:
             {
