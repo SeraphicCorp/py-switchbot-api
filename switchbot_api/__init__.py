@@ -1,5 +1,7 @@
 """Tools to query the SwitchBot API."""
 
+from __future__ import annotations
+
 import base64
 from dataclasses import dataclass
 from enum import Enum
