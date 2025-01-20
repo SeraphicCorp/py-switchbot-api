@@ -1,14 +1,14 @@
 """Tools to query the SwitchBot API."""
 
 import base64
+from dataclasses import dataclass
+from enum import Enum
 import hashlib
 import hmac
 import logging
 import time
+from typing import Any, TypeVar
 import uuid
-from dataclasses import dataclass
-from enum import Enum
-from typing import TypeVar, Any
 
 from aiohttp import ClientSession
 
