@@ -33,16 +33,14 @@ addopts = "--cov"
 asyncio_mode = "auto"
 pythonpath = ["switchbot_api"]
 
-[tool.coverage.run]
-branch = true
-omit = [
-    "*/test_*.py",
-]
-
 [tool.coverage.report]
 skip_empty = true
 show_missing = true
 fail_under = 0
+
+[tool.coverage.run]
+plugins = ["covdefaults"]
+source = ["switchbot_api"]
 
 
 [tool.ruff.lint]
