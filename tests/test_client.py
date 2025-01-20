@@ -4,14 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import pytest
 from aiohttp import ClientError
-from aioresponses import aioresponses, CallbackResult
-
-from tests import load_fixture
-from tests.const import MOCK_URL
+from aioresponses import CallbackResult, aioresponses
+import pytest
 
 from switchbot_api import SwitchBotConnectionError
+from tests import load_fixture
+from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
     from switchbot_api import SwitchBotAPI
