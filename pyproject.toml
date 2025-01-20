@@ -36,7 +36,7 @@ pythonpath = ["switchbot_api"]
 [tool.coverage.report]
 skip_empty = true
 show_missing = true
-fail_under = 0
+fail_under = 50
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
