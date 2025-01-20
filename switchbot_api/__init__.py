@@ -196,7 +196,11 @@ class SwitchBotAPI:
         string_to_sign = bytes(f"{token}{timestamp}{nonce}", "utf-8")
         secret_bytes = bytes(secret, "utf-8")
 
-        sign = base64.b64encode(hmac.new(secret_bytes, msg=string_to_sign, digestmod=hashlib.sha256).digest())
+        sign = base64.b64encode(
+            hmac.new(
+                secret_bytes, msg=string_to_sign, digestmod=hashlib.sha256
+            ).digest()
+        )
 
         return {
             "Authorization": token,
