@@ -1,8 +1,7 @@
 """Asynchronous Python client for SwitchBot."""
 
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import Generator
 
-import aiohttp
 from aioresponses import aioresponses
 import pytest
 

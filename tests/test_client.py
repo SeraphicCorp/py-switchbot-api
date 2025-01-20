@@ -2,22 +2,16 @@
 
 from __future__ import annotations
 
-import asyncio
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
-import aiohttp
-from aiohttp import ClientError
-from aiohttp.hdrs import METH_GET, METH_POST
-from aioresponses import CallbackResult, aioresponses
-import pytest
+from aioresponses import aioresponses
 
-from switchbot_api import SwitchBotAPI
 from tests import load_fixture
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
+    from switchbot_api import SwitchBotAPI
     from syrupy import SnapshotAssertion
-
 
 
 async def test_device_list(
