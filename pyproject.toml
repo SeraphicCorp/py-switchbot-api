@@ -45,7 +45,6 @@ source = ["switchbot_api"]
 
 [tool.ruff.lint]
 ignore = [
-  "N818",
   "ANN003",
   "D101",
   "E501",
