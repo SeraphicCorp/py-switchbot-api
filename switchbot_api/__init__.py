@@ -221,13 +221,13 @@ class SwitchBotAPI:
                 json=json,
             ) as response:
                 if response.status == 403:
-                    raise SwitchBotAuthenticationError()
+                    raise SwitchBotAuthenticationError
 
                 body = await response.json()
 
                 if response.status >= 400:
                     _LOGGER.error("Error %d: %s", response.status, body)
-                    raise SwitchBotConnectionError()
+                    raise SwitchBotConnectionError
 
                 match body.get("statusCode"):
                     case 100:
@@ -237,10 +237,10 @@ class SwitchBotAPI:
                         # being offline, and 171 for a _hub_ being offline.
                         # In testing, the Plug Mini (JP) return 171 when not
                         # online too.
-                        raise SwitchBotDeviceOfflineError()
+                        raise SwitchBotDeviceOfflineError
                     case _:
                         _LOGGER.error("Error %d: %s", response.status, body)
-                        raise SwitchBotConnectionError()
+                        raise SwitchBotConnectionError
 
     async def list_devices(self) -> list[Device | Remote]:
         """List devices."""
