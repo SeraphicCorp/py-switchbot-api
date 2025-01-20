@@ -12,7 +12,11 @@ from typing import TypeVar
 
 from aiohttp import ClientSession
 
-from switchbot_api.exceptions import SwitchBotAuthenticationError, SwitchBotConnectionError, SwitchBotDeviceOfflineError
+from switchbot_api.exceptions import (
+    SwitchBotAuthenticationError,
+    SwitchBotConnectionError,
+    SwitchBotDeviceOfflineError,
+)
 
 _API_HOST = "https://api.switch-bot.com"
 
