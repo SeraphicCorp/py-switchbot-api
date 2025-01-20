@@ -25,5 +25,11 @@
       'device_type': 'Curtain3',
       'hub_device_id': 'D82812821F08',
     }),
+    dict({
+      'device_id': '01-202501201703-63754985',
+      'device_name': 'TV',
+      'device_type': 'DIY TV',
+      'hub_device_id': 'D82812821F08',
+    }),
   ])
 # ---

@@ -41,6 +41,14 @@
         "openDirection": "left"
       }
     ],
-    "infraredRemoteList": []
-  }
+    "infraredRemoteList": [
+      {
+        "deviceId": "01-202501201703-63754985",
+        "deviceName": "TV",
+        "remoteType": "DIY TV",
+        "hubDeviceId": "D82812821F08"
+      }
+    ]
+  },
+  "message": "success"
 }
