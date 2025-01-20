@@ -1,17 +1,17 @@
 """Tools to query the SwitchBot API."""
 
 import base64
+from dataclasses import dataclass
+from enum import Enum
 import hashlib
 import hmac
 import logging
 import socket
 import time
+from typing import Any, TypeVar
 import uuid
-from dataclasses import dataclass
-from enum import Enum
-from typing import TypeVar, Any
 
-from aiohttp import ClientSession, ClientError, ClientResponseError
+from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.hdrs import METH_GET, METH_POST
 
 from switchbot_api.exceptions import (
@@ -68,7 +68,7 @@ class PowerState(Enum):
 
 
 class Commands(Enum):
-    pass
+    """Base command class."""
 
 
 class CommonCommands(Commands):
@@ -144,7 +144,7 @@ class LightCommands(Commands):
 
 
 class LockCommands(Commands):
-    """Lock commands"""
+    """Lock commands."""
 
     LOCK = "lock"
     UNLOCK = "unlock"
@@ -270,7 +270,7 @@ class SwitchBotAPI:
         return await self._request(METH_POST, "webhook/queryWebhook", json=json)
 
     async def setup_webhook(self, url: str) -> None:
-        """Setup webhook to receive device status updates."""
+        """Set up webhook to receive device status updates."""
         json = {"deviceList": "ALL", "action": "setupWebhook", "url": url}
         await self._request(METH_POST, "webhook/setupWebhook", json=json)
 
@@ -300,6 +300,7 @@ class SwitchBotAPI:
                 "command": "ボタン", // the name of the customized button
                 "parameter": "default"
             }
+
         """
         json = {
             "commandType": command_type,
