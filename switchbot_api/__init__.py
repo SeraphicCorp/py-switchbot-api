@@ -8,7 +8,7 @@ import time
 import uuid
 from dataclasses import dataclass
 from enum import Enum
-from typing import TypeVar
+from typing import TypeVar, Any
 
 from aiohttp import ClientSession
 
@@ -33,7 +33,7 @@ class Device:
     device_type: str
     hub_device_id: str
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
@@ -50,7 +50,7 @@ class Remote:
     device_type: str
     hub_device_id: str
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
         self.device_id = kwargs["deviceId"]
         self.device_name = kwargs["deviceName"]
@@ -183,7 +183,7 @@ class SwitchBotAPI:
         self.token = token
         self.secret = secret
 
-    def make_headers(self, token: str, secret: str):
+    def make_headers(self, token: str, secret: str) -> dict[str, Any]:
         """Make headers."""
         nonce = uuid.uuid4()
         timestamp = int(round(time.time() * 1000))
@@ -205,7 +205,9 @@ class SwitchBotAPI:
             "nonce": str(nonce),
         }
 
-    async def _request(self, path: str = "", callback: str = "get", json=None):
+    async def _request(
+        self, path: str = "", callback: str = "get", json: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         async with ClientSession() as session:
             async with getattr(session, callback)(
                 f"{_API_HOST}/v1.1/{path}",
@@ -223,7 +225,7 @@ class SwitchBotAPI:
 
                 match body.get("statusCode"):
                     case 100:
-                        return body.get("body")
+                        return body["body"]  # type: ignore
                     case 161 | 171:
                         # SwitchBot docs claim that 161 is the code for device
                         # being offline, and 171 for a _hub_ being offline.
@@ -238,30 +240,30 @@ class SwitchBotAPI:
         """List devices."""
         body = await self._request("devices")
         _LOGGER.debug("Devices: %s", body)
-        devices = [Device(**device) for device in body.get("deviceList")]
+        devices = [Device(**device) for device in body.get("deviceList")]  # type: ignore
         remotes = [
             Remote(**remote)
-            for remote in body.get("infraredRemoteList")
+            for remote in body.get("infraredRemoteList")  # type: ignore
             if remote.get("remoteType") not in NON_OBSERVED_REMOTE_TYPES
         ]
         return [*devices, *remotes]
 
-    async def get_status(self, device_id: str):
+    async def get_status(self, device_id: str) -> dict[str, Any]:
         """No status for IR devices."""
         body = await self._request(f"devices/{device_id}/status")
         return body
 
-    async def get_webook_configuration(self):
+    async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
         json = {"action": "queryUrl"}
         return await self._request("webhook/queryWebhook", callback="post", json=json)
 
-    async def setup_webhook(self, url: str):
+    async def setup_webhook(self, url: str) -> None:
         """Setup webhook to receive device status updates."""
         json = {"deviceList": "ALL", "action": "setupWebhook", "url": url}
         await self._request("webhook/setupWebhook", callback="post", json=json)
 
-    async def delete_webhook(self, url: str):
+    async def delete_webhook(self, url: str) -> None:
         """Delete webhook."""
         json = {"action": "deleteWebhook", "url": url}
         await self._request("webhook/deleteWebhook", callback="post", json=json)
@@ -271,8 +273,8 @@ class SwitchBotAPI:
         device_id: str,
         command: T | str,
         command_type: str = "command",
-        parameters: dict | str = "default",
-    ):
+        parameters: dict | str = "default",  # type: ignore
+    ) -> None:
         """Send command to device.
 
         Args:
