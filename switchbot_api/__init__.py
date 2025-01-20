@@ -14,22 +14,16 @@ from typing import TypeVar, Any
 from aiohttp import ClientSession, ClientError, ClientResponseError
 from aiohttp.hdrs import METH_GET, METH_POST
 
+from switchbot_api.exceptions import (
+    SwitchBotAuthenticationError,
+    SwitchBotConnectionError,
+    SwitchBotDeviceOfflineError,
+)
+
 _API_HOST = "https://api.switch-bot.com"
 
 _LOGGER = logging.getLogger(__name__)
 NON_OBSERVED_REMOTE_TYPES = ["Others"]
-
-
-class CannotConnect(Exception):
-    """Cannot connect to the SwitchBot API."""
-
-
-class InvalidAuth(Exception):
-    """Invalid auth for the SwitchBot API."""
-
-
-class DeviceOffline(Exception):
-    """Device currently offline."""
 
 
 @dataclass
@@ -230,15 +224,15 @@ class SwitchBotAPI:
                 socket.gaierror,
             ) as exception:
                 msg = "Error occurred while communicating with the SwitchBot API"
-                raise CannotConnect(msg) from exception
+                raise SwitchBotConnectionError(msg) from exception
             if response.status == 403:
-                raise InvalidAuth()
+                raise SwitchBotAuthenticationError()
 
             body = await response.json()
 
             if response.status >= 400:
                 _LOGGER.error("Error %d: %s", response.status, body)
-                raise CannotConnect()
+                raise SwitchBotConnectionError()
 
             match body.get("statusCode"):
                 case 100:
@@ -248,10 +242,10 @@ class SwitchBotAPI:
                     # being offline, and 171 for a _hub_ being offline.
                     # In testing, the Plug Mini (JP) return 171 when not
                     # online too.
-                    raise DeviceOffline()
+                    raise SwitchBotDeviceOfflineError()
                 case _:
                     _LOGGER.error("Error %d: %s", response.status, body)
-                    raise CannotConnect()
+                    raise SwitchBotConnectionError()
 
     async def list_devices(self) -> list[Device | Remote]:
         """List devices."""

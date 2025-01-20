@@ -11,7 +11,7 @@ from aioresponses import aioresponses, CallbackResult
 from tests import load_fixture
 from tests.const import MOCK_URL
 
-from switchbot_api import CannotConnect
+from switchbot_api import SwitchBotConnectionError
 
 if TYPE_CHECKING:
     from switchbot_api import SwitchBotAPI
@@ -32,7 +32,7 @@ async def test_client_error(
         f"{MOCK_URL}/devices",
         callback=response_handler,
     )
-    with pytest.raises(CannotConnect):
+    with pytest.raises(SwitchBotConnectionError):
         await client.list_devices()
 
 
