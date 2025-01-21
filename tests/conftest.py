@@ -1,7 +1,8 @@
 """Asynchronous Python client for SwitchBot."""
 
-from collections.abc import Generator
+from collections.abc import AsyncGenerator, Generator
 
+from aiohttp import ClientSession
 from aioresponses import aioresponses
 import pytest
 
@@ -18,9 +19,13 @@ def snapshot_assertion(snapshot: SnapshotAssertion) -> SnapshotAssertion:
 
 
 @pytest.fixture
-async def client() -> SwitchBotAPI:
+async def client() -> AsyncGenerator[SwitchBotAPI, None]:
     """Return a SwitchBot client."""
-    return SwitchBotAPI("token", "secret")
+    async with (
+        ClientSession() as session,
+        SwitchBotAPI("token", "secret", session) as client,
+    ):
+        yield client
 
 
 @pytest.fixture(name="responses")
