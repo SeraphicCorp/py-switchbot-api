@@ -8,11 +8,13 @@ from enum import Enum
 import hashlib
 import hmac
 import logging
+import socket
 import time
 from typing import Any, TypeVar
 import uuid
 
-from aiohttp import ClientSession
+from aiohttp import ClientError, ClientResponseError, ClientSession
+from aiohttp.hdrs import METH_GET, METH_POST
 
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
@@ -212,39 +214,48 @@ class SwitchBotAPI:
         }
 
     async def _request(
-        self, path: str = "", callback: str = "get", json: dict[str, Any] | None = None
+        self, method: str, path: str, json: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         async with ClientSession() as session:
-            async with getattr(session, callback)(
-                f"{_API_HOST}/v1.1/{path}",
-                headers=self.make_headers(self.token, self.secret),
-                json=json,
-            ) as response:
-                if response.status == 403:
-                    raise SwitchBotAuthenticationError()
+            try:
+                response = await session.request(
+                    method,
+                    f"{_API_HOST}/v1.1/{path}",
+                    headers=self.make_headers(self.token, self.secret),
+                    json=json,
+                )
+            except (
+                ClientError,
+                ClientResponseError,
+                socket.gaierror,
+            ) as exception:
+                msg = "Error occurred while communicating with the SwitchBot API"
+                raise SwitchBotConnectionError(msg) from exception
+            if response.status == 403:
+                raise SwitchBotAuthenticationError
 
-                body = await response.json()
+            body = await response.json()
 
-                if response.status >= 400:
+            if response.status >= 400:
+                _LOGGER.error("Error %d: %s", response.status, body)
+                raise SwitchBotConnectionError
+
+            match body.get("statusCode"):
+                case 100:
+                    return body["body"]  # type: ignore[no-any-return]
+                case 161 | 171:
+                    # SwitchBot docs claim that 161 is the code for device
+                    # being offline, and 171 for a _hub_ being offline.
+                    # In testing, the Plug Mini (JP) return 171 when not
+                    # online too.
+                    raise SwitchBotDeviceOfflineError
+                case _:
                     _LOGGER.error("Error %d: %s", response.status, body)
-                    raise SwitchBotConnectionError()
-
-                match body.get("statusCode"):
-                    case 100:
-                        return body["body"]  # type: ignore[no-any-return]
-                    case 161 | 171:
-                        # SwitchBot docs claim that 161 is the code for device
-                        # being offline, and 171 for a _hub_ being offline.
-                        # In testing, the Plug Mini (JP) return 171 when not
-                        # online too.
-                        raise SwitchBotDeviceOfflineError()
-                    case _:
-                        _LOGGER.error("Error %d: %s", response.status, body)
-                        raise SwitchBotConnectionError()
+                    raise SwitchBotConnectionError
 
     async def list_devices(self) -> list[Device | Remote]:
         """List devices."""
-        body = await self._request("devices")
+        body = await self._request(METH_GET, "devices")
         _LOGGER.debug("Devices: %s", body)
         devices = [Device(**device) for device in body.get("deviceList")]  # type: ignore[union-attr]
         remotes = [
@@ -256,22 +267,22 @@ class SwitchBotAPI:
 
     async def get_status(self, device_id: str) -> dict[str, Any]:
         """No status for IR devices."""
-        return await self._request(f"devices/{device_id}/status")
+        return await self._request(METH_GET, f"devices/{device_id}/status")
 
     async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
         json = {"action": "queryUrl"}
-        return await self._request("webhook/queryWebhook", callback="post", json=json)
+        return await self._request(METH_POST, "webhook/queryWebhook", json=json)
 
     async def setup_webhook(self, url: str) -> None:
         """Set up webhook to receive device status updates."""
         json = {"deviceList": "ALL", "action": "setupWebhook", "url": url}
-        await self._request("webhook/setupWebhook", callback="post", json=json)
+        await self._request(METH_POST, "webhook/setupWebhook", json=json)
 
     async def delete_webhook(self, url: str) -> None:
         """Delete webhook."""
         json = {"action": "deleteWebhook", "url": url}
-        await self._request("webhook/deleteWebhook", callback="post", json=json)
+        await self._request(METH_POST, "webhook/deleteWebhook", json=json)
 
     async def send_command(
         self,
@@ -303,4 +314,4 @@ class SwitchBotAPI:
             "command": command.value if isinstance(command, Commands) else command,
             "parameter": parameters,
         }
-        await self._request(f"devices/{device_id}/commands", callback="post", json=json)
+        await self._request(METH_POST, f"devices/{device_id}/commands", json=json)
