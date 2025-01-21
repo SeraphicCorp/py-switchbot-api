@@ -11,6 +11,7 @@ repository = "https://github.com/SeraphicCorp/py-switchbot-api"
 [tool.poetry.dependencies]
 python = "^3.10"
 aiohttp = ">=3.0.0"
+mashumaro = "^3.15"
 
 
 [tool.poetry.group.dev.dependencies]

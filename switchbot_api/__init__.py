@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import base64
-from dataclasses import dataclass
 from enum import Enum
 import hashlib
 import hmac
@@ -16,50 +15,45 @@ import uuid
 from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.hdrs import METH_GET, METH_POST
 
+from switchbot_api.const import Model
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
     SwitchBotConnectionError,
     SwitchBotDeviceOfflineError,
 )
+from switchbot_api.models import (
+    Curtain,
+    Curtain3,
+    Curtain3Status,
+    CurtainStatus,
+    Device,
+    DeviceList,
+    DeviceStatus,
+    Hub2,
+    Hub2Status,
+    OpenDirection,
+    Remote,
+)
+
+__all__ = [
+    "Curtain",
+    "Curtain3",
+    "Curtain3Status",
+    "CurtainStatus",
+    "Device",
+    "DeviceList",
+    "DeviceStatus",
+    "Hub2",
+    "Hub2Status",
+    "Model",
+    "OpenDirection",
+    "Remote",
+]
 
 _API_HOST = "https://api.switch-bot.com"
 
 _LOGGER = logging.getLogger(__name__)
 NON_OBSERVED_REMOTE_TYPES = ["Others"]
-
-
-@dataclass
-class Device:
-    """Device."""
-
-    device_id: str
-    device_name: str
-    device_type: str
-    hub_device_id: str
-
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize."""
-        self.device_id = kwargs["deviceId"]
-        self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs.get("deviceType", "-")
-        self.hub_device_id = kwargs["hubDeviceId"]
-
-
-@dataclass
-class Remote:
-    """Remote device."""
-
-    device_id: str
-    device_name: str
-    device_type: str
-    hub_device_id: str
-
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize."""
-        self.device_id = kwargs["deviceId"]
-        self.device_name = kwargs["deviceName"]
-        self.device_type = kwargs.get("remoteType", "-")
-        self.hub_device_id = kwargs["hubDeviceId"]
 
 
 class PowerState(Enum):
@@ -260,21 +254,15 @@ class SwitchBotAPI:
                 _LOGGER.error("Error %d: %s", response.status, body)
                 raise SwitchBotConnectionError
 
-    async def list_devices(self) -> list[Device | Remote]:
+    async def list_devices(self) -> DeviceList:
         """List devices."""
         body = await self._request(METH_GET, "devices")
-        _LOGGER.debug("Devices: %s", body)
-        devices = [Device(**device) for device in body.get("deviceList")]  # type: ignore[union-attr]
-        remotes = [
-            Remote(**remote)
-            for remote in body.get("infraredRemoteList")  # type: ignore[union-attr]
-            if remote.get("remoteType") not in NON_OBSERVED_REMOTE_TYPES
-        ]
-        return [*devices, *remotes]
+        return DeviceList.from_dict(body)
 
-    async def get_status(self, device_id: str) -> dict[str, Any]:
+    async def get_status(self, device_id: str) -> DeviceStatus:
         """No status for IR devices."""
-        return await self._request(METH_GET, f"devices/{device_id}/status")
+        body = await self._request(METH_GET, f"devices/{device_id}/status")
+        return DeviceStatus.from_dict(body)
 
     async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
