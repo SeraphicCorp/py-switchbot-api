@@ -27,3 +27,40 @@
     }),
   ])
 # ---
+# name: test_device_status[curtain3]
+  dict({
+    'battery': 44,
+    'calibrate': True,
+    'deviceId': 'FF711F51601E',
+    'deviceType': 'Curtain3',
+    'group': False,
+    'hubDeviceId': 'D82812821F08',
+    'moving': False,
+    'slidePosition': 0,
+    'version': 'V1.2',
+  })
+# ---
+# name: test_device_status[curtain]
+  dict({
+    'battery': 0,
+    'calibrate': False,
+    'deviceId': 'FCE84BB8B04F',
+    'deviceType': 'Curtain',
+    'group': False,
+    'hubDeviceId': '000000000000',
+    'moving': False,
+    'slidePosition': 0,
+    'version': 'V6.3',
+  })
+# ---
+# name: test_device_status[hub_2]
+  dict({
+    'deviceId': 'D82812821F08',
+    'deviceType': 'Hub 2',
+    'hubDeviceId': 'D82812821F08',
+    'humidity': 52,
+    'lightLevel': 1,
+    'temperature': 17.8,
+    'version': 'V2.3-1.4',
+  })
+# ---
