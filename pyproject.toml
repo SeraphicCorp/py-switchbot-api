@@ -77,7 +77,6 @@ source = ["switchbot_api"]
 
 [tool.ruff.lint]
 ignore = [
-  "RSE102",
   "PGH003",
   "ANN401", # Opinioated warning on disallowing dynamically typed expressions
   "COM812", # Conflicts with other rules
