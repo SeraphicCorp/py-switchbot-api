@@ -249,7 +249,7 @@ class SwitchBotAPI:
 
         match body.get("statusCode"):
             case 100:
-                return body["body"]  # type: ignore
+                return body["body"]  # type: ignore[no-any-return]
             case 161 | 171:
                 # SwitchBot docs claim that 161 is the code for device
                 # being offline, and 171 for a _hub_ being offline.
@@ -264,10 +264,10 @@ class SwitchBotAPI:
         """List devices."""
         body = await self._request(METH_GET, "devices")
         _LOGGER.debug("Devices: %s", body)
-        devices = [Device(**device) for device in body.get("deviceList")]  # type: ignore
+        devices = [Device(**device) for device in body.get("deviceList")]  # type: ignore[union-attr]
         remotes = [
             Remote(**remote)
-            for remote in body.get("infraredRemoteList")  # type: ignore
+            for remote in body.get("infraredRemoteList")  # type: ignore[union-attr]
             if remote.get("remoteType") not in NON_OBSERVED_REMOTE_TYPES
         ]
         return [*devices, *remotes]
@@ -296,7 +296,7 @@ class SwitchBotAPI:
         device_id: str,
         command: T | str,
         command_type: str = "command",
-        parameters: dict | str = "default",  # type: ignore
+        parameters: dict | str = "default",  # type: ignore[type-arg]
     ) -> None:
         """Send command to device.
 
