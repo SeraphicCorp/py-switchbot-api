@@ -10,7 +10,7 @@ import hmac
 import logging
 import socket
 import time
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 import uuid
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
@@ -186,10 +186,15 @@ T = TypeVar("T", bound=CommonCommands)
 class SwitchBotAPI:
     """SwitchBot API."""
 
-    def __init__(self, token: str, secret: str) -> None:
+    _close_session: bool = False
+
+    def __init__(
+        self, token: str, secret: str, session: ClientSession | None = None
+    ) -> None:
         """Initialize."""
         self.token = token
         self.secret = secret
+        self.session = session
 
     def make_headers(self, token: str, secret: str) -> dict[str, Any]:
         """Make headers."""
@@ -216,42 +221,44 @@ class SwitchBotAPI:
     async def _request(
         self, method: str, path: str, json: dict[str, Any] | None = None
     ) -> dict[str, Any]:
-        async with ClientSession() as session:
-            try:
-                response = await session.request(
-                    method,
-                    f"{_API_HOST}/v1.1/{path}",
-                    headers=self.make_headers(self.token, self.secret),
-                    json=json,
-                )
-            except (
-                ClientError,
-                ClientResponseError,
-                socket.gaierror,
-            ) as exception:
-                msg = "Error occurred while communicating with the SwitchBot API"
-                raise SwitchBotConnectionError(msg) from exception
-            if response.status == 403:
-                raise SwitchBotAuthenticationError
+        if not self.session:
+            self.session = ClientSession()
+            self._close_session = True
+        try:
+            response = await self.session.request(
+                method,
+                f"{_API_HOST}/v1.1/{path}",
+                headers=self.make_headers(self.token, self.secret),
+                json=json,
+            )
+        except (
+            ClientError,
+            ClientResponseError,
+            socket.gaierror,
+        ) as exception:
+            msg = "Error occurred while communicating with the SwitchBot API"
+            raise SwitchBotConnectionError(msg) from exception
+        if response.status == 403:
+            raise SwitchBotAuthenticationError
 
-            body = await response.json()
+        body = await response.json()
 
-            if response.status >= 400:
+        if response.status >= 400:
+            _LOGGER.error("Error %d: %s", response.status, body)
+            raise SwitchBotConnectionError
+
+        match body.get("statusCode"):
+            case 100:
+                return body["body"]  # type: ignore[no-any-return]
+            case 161 | 171:
+                # SwitchBot docs claim that 161 is the code for device
+                # being offline, and 171 for a _hub_ being offline.
+                # In testing, the Plug Mini (JP) return 171 when not
+                # online too.
+                raise SwitchBotDeviceOfflineError
+            case _:
                 _LOGGER.error("Error %d: %s", response.status, body)
                 raise SwitchBotConnectionError
-
-            match body.get("statusCode"):
-                case 100:
-                    return body["body"]  # type: ignore[no-any-return]
-                case 161 | 171:
-                    # SwitchBot docs claim that 161 is the code for device
-                    # being offline, and 171 for a _hub_ being offline.
-                    # In testing, the Plug Mini (JP) return 171 when not
-                    # online too.
-                    raise SwitchBotDeviceOfflineError
-                case _:
-                    _LOGGER.error("Error %d: %s", response.status, body)
-                    raise SwitchBotConnectionError
 
     async def list_devices(self) -> list[Device | Remote]:
         """List devices."""
@@ -315,3 +322,28 @@ class SwitchBotAPI:
             "parameter": parameters,
         }
         await self._request(METH_POST, f"devices/{device_id}/commands", json=json)
+
+    async def close(self) -> None:
+        """Close the client session."""
+        if self.session and self._close_session:
+            await self.session.close()
+
+    async def __aenter__(self) -> Self:
+        """Async enter.
+
+        Returns
+        -------
+            The SwitchBotAPI object.
+
+        """
+        return self
+
+    async def __aexit__(self, *_exc_info: object) -> None:
+        """Async exit.
+
+        Args:
+        ----
+            _exc_info: Exec type.
+
+        """
+        await self.close()

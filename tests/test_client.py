@@ -4,17 +4,51 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from aiohttp import ClientError
+from aiohttp import ClientError, ClientSession
 from aioresponses import CallbackResult, aioresponses
 import pytest
 
-from switchbot_api import SwitchBotConnectionError
+from switchbot_api import SwitchBotAPI, SwitchBotConnectionError
 from tests import load_fixture
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from syrupy import SnapshotAssertion
+
+
+async def test_providing_session(
+    responses: aioresponses,
+) -> None:
+    """Test putting in own session."""
+    responses.get(
+        f"{MOCK_URL}/devices",
+        status=200,
+        body=load_fixture("device_list.json"),
+    )
+    async with ClientSession() as session:
+        client = SwitchBotAPI("abc", "def", session=session)
+        await client.list_devices()
+        assert client.session is not None
+        assert not client.session.closed
+        await client.close()
+        assert not client.session.closed
+
+
+async def test_using_default_session(
+    responses: aioresponses,
+) -> None:
+    """Test creating own session."""
+    responses.get(
+        f"{MOCK_URL}/devices",
+        status=200,
+        body=load_fixture("device_list.json"),
+    )
+    client = SwitchBotAPI("abc", "def")
+    await client.list_devices()
+    assert client.session is not None
+    assert not client.session.closed
+    await client.close()
+    assert client.session.closed
 
 
 async def test_client_error(
