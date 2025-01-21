@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from syrupy import SnapshotAssertion
 
 
-async def test_putting_in_own_session(
+async def test_providing_session(
     responses: aioresponses,
 ) -> None:
     """Test putting in own session."""
@@ -34,7 +34,7 @@ async def test_putting_in_own_session(
         assert not client.session.closed
 
 
-async def test_creating_own_session(
+async def test_using_default_session(
     responses: aioresponses,
 ) -> None:
     """Test creating own session."""
