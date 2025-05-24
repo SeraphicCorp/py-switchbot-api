@@ -10,7 +10,7 @@ import hmac
 import logging
 import socket
 import time
-from typing import Any, Self, TypeVar
+from typing import Any, Self, TypeVar, List
 import uuid
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
@@ -142,6 +142,14 @@ class FanCommands(Commands):
     HIGH_SPEED = "highSpeed"
 
 
+class BatteryCirculatorFanCommandS(Commands):
+    """Command types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
+
+    SET_WIND_SPEED = "setWindSpeed"
+    SET_WIND_MODE = "setWindMode"
+    SET_NIGHT_LIGHT_MODE = "setNightLightMode"
+
+
 class LightCommands(Commands):
     """Light commands."""
 
@@ -178,6 +186,20 @@ class BotCommands(Commands):
     """Bot commands."""
 
     PRESS = "press"
+
+
+class BatteryCirculatorFanMode(Enum):
+    """Fan mode types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
+
+    DIRECT = "direct"
+    NATURAL = "natural"
+    SLEEP = "sleep"
+    BABY = "baby"
+
+    @classmethod
+    def get_all_obj(cls) -> List[BatteryCirculatorFanMode]:
+        """Get all supported mode type as list."""
+        return [cls.DIRECT, cls.NATURAL, cls.SLEEP, cls.BABY]
 
 
 T = TypeVar("T", bound=CommonCommands)
