@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, StrEnum
 import hashlib
 import hmac
 import logging
@@ -188,18 +188,13 @@ class BotCommands(Commands):
     PRESS = "press"
 
 
-class BatteryCirculatorFanMode(Enum):
+class BatteryCirculatorFanMode(StrEnum):
     """Fan mode types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
 
     DIRECT = "direct"
     NATURAL = "natural"
     SLEEP = "sleep"
     BABY = "baby"
-
-    @classmethod
-    def get_all_obj(cls) -> List[BatteryCirculatorFanMode]:
-        """Get all supported mode type as list."""
-        return [cls.DIRECT, cls.NATURAL, cls.SLEEP, cls.BABY]
 
 
 T = TypeVar("T", bound=CommonCommands)
