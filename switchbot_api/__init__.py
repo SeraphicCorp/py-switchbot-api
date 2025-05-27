@@ -10,7 +10,7 @@ import hmac
 import logging
 import socket
 import time
-from typing import Any, Self, TypeVar, List
+from typing import Any, Self, TypeVar
 import uuid
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
@@ -143,7 +143,7 @@ class FanCommands(Commands):
 
 
 class BatteryCirculatorFanCommands(Commands):
-    """Command types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
+    """Command types for [Battery Circulator Fan] API."""
 
     SET_WIND_SPEED = "setWindSpeed"
     SET_WIND_MODE = "setWindMode"
@@ -189,7 +189,7 @@ class BotCommands(Commands):
 
 
 class BatteryCirculatorFanMode(StrEnum):
-    """Fan mode types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
+    """Fan mode types [Battery Circulator Fan] API."""
 
     DIRECT = "direct"
     NATURAL = "natural"
