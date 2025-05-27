@@ -142,7 +142,7 @@ class FanCommands(Commands):
     HIGH_SPEED = "highSpeed"
 
 
-class BatteryCirculatorFanCommandS(Commands):
+class BatteryCirculatorFanCommands(Commands):
     """Command types currently supported by SwitchBot Cloud [Battery Circulator Fan] API."""
 
     SET_WIND_SPEED = "setWindSpeed"
