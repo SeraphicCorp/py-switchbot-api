@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, StrEnum
 import hashlib
 import hmac
 import logging
@@ -142,6 +142,14 @@ class FanCommands(Commands):
     HIGH_SPEED = "highSpeed"
 
 
+class BatteryCirculatorFanCommands(Commands):
+    """Command types for [Battery Circulator Fan] API."""
+
+    SET_WIND_SPEED = "setWindSpeed"
+    SET_WIND_MODE = "setWindMode"
+    SET_NIGHT_LIGHT_MODE = "setNightLightMode"
+
+
 class LightCommands(Commands):
     """Light commands."""
 
@@ -178,6 +186,15 @@ class BotCommands(Commands):
     """Bot commands."""
 
     PRESS = "press"
+
+
+class BatteryCirculatorFanMode(StrEnum):
+    """Fan mode types [Battery Circulator Fan] API."""
+
+    DIRECT = "direct"
+    NATURAL = "natural"
+    SLEEP = "sleep"
+    BABY = "baby"
 
 
 T = TypeVar("T", bound=CommonCommands)
