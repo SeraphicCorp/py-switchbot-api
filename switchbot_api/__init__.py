@@ -187,6 +187,9 @@ class CleanerCommands(Commands):
     DOCK = "dock"
     SET_VOLUME = "setVolume"
     CHANGE_PARAM = "changeParam"
+    # suite for S10,S20
+    ADD_WATER_FOR_HUMI = "addWaterForHumi"
+    SELF_CLEAN = "selfClean"
 
 
 class BlindTiltCommands(Commands):
