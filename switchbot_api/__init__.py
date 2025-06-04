@@ -78,11 +78,6 @@ class CommonCommands(Commands):
 
     ON = "turnOn"
     OFF = "turnOff"
-
-
-class ToggleCommands(Commands):
-    """Toggle commands."""
-
     TOGGLE = "toggle"
 
 
@@ -99,14 +94,19 @@ class AirConditionerCommands(Commands):
 
 
 class HumidifierCommands(Commands):
-    """Humidifier & Humidifier 2 commands."""
+    """Humidifier commands."""
 
     # parameter: auto, set to Auto Mode
     # 101, set atomization efficiency to 34%
     # 102, set atomization efficiency to 67%
     # 103, set atomization efficiency to 100%
     SET_MODE = "setMode"
-    # only suite for Humidifier 2
+
+
+class HumidifierV2Commands(Commands):
+    """Humidifier 2 commands."""
+
+    SET_MODE = "setMode"
     SET_CHILD_LOCK = "setChildLock"
 
 
@@ -123,16 +123,6 @@ class AirPurifierCommands(Commands):
     SET_CHILD_LOCK = "setChildLock"
 
 
-class PlugCommands(Commands):
-    """Plug commands."""
-
-    # Supported Device List:
-    # Plug
-    # Plug Mini (US)
-    # Plug Mini (JP)
-    TOGGLE = "toggle"
-
-
 class CurtainCommands(Commands):
     """Curtain & Curtain3 commands."""
 
@@ -146,19 +136,35 @@ class SwitchCommands(Commands):
     # Supported Device List:
     # Relay Switch 1
     # Relay Switch 1PM
+    TOGGLE = "toggle"
+    SET_MODE = "setMode"
+
+
+class Switch2PMCommands(Commands):
+    """Switch commands."""
+
+    # Supported Device List:
     # Relay Switch 2PM
     TOGGLE = "toggle"
     SET_MODE = "setMode"
-    # only suite for Relay Switch 2PM
     SET_POSITION = "setPosition"
 
 
-class FloorLampCommands(Commands):
-    """Floor Lamp commands."""
+class RGBWLightCommands(Commands):
+    """RGBWLight commands."""
+
+    # Supported Device List:
+    # Strip Light
+    TOGGLE = "toggle"
+    SET_BRIGHTNESS = "setBrightness"
+    SET_COLOR = "setColor"
+
+
+class RGBWWLightCommands(Commands):
+    """RGBWwLight commands."""
 
     # Supported Device List:
     # Floor Lamp
-    # Strip Light
     # Strip Light 3
     # Color Bulb
     TOGGLE = "toggle"
@@ -174,12 +180,23 @@ class DoorBellCommands(Commands):
     DISABLE = "disableMotionDetection"
 
 
-class CleanerCommands(Commands):
-    """Cleaner commands."""
+class VacuumCleanerV2Commands(Commands):
+    """VacuumCleanerV2 commands."""
 
     # Supported Device List:
     # K20+ Pro
     # Robot Vacuum Cleaner K10+ Pro Combo
+    START_CLEAN = "startClean"
+    PAUSE = "pause"
+    DOCK = "dock"
+    SET_VOLUME = "setVolume"
+    CHANGE_PARAM = "changeParam"
+
+
+class VacuumCleanerV3Commands(Commands):
+    """VacuumCleanerV3 commands."""
+
+    # Supported Device List:
     # Floor Cleaning Robot S10
     # S20
     START_CLEAN = "startClean"
@@ -187,7 +204,6 @@ class CleanerCommands(Commands):
     DOCK = "dock"
     SET_VOLUME = "setVolume"
     CHANGE_PARAM = "changeParam"
-    # suite for S10,S20
     ADD_WATER_FOR_HUMI = "addWaterForHumi"
     SELF_CLEAN = "selfClean"
 
