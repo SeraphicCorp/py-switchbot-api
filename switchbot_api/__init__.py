@@ -136,7 +136,6 @@ class SwitchCommands(Commands):
     # Supported Device List:
     # Relay Switch 1
     # Relay Switch 1PM
-    TOGGLE = "toggle"
     SET_MODE = "setMode"
 
 
@@ -145,7 +144,6 @@ class Switch2PMCommands(Commands):
 
     # Supported Device List:
     # Relay Switch 2PM
-    TOGGLE = "toggle"
     SET_MODE = "setMode"
     SET_POSITION = "setPosition"
 
@@ -155,7 +153,6 @@ class RGBWLightCommands(Commands):
 
     # Supported Device List:
     # Strip Light
-    TOGGLE = "toggle"
     SET_BRIGHTNESS = "setBrightness"
     SET_COLOR = "setColor"
 
@@ -167,7 +164,6 @@ class RGBWWLightCommands(Commands):
     # Floor Lamp
     # Strip Light 3
     # Color Bulb
-    TOGGLE = "toggle"
     SET_BRIGHTNESS = "setBrightness"
     SET_COLOR = "setColor"
     SET_COLOR_TEMPERATURE = "setColorTemperature"
