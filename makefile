@@ -5,7 +5,7 @@ install:
 build:
 	poetry build
 
-format:
+format:pro_commit
 	poetry run black switchbot_api/
 	poetry run mypy switchbot_api/
 
@@ -17,3 +17,6 @@ test:test_update
 
 test_update:
 	pytest --snapshot-update
+
+pro_commit:
+	poetry run pre-commit run end-of-file-fixer --all-files
