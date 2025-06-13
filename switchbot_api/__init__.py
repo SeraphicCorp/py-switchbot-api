@@ -66,8 +66,6 @@ class Remote:
         self.device_name = kwargs["deviceName"]
         self.device_type = kwargs.get("remoteType", "-")
         self.hub_device_id = kwargs["hubDeviceId"]
-        self.group = kwargs.get("group", False)
-        self.master = kwargs.get("master")
 
 
 class PowerState(Enum):
