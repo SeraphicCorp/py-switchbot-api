@@ -57,8 +57,6 @@ class Remote:
     device_name: str
     device_type: str
     hub_device_id: str
-    group: bool
-    master: bool
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
