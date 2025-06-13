@@ -36,7 +36,7 @@ make test
 ### build wheel
 
 ```bash
-make format
+make build
 ```
 
 ### Clean
