@@ -18,5 +18,5 @@ test:test_update
 test_update:
 	pytest --snapshot-update
 
-pro_commit:
+pre_commit:
 	poetry run pre-commit run end-of-file-fixer --all-files
