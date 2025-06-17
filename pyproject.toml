@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "switchbot_api"
-version = "2.5.0"
+version = "2.6.0"
 description = "An asynchronous library to use Switchbot API"
 authors = ["Ravaka Razafimanantsoa <contact@ravaka.dev>"]
 license = "MIT"

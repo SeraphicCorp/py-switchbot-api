@@ -36,6 +36,8 @@ class Device:
     device_name: str
     device_type: str
     hub_device_id: str
+    group: bool
+    master: bool | None
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
@@ -43,6 +45,8 @@ class Device:
         self.device_name = kwargs["deviceName"]
         self.device_type = kwargs.get("deviceType", "-")
         self.hub_device_id = kwargs["hubDeviceId"]
+        self.group = kwargs.get("group", False)
+        self.master = kwargs.get("master")
 
 
 @dataclass

@@ -18,12 +18,29 @@ await client.send_command('some-id', {COMMAND})
 ### Install
 
 ```bash
-poetry install
+make install
 ```
 
 ### Lint
 
 ```bash
-poetry run black switchbot_api/
-poetry run mypy switchbot_api/
+make format
+```
+
+### Test
+
+```bash
+make test
+```
+
+### build wheel
+
+```bash
+make build
+```
+
+### Clean
+
+```bash
+make clean
 ```
