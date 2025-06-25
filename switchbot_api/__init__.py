@@ -56,7 +56,7 @@ from switchbot_api.models import (
     PowerState,
     BatteryCirculatorFanMode,
     VacuumFanSpeed,
-VacuumFanSpeedV2,
+    VacuumFanSpeedV2,
     VacuumCleanMode,
 )
 

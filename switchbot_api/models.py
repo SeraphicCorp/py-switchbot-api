@@ -25,6 +25,7 @@ class VacuumFanSpeed(StrEnum):
     VACUUM_FAN_SPEED_STRONG = "2"
     VACUUM_FAN_SPEED_MAX = "3"
 
+
 class VacuumFanSpeedV2(StrEnum):
     """Fan options for VacuumV2Commands & VacuumV3Commands supported devices."""
 
