@@ -8,6 +8,8 @@ build:
 format:pre_commit
 	poetry run black switchbot_api/
 	poetry run mypy switchbot_api/
+	poetry run ruff check --fix switchbot_api/__init__.py
+	poetry run ruff check --output-format=github .
 
 clean:
 	rm -rf dist
