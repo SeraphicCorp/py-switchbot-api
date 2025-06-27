@@ -1,4 +1,4 @@
-"""Base Commands for  SwitchBot API."""
+"""Base Commands for SwitchBot API."""
 
 from __future__ import annotations
 
@@ -12,12 +12,10 @@ class Commands(Enum):
     @classmethod
     def get_supported_devices(cls) -> bool | list[str]:
         """Get supported devices.
-
-        Return:
+        Return Value:
             True         -> CommonCommands
             False        -> Unknown
             List[str]    -> supported devices list
-
         """
         return False
 
