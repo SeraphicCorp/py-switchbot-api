@@ -10,14 +10,14 @@ class Commands(Enum):
     """Base command class."""
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
-        """Get supported devices.
-        Return Value:
-            True         -> CommonCommands
-            False        -> Unknown
-            List[str]    -> supported devices list
-        """
-        return False
+    def is_supported(cls, device_type: str) -> bool:
+        """Is this commands supported this device type."""
+        return device_type in cls.get_supported_devices()
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return []
 
 
 class CommonCommands(Commands):
@@ -28,16 +28,18 @@ class CommonCommands(Commands):
     TOGGLE = "toggle"
     PRESS = "press"
 
+    # Considering the wide range of CommonCommands, they are not inherited here.
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def is_supported(cls, device_type: str) -> bool:
+        """Is this commands supported this device type."""
+        error_msg = "CommonCommands not implement this method"
+        raise NotImplementedError(error_msg)
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        """
-        return Value
-        if True         -> CommonCommands
-        if False        -> Unknown
-        if list[str]    -> supported devices list
-        """
-        return True
+        error_msg = "CommonCommands not implement this method"
+        raise NotImplementedError(error_msg)
 
 
 class BotCommands(Commands):
@@ -46,7 +48,7 @@ class BotCommands(Commands):
     PRESS = "press"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Bot"]
 
@@ -64,7 +66,7 @@ class CurtainCommands(Commands):
     PAUSE = "pause"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Curtain", "Curtain 3"]
 
@@ -74,12 +76,24 @@ class LockCommands(Commands):
 
     LOCK = "lock"
     UNLOCK = "unlock"
-    DEADBOLT = "deadbolt"  # Lock Lite does not support DEADBOLT control
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Smart Lock", "Smart Lock Lite", "Smart Lock Pro", "Smart Lock Ultra"]
+
+
+class LockV2Commands(Commands):
+    """Lock commands."""
+
+    LOCK = "lock"
+    UNLOCK = "unlock"
+    DEADBOLT = "deadbolt"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return ["Smart Lock", "Smart Lock Pro", "Smart Lock Ultra"]
 
 
 class HumidifierCommands(Commands):
@@ -92,7 +106,7 @@ class HumidifierCommands(Commands):
     SET_MODE = "setMode"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Humidifier"]
 
@@ -104,7 +118,7 @@ class HumidifierV2Commands(Commands):
     SET_CHILD_LOCK = "setChildLock"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Humidifier 2"]
 
@@ -122,7 +136,7 @@ class AirPurifierCommands(Commands):
     SET_CHILD_LOCK = "setChildLock"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return [
             "Air Purifier VOC",
@@ -138,9 +152,9 @@ class AirConditionerCommands(Commands):
     SET_ALL = "setAll"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return False
+        return ["Air Conditioner"]
 
 
 class SwitchCommands(Commands):
@@ -152,7 +166,7 @@ class SwitchCommands(Commands):
     SET_MODE = "setMode"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Relay Switch 1", "Relay Switch 1PM"]
 
@@ -166,7 +180,7 @@ class Switch2PMCommands(Commands):
     SET_POSITION = "setPosition"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Relay Switch 2PM"]
 
@@ -180,7 +194,7 @@ class RGBWLightCommands(Commands):
     SET_COLOR = "setColor"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Strip Light"]
 
@@ -197,7 +211,7 @@ class RGBWWLightCommands(Commands):
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Strip Light 3", "Floor Lamp", "Color Bulb"]
 
@@ -209,7 +223,7 @@ class DoorBellCommands(Commands):
     DISABLE = "disableMotionDetection"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Video Doorbell"]
 
@@ -223,7 +237,7 @@ class VacuumCommands(Commands):
     POW_LEVEL = "PowLevel"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return [
             "K10+",
@@ -246,7 +260,7 @@ class VacuumCleanerV2Commands(Commands):
     CHANGE_PARAM = "changeParam"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["K20+ Pro", "Robot Vacuum Cleaner K10+ Pro Combo"]
 
@@ -266,7 +280,7 @@ class VacuumCleanerV3Commands(Commands):
     SELF_CLEAN = "selfClean"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Robot Vacuum Cleaner S10", "S20"]
 
@@ -280,7 +294,7 @@ class CeilingLightCommands(Commands):
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Ceiling Light", "Ceiling Light Pro"]
 
@@ -294,7 +308,7 @@ class BlindTiltCommands(Commands):
     CLOSE_DOWN = "closeDown"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Blind Tilt"]
 
@@ -305,7 +319,7 @@ class RollerShadeCommands(Commands):
     SET_POSITION = "setPosition"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Roller Shade"]
 
@@ -318,7 +332,7 @@ class BatteryCirculatorFanCommands(Commands):
     SET_NIGHT_LIGHT_MODE = "setNightLightMode"
 
     @classmethod
-    def get_supported_devices(cls) -> bool | list[str]:
+    def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Circulator Fan", "Battery Circulator Fan"]
 
