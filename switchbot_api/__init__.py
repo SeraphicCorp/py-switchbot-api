@@ -283,6 +283,7 @@ class LockCommands(Commands):
 
     LOCK = "lock"
     UNLOCK = "unlock"
+    DEADBOLT = "deadbolt"
 
 
 class CeilingLightCommands(Commands):
