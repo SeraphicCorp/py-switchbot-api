@@ -4,23 +4,97 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
-from enum import Enum, StrEnum
 import hashlib
 import hmac
 import logging
 import socket
 import time
-from typing import Any, Self, TypeVar
+from typing import Any, Self
 import uuid
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.hdrs import METH_GET, METH_POST
 
+from switchbot_api.commands import (
+    AirConditionerCommands,
+    AirPurifierCommands,
+    BatteryCirculatorFanCommands,
+    BlindTiltCommands,
+    BotCommands,
+    CeilingLightCommands,
+    Commands,
+    CommonCommands,
+    CurtainCommands,
+    DoorBellCommands,
+    DVDCommands,
+    FanCommands,
+    HumidifierCommands,
+    HumidifierV2Commands,
+    LightCommands,
+    LockCommands,
+    LockV2Commands,
+    OthersCommands,
+    RGBWLightCommands,
+    RGBWWLightCommands,
+    RollerShadeCommands,
+    SpeakerCommands,
+    Switch2PMCommands,
+    SwitchCommands,
+    T,
+    TVCommands,
+    VacuumCleanerV2Commands,
+    VacuumCleanerV3Commands,
+    VacuumCommands,
+)
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
     SwitchBotConnectionError,
     SwitchBotDeviceOfflineError,
 )
+from switchbot_api.models import (
+    BatteryCirculatorFanMode,
+    PowerState,
+    VacuumCleanMode,
+    VacuumFanSpeed,
+    VacuumFanSpeedV2,
+)
+
+__all__ = [
+    "AirConditionerCommands",
+    "AirPurifierCommands",
+    "BatteryCirculatorFanCommands",
+    "BatteryCirculatorFanMode",
+    "BlindTiltCommands",
+    "BotCommands",
+    "CeilingLightCommands",
+    "Commands",
+    "CommonCommands",
+    "CurtainCommands",
+    "DVDCommands",
+    "DoorBellCommands",
+    "FanCommands",
+    "HumidifierCommands",
+    "HumidifierV2Commands",
+    "LightCommands",
+    "LockCommands",
+    "LockV2Commands",
+    "OthersCommands",
+    "PowerState",
+    "RGBWLightCommands",
+    "RGBWWLightCommands",
+    "RollerShadeCommands",
+    "SpeakerCommands",
+    "Switch2PMCommands",
+    "SwitchCommands",
+    "T",
+    "TVCommands",
+    "VacuumCleanMode",
+    "VacuumCleanerV2Commands",
+    "VacuumCleanerV3Commands",
+    "VacuumCommands",
+    "VacuumFanSpeed",
+    "VacuumFanSpeedV2",
+]
 
 _API_HOST = "https://api.switch-bot.com"
 
@@ -64,261 +138,6 @@ class Remote:
         self.device_name = kwargs["deviceName"]
         self.device_type = kwargs.get("remoteType", "-")
         self.hub_device_id = kwargs["hubDeviceId"]
-
-
-class PowerState(Enum):
-    """Power state."""
-
-    ON = "on"
-    OFF = "off"
-
-
-class Commands(Enum):
-    """Base command class."""
-
-
-class CommonCommands(Commands):
-    """Common commands."""
-
-    ON = "turnOn"
-    OFF = "turnOff"
-    TOGGLE = "toggle"
-
-
-class OthersCommands(Commands):
-    """Others commands."""
-
-    CUSTOMIZE = "customize"  # Command {user-defined button name}
-
-
-class AirConditionerCommands(Commands):
-    """Air conditioner commands."""
-
-    SET_ALL = "setAll"  # parameter: {temperature},{mode},{fan speed},{power state}
-
-
-class HumidifierCommands(Commands):
-    """Humidifier commands."""
-
-    # parameter: auto, set to Auto Mode
-    # 101, set atomization efficiency to 34%
-    # 102, set atomization efficiency to 67%
-    # 103, set atomization efficiency to 100%
-    SET_MODE = "setMode"
-
-
-class HumidifierV2Commands(Commands):
-    """Humidifier 2 commands."""
-
-    SET_MODE = "setMode"
-    SET_CHILD_LOCK = "setChildLock"
-
-
-class AirPurifierCommands(Commands):
-    """Purifier commands."""
-
-    # Supported Device List:
-    # Air Purifier VOC
-    # Air Purifier Table VOC
-    # Air Purifier PM2.5
-    # Air Purifier Table PM2.5
-
-    SET_MODE = "setMode"
-    SET_CHILD_LOCK = "setChildLock"
-
-
-class CurtainCommands(Commands):
-    """Curtain & Curtain3 commands."""
-
-    SET_POSITION = "setPosition"
-    PAUSE = "pause"
-
-
-class SwitchCommands(Commands):
-    """Switch commands."""
-
-    # Supported Device List:
-    # Relay Switch 1
-    # Relay Switch 1PM
-    SET_MODE = "setMode"
-
-
-class Switch2PMCommands(Commands):
-    """Switch commands."""
-
-    # Supported Device List:
-    # Relay Switch 2PM
-    SET_MODE = "setMode"
-    SET_POSITION = "setPosition"
-
-
-class RGBWLightCommands(Commands):
-    """RGBWLight commands."""
-
-    # Supported Device List:
-    # Strip Light
-    SET_BRIGHTNESS = "setBrightness"
-    SET_COLOR = "setColor"
-
-
-class RGBWWLightCommands(Commands):
-    """RGBWwLight commands."""
-
-    # Supported Device List:
-    # Floor Lamp
-    # Strip Light 3
-    # Color Bulb
-    SET_BRIGHTNESS = "setBrightness"
-    SET_COLOR = "setColor"
-    SET_COLOR_TEMPERATURE = "setColorTemperature"
-
-
-class DoorBellCommands(Commands):
-    """Door Bell commands."""
-
-    ENABLE = "enableMotionDetection"
-    DISABLE = "disableMotionDetection"
-
-
-class VacuumCleanerV2Commands(Commands):
-    """VacuumCleanerV2 commands."""
-
-    # Supported Device List:
-    # K20+ Pro
-    # Robot Vacuum Cleaner K10+ Pro Combo
-    START_CLEAN = "startClean"
-    PAUSE = "pause"
-    DOCK = "dock"
-    SET_VOLUME = "setVolume"
-    CHANGE_PARAM = "changeParam"
-
-
-class VacuumCleanerV3Commands(Commands):
-    """VacuumCleanerV3 commands."""
-
-    # Supported Device List:
-    # Floor Cleaning Robot S10
-    # S20
-    START_CLEAN = "startClean"
-    PAUSE = "pause"
-    DOCK = "dock"
-    SET_VOLUME = "setVolume"
-    CHANGE_PARAM = "changeParam"
-    ADD_WATER_FOR_HUMI = "addWaterForHumi"
-    SELF_CLEAN = "selfClean"
-
-
-class BlindTiltCommands(Commands):
-    """Blind Tilt commands."""
-
-    SET_POSITION = "setPosition"
-    FULLY_OPEN = "fullyOpen"
-    CLOSE_UP = "closeUp"
-    CLOSE_DOWN = "closeDown"
-
-
-class RollerShadeCommands(Commands):
-    """Roller Shade commands."""
-
-    SET_POSITION = "setPosition"
-
-
-class TVCommands(Commands):
-    """TV commands."""
-
-    SET_CHANNEL = "SetChannel"
-    VOLUME_ADD = "volumeAdd"
-    VOLUME_SUB = "volumeSub"
-    CHANNEL_ADD = "channelAdd"
-    CHANNEL_SUB = "channelSub"
-
-
-class DVDCommands(Commands):
-    """DVD commands."""
-
-    SET_MUTE = "setMute"
-    FAST_FORWARD = "FastForward"
-    REWIND = "Rewind"
-    NEXT = "Next"
-    PREVIOUS = "Previous"
-    PAUSE = "Pause"
-    PLAY = "Play"
-    STOP = "Stop"
-
-
-class SpeakerCommands(Commands):
-    """Speaker commands."""
-
-    VOLUME_ADD = "volumeAdd"
-    VOLUME_SUB = "volumeSub"
-
-
-class FanCommands(Commands):
-    """Fan commands."""
-
-    SWING = "swing"
-    TIMER = "timer"
-    LOW_SPEED = "lowSpeed"
-    MIDDLE_SPEED = "middleSpeed"
-    HIGH_SPEED = "highSpeed"
-
-
-class BatteryCirculatorFanCommands(Commands):
-    """Command types for [Battery Circulator Fan] API."""
-
-    SET_WIND_SPEED = "setWindSpeed"
-    SET_WIND_MODE = "setWindMode"
-    SET_NIGHT_LIGHT_MODE = "setNightLightMode"
-
-
-class LightCommands(Commands):
-    """Light commands."""
-
-    BRIGHTNESS_UP = "brightnessUp"
-    BRIGHTNESS_DOWN = "brightnessDown"
-
-
-class LockCommands(Commands):
-    """Lock commands."""
-
-    LOCK = "lock"
-    UNLOCK = "unlock"
-
-
-class CeilingLightCommands(Commands):
-    """Ceiling light commands."""
-
-    # 1-100
-    SET_BRIGHTNESS = "setBrightness"
-    # 2700-6500
-    SET_COLOR_TEMPERATURE = "setColorTemperature"
-
-
-class VacuumCommands(Commands):
-    """Vacuum commands."""
-
-    START = "start"
-    STOP = "stop"
-    DOCK = "dock"
-    POW_LEVEL = "PowLevel"
-
-
-class BotCommands(Commands):
-    """Bot commands."""
-
-    PRESS = "press"
-
-
-class BatteryCirculatorFanMode(StrEnum):
-    """Fan mode types [Battery Circulator Fan] API."""
-
-    DIRECT = "direct"
-    NATURAL = "natural"
-    SLEEP = "sleep"
-    BABY = "baby"
-
-
-T = TypeVar("T", bound=CommonCommands)
 
 
 class SwitchBotAPI:
