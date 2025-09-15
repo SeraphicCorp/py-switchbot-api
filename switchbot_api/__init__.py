@@ -44,7 +44,8 @@ from switchbot_api.commands import (
     TVCommands,
     VacuumCleanerV2Commands,
     VacuumCleanerV3Commands,
-    VacuumCommands, SmartRadiatorThermostatCommands,
+    VacuumCommands,
+    SmartRadiatorThermostatCommands,
 )
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
@@ -57,6 +58,7 @@ from switchbot_api.models import (
     VacuumCleanMode,
     VacuumFanSpeed,
     VacuumFanSpeedV2,
+    SmartRadiatorThermostatMode,
 )
 
 __all__ = [
@@ -98,6 +100,7 @@ __all__ = [
     "VacuumFanSpeed",
     "VacuumFanSpeedV2",
     "SmartRadiatorThermostatCommands",
+    "SmartRadiatorThermostatMode"
 ]
 
 _API_HOST = "https://api.switch-bot.com"
