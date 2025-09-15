@@ -37,6 +37,7 @@ from switchbot_api.commands import (
     RGBWLightCommands,
     RGBWWLightCommands,
     RollerShadeCommands,
+    SmartRadiatorThermostatCommands,
     SpeakerCommands,
     Switch2PMCommands,
     SwitchCommands,
@@ -45,7 +46,6 @@ from switchbot_api.commands import (
     VacuumCleanerV2Commands,
     VacuumCleanerV3Commands,
     VacuumCommands,
-    SmartRadiatorThermostatCommands,
 )
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
@@ -55,16 +55,13 @@ from switchbot_api.exceptions import (
 from switchbot_api.models import (
     BatteryCirculatorFanMode,
     PowerState,
+    SmartRadiatorThermostatMode,
     VacuumCleanMode,
     VacuumFanSpeed,
     VacuumFanSpeedV2,
-    SmartRadiatorThermostatMode,
 )
 
 __all__ = [
-    "Device",
-    "Remote",
-    "SwitchBotAPI",
     "AirConditionerCommands",
     "AirPurifierCommands",
     "BatteryCirculatorFanCommands",
@@ -76,6 +73,7 @@ __all__ = [
     "CommonCommands",
     "CurtainCommands",
     "DVDCommands",
+    "Device",
     "DoorBellCommands",
     "FanCommands",
     "HumidifierCommands",
@@ -87,9 +85,13 @@ __all__ = [
     "PowerState",
     "RGBWLightCommands",
     "RGBWWLightCommands",
+    "Remote",
     "RollerShadeCommands",
+    "SmartRadiatorThermostatCommands",
+    "SmartRadiatorThermostatMode",
     "SpeakerCommands",
     "Switch2PMCommands",
+    "SwitchBotAPI",
     "SwitchCommands",
     "T",
     "TVCommands",
@@ -99,8 +101,6 @@ __all__ = [
     "VacuumCommands",
     "VacuumFanSpeed",
     "VacuumFanSpeedV2",
-    "SmartRadiatorThermostatCommands",
-    "SmartRadiatorThermostatMode"
 ]
 
 _API_HOST = "https://api.switch-bot.com"

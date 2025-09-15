@@ -383,6 +383,7 @@ class LightCommands(Commands):
     BRIGHTNESS_UP = "brightnessUp"
     BRIGHTNESS_DOWN = "brightnessDown"
 
+
 class SmartRadiatorThermostatCommands(Commands):
     """Smart Radiator Thermostat commands."""
 
