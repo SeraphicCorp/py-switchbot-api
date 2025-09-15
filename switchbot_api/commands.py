@@ -383,5 +383,16 @@ class LightCommands(Commands):
     BRIGHTNESS_UP = "brightnessUp"
     BRIGHTNESS_DOWN = "brightnessDown"
 
+class Smart_Radiator_ThermostatCommands(Commands):
+    """Smart Radiator Thermostat commands."""
+
+    SET_MODE = "setMode"
+    SET_MANUAL_MODE_TEMPERATURE = "setManualModeTemperature"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return ["Smart Radiator Thermostat"]
+
 
 T = TypeVar("T", bound=CommonCommands)

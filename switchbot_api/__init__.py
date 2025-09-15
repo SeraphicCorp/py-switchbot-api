@@ -60,6 +60,9 @@ from switchbot_api.models import (
 )
 
 __all__ = [
+    "Device",
+    "Remote",
+    "SwitchBotAPI",
     "AirConditionerCommands",
     "AirPurifierCommands",
     "BatteryCirculatorFanCommands",
