@@ -56,3 +56,15 @@ class SmartRadiatorThermostatMode(Enum):
     ENERGY_SAVING = 3
     COMFORT = 4
     FAST_HEARTING = 5
+
+    @classmethod
+    def get_all_modes(cls) -> list[SmartRadiatorThermostatMode]:
+        """Get all modes as a list."""
+        return [
+            cls.SCHEDULE,
+            cls.MANUEL,
+            cls.OFF,
+            cls.ENERGY_SAVING,
+            cls.COMFORT,
+            cls.FAST_HEARTING,
+        ]
