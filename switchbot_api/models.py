@@ -62,9 +62,9 @@ class SmartRadiatorThermostatMode(Enum):
         """Get all modes as a list."""
         return [
             cls.SCHEDULE,
-            cls.MANUEL,
+            cls.MANUAL,
             cls.OFF,
             cls.ENERGY_SAVING,
             cls.COMFORT,
-            cls.FAST_HEARTING,
+            cls.FAST_HEATING,
         ]
