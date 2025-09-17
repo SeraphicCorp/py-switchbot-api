@@ -51,7 +51,7 @@ class SmartRadiatorThermostatMode(Enum):
     """mode for Smart Radiator Thermostat ."""
 
     SCHEDULE = 0
-    MANUEL = 1
+    MANUAL = 1
     OFF = 2
     ENERGY_SAVING = 3
     COMFORT = 4
