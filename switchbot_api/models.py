@@ -45,3 +45,26 @@ class VacuumCleanMode(StrEnum):
     SWEEP = "sweep"
     MOP = "mop"
     SWEEP_MOP = "sweep_mop"
+
+
+class SmartRadiatorThermostatMode(Enum):
+    """mode for Smart Radiator Thermostat ."""
+
+    SCHEDULE = 0
+    MANUAL = 1
+    OFF = 2
+    ENERGY_SAVING = 3
+    COMFORT = 4
+    FAST_HEATING = 5
+
+    @classmethod
+    def get_all_modes(cls) -> list[SmartRadiatorThermostatMode]:
+        """Get all modes as a list."""
+        return [
+            cls.SCHEDULE,
+            cls.MANUAL,
+            cls.OFF,
+            cls.ENERGY_SAVING,
+            cls.COMFORT,
+            cls.FAST_HEATING,
+        ]
