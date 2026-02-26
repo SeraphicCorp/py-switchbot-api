@@ -21,6 +21,23 @@ class BatteryCirculatorFanMode(StrEnum):
     BABY = "baby"
 
 
+class AirPurifierMode(Enum):
+    """mode types [Air Purifier] API."""
+
+    LEVEL = 1
+    AUTO = 2
+    SLEEP = 3
+    PET = 4
+
+
+class AirPurifierFanGear(Enum):
+    """Air Purifier Fan Gear."""
+
+    High = 3
+    Medium = 2
+    Low = 1
+
+
 class VacuumFanSpeed(StrEnum):
     """Fan options for VacuumCommands supported devices."""
 
