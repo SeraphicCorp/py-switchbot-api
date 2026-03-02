@@ -262,6 +262,7 @@ class ArtFrameCommands(Commands):
 
     PREVIOUS = "previous"
     NEXT = "next"
+    UPLOAD = "uploadImage"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
