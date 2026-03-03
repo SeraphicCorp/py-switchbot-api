@@ -14,6 +14,8 @@ import uuid
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.hdrs import METH_GET, METH_POST
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
 
 from switchbot_api.commands import (
     AirConditionerCommands,
@@ -56,6 +58,8 @@ from switchbot_api.exceptions import (
     SwitchBotDeviceOfflineError,
 )
 from switchbot_api.models import (
+    AirPurifierFanGear,
+    AirPurifierMode,
     BatteryCirculatorFanMode,
     BatteryLevel,
     PowerState,
@@ -68,6 +72,8 @@ from switchbot_api.models import (
 __all__ = [
     "AirConditionerCommands",
     "AirPurifierCommands",
+    "AirPurifierFanGear",
+    "AirPurifierMode",
     "ArtFrameCommands",
     "BatteryCirculatorFanCommands",
     "BatteryCirculatorFanMode",
@@ -244,9 +250,22 @@ class SwitchBotAPI:
         ]
         return [*devices, *remotes]
 
+    async def get_device(self, device_id: str) -> dict[str, Any]:
+        """Get target device."""
+        body = await self._request(METH_GET, "devices")
+        for device in body["deviceList"]:
+            if device_id == device["deviceId"]:
+                return device  # type: ignore[no-any-return]
+        return {}
+
     async def get_status(self, device_id: str) -> dict[str, Any]:
         """No status for IR devices."""
-        return await self._request(METH_GET, f"devices/{device_id}/status")
+        response = await self._request(METH_GET, f"devices/{device_id}/status")
+
+        device_type = response["deviceType"]
+        if device_type and device_type in KeyPadCommands.get_supported_devices():
+            return await self.get_device(device_id)
+        return response
 
     async def get_webook_configuration(self) -> dict[str, Any]:
         """List webhooks."""
@@ -299,6 +318,23 @@ class SwitchBotAPI:
         """Close the client session."""
         if self.session and self._close_session:
             await self.session.close()
+
+    def aes_128_cbc_decrypt(self, encrypt_text: str, aes_iv: str) -> str:
+        """Aes 128 cbc decrypt.
+
+        Args:
+            encrypt_text (str):
+            aes_iv (str):
+
+        Notes :  only for [Keypad, Keypad Touch, Keypad Vision, Keypad Vision Pro]
+
+        """
+        encrypt_bytes = base64.b64decode(encrypt_text)
+        cipher = AES.new(
+            bytes.fromhex(self.secret), AES.MODE_CBC, bytes.fromhex(aes_iv)
+        )
+        decrypt_bytes = unpad(cipher.decrypt(encrypt_bytes), AES.block_size)
+        return decrypt_bytes.decode("utf-8")
 
     async def __aenter__(self) -> Self:
         """Async enter.

@@ -148,6 +148,9 @@ class AirPurifierCommands(Commands):
 
     SET_MODE = "setMode"
     SET_CHILD_LOCK = "setChildLock"
+    SET_LIGHT_COLOR = "setLightColor"
+    SET_BRIGHTNESS = "setBrightness"
+    SET_LIGHT_SENSOR = "setLightSensor"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
@@ -259,6 +262,7 @@ class ArtFrameCommands(Commands):
 
     PREVIOUS = "previous"
     NEXT = "next"
+    UPLOAD = "uploadImage"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
@@ -441,7 +445,7 @@ class KeyPadCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["Keypad", "Keypad Touch", "Keypad Vision", "Keypad Vision pro"]
+        return ["Keypad", "Keypad Touch", "Keypad Vision", "Keypad Vision Pro"]
 
 
 T = TypeVar("T", bound=CommonCommands)
