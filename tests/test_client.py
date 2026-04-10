@@ -104,3 +104,22 @@ async def test_device_status(
         body=load_fixture(f"{device_fixture}.json"),
     )
     assert await client.get_status("abc") == snapshot
+
+
+async def test_device_status_ir_remote(
+    client: SwitchBotAPI,
+    responses: aioresponses,
+) -> None:
+    """Test that fetching status for an IR remote does not raise.
+
+    The SwitchBot Cloud API returns an empty body for IR remote devices
+    (the docstring on ``get_status`` already notes "No status for IR
+    devices"), so the unwrapped response has no ``deviceType`` key.
+    Regression test: previously this raised ``KeyError: 'deviceType'``.
+    """
+    responses.get(
+        f"{MOCK_URL}/devices/abc/status",
+        status=200,
+        body=load_fixture("ir_remote.json"),
+    )
+    assert await client.get_status("abc") == {}

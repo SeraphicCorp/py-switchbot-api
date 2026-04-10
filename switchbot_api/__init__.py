@@ -262,7 +262,7 @@ class SwitchBotAPI:
         """No status for IR devices."""
         response = await self._request(METH_GET, f"devices/{device_id}/status")
 
-        device_type = response["deviceType"]
+        device_type = response.get("deviceType")
         if device_type and device_type in KeyPadCommands.get_supported_devices():
             return await self.get_device(device_id)
         return response
