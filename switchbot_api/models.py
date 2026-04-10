@@ -12,6 +12,24 @@ class PowerState(Enum):
     OFF = "off"
 
 
+class EntityType(Enum):
+    """Entity Type."""
+
+    BINARY_SENSOR = "binary_sensor"
+    BUTTON = "button"
+    CLIMATE = "climate"
+    COVER = "cover"
+    FAN = "fan"
+    HUMIDIFIER="humidifier"
+    IMAGE = "image"
+    LIGHT = "light"
+    LOCK ="lock"
+    SENSOR = "sensor"
+    SWITCH= "switch"
+    VACUUM = "vacuum"
+
+
+
 class BatteryCirculatorFanMode(StrEnum):
     """Fan mode types [Battery Circulator Fan] API."""
 
