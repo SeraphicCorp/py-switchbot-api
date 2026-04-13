@@ -240,6 +240,7 @@ class RGBWWLightCommands(Commands):
             "Color Bulb",
             "RGBICWW Floor Lamp",
             "RGBICWW Strip Light",
+            "Permanent Outdoor Lights",
         ]
 
 
