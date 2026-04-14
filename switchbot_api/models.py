@@ -286,3 +286,22 @@ class BatteryLevel(Enum):
         if 10 > value >= 0:
             return cls.Critical
         return cls.Unknown
+
+
+class DoorState(Enum):
+    """Door State."""
+
+    OPEN = "open"
+    CLOSED = "close"
+
+
+class LockState(Enum):
+    """Lock State."""
+
+    LOCKED = "locked"
+    UNLOCKED = "unlocked"
+    LOCKING = "locking"
+    UNLOCKING = "unlocking"
+    JAMMED = "jammed"
+    LATCH_BOLT_LOCKED = "latchBoltLocked"
+    HALF_LOCKED = "halfLocked"
