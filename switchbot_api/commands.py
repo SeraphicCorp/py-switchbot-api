@@ -374,7 +374,11 @@ class BatteryCirculatorFanCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["Circulator Fan", "Battery Circulator Fan"]
+        return [
+            "Circulator Fan",
+            "Battery Circulator Fan",
+            "Battery Circulator Fan 2 Pro",
+        ]
 
 
 class TVCommands(Commands):
