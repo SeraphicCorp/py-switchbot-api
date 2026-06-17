@@ -51,6 +51,7 @@ from switchbot_api.commands import (
     VacuumCleanerV2Commands,
     VacuumCleanerV3Commands,
     VacuumCommands,
+    RGBICWWCeilingLightCommands,
 )
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
@@ -99,6 +100,7 @@ __all__ = [
     "PowerState",
     "RGBWLightCommands",
     "RGBWWLightCommands",
+    "RGBICWWCeilingLightCommands",
     "Remote",
     "RollerShadeCommands",
     "SmartRadiatorThermostatCommands",
