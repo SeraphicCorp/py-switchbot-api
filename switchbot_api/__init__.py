@@ -39,6 +39,7 @@ from switchbot_api.commands import (
     LockV2Commands,
     LockV3Commands,
     OthersCommands,
+    RGBICWWCeilingLightCommands,
     RGBWLightCommands,
     RGBWWLightCommands,
     RollerShadeCommands,
@@ -51,7 +52,6 @@ from switchbot_api.commands import (
     VacuumCleanerV2Commands,
     VacuumCleanerV3Commands,
     VacuumCommands,
-    RGBICWWCeilingLightCommands,
 )
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
@@ -98,9 +98,9 @@ __all__ = [
     "LockV3Commands",
     "OthersCommands",
     "PowerState",
+    "RGBICWWCeilingLightCommands",
     "RGBWLightCommands",
     "RGBWWLightCommands",
-    "RGBICWWCeilingLightCommands",
     "Remote",
     "RollerShadeCommands",
     "SmartRadiatorThermostatCommands",

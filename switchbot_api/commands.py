@@ -240,7 +240,7 @@ class RGBWWLightCommands(Commands):
             "Color Bulb",
             "RGBICWW Floor Lamp",
             "RGBICWW Strip Light",
-            "Permanent Outdoor Lights"
+            "Permanent Outdoor Lights",
         ]
 
 
@@ -407,6 +407,7 @@ class BatteryCirculatorFanCommands(Commands):
             "Battery Circulator Fan",
             "Battery Circulator Fan 2 Pro",
         ]
+
 
 class TVCommands(Commands):
     """TV commands."""
