@@ -60,7 +60,7 @@ class OthersCommands(Commands):
 
 
 class CurtainCommands(Commands):
-    """Curtain & Curtain3 commands."""
+    """Curtain & Curtain3  & Curtain4 commands."""
 
     SET_POSITION = "setPosition"  # parameter(str): index0,mode0,position0  e.g. 0,ff,80
     PAUSE = "pause"
@@ -68,7 +68,7 @@ class CurtainCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["Curtain", "Curtain 3"]
+        return ["Curtain", "Curtain 3", "Curtain 4"]
 
 
 class LockCommands(Commands):
@@ -240,6 +240,7 @@ class RGBWWLightCommands(Commands):
             "Color Bulb",
             "RGBICWW Floor Lamp",
             "RGBICWW Strip Light",
+            "Permanent Outdoor Lights",
         ]
 
 
@@ -255,6 +256,33 @@ class CeilingLightCommands(Commands):
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Ceiling Light", "Ceiling Light Pro"]
+
+
+class RGBICWWCeilingLightCommands(Commands):
+    """RGBICWW Ceiling Light commands.
+
+    The RGBICWW Ceiling Light has two independent sub-lights:
+    a main light (color temperature + brightness) and a
+    color light (RGB + brightness).
+    """
+
+    TURN_ON_MAIN_LIGHT = "turnOnMainLight"
+    TURN_OFF_MAIN_LIGHT = "turnOffMainLight"
+    TURN_ON_COLOR_LIGHT = "turnOnColorLight"
+    TURN_OFF_COLOR_LIGHT = "turnOffColorLight"
+    # 1-100
+    SET_MAIN_LIGHT_BRIGHTNESS = "setMainLightBrightness"
+    # 2700-6500
+    SET_MAIN_LIGHT_COLOR_TEMP = "setMainLightColorTemp"
+    # 1-100
+    SET_COLOR_LIGHT_BRIGHTNESS = "setColorLightBrightness"
+    # R:G:B
+    SET_COLOR_LIGHT_RGB = "setColorLightRGB"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return ["RGBICWW Ceiling Light"]
 
 
 class ArtFrameCommands(Commands):
@@ -374,7 +402,11 @@ class BatteryCirculatorFanCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["Circulator Fan", "Battery Circulator Fan"]
+        return [
+            "Circulator Fan",
+            "Battery Circulator Fan",
+            "Battery Circulator Fan 2 Pro",
+        ]
 
 
 class TVCommands(Commands):
