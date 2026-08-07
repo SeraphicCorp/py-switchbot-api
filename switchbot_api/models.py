@@ -21,6 +21,16 @@ class BatteryCirculatorFanMode(StrEnum):
     BABY = "baby"
 
 
+class BatteryCirculatorFan2ProMode(StrEnum):
+    """Fan mode types [Battery Circulator Fan2 Pro] API."""
+
+    DIRECT = "direct"
+    NATURAL = "natural"
+    SLEEP = "sleep"
+    BABY = "baby"
+    HURRICANE = "hurricane"
+
+
 class AirPurifierMode(Enum):
     """mode types [Air Purifier] API."""
 
@@ -28,6 +38,20 @@ class AirPurifierMode(Enum):
     AUTO = 2
     SLEEP = 3
     PET = 4
+
+
+class AirPurifierModeV2(Enum):
+    """Air Purifier Modes."""
+
+    NORMAL = 1
+    AUTO = 2
+    SLEEP = 3
+    PET = 4
+
+    @classmethod
+    def get_modes(cls) -> list[str]:
+        """Return a list of available air purifier modes as lowercase strings."""
+        return [mode.name.lower() for mode in cls]
 
 
 class AirPurifierFanGear(Enum):
@@ -108,3 +132,78 @@ class BatteryLevel(Enum):
         if 10 > value >= 0:
             return cls.Critical
         return cls.Unknown
+
+
+class Switch(Enum):
+    """Switch parameter."""
+
+    ON = "on"
+    OFF = "off"
+
+
+class KataFriendsMode(Enum):
+    """Kata Friends Mode."""
+
+    NORMAL = "Normal"
+    STANDBY = "Standby"
+    SLEEP = "Sleep"
+
+
+class KataFriendsWorkStatus(Enum):
+    """Kata Friends Work Status."""
+
+    STROLLING = "Strolling"
+    WELCOMING_HOME = "Welcoming Home"
+    WAKE_UP_CALL = "Wake-up Call"
+    SLEEPING = "Sleeping"
+    PLAYING = "Playing"
+    RETURNING = "Returning"
+
+
+class KataFriendsHospitalizedStatus(Enum):
+    """Kata Friends Hospitalized Status."""
+
+    NORMAL = 0
+    REPAIR = 1
+    MAINTAIN = 2
+    CLEAN = 3
+
+
+class Humidifier2Mode(Enum):
+    """Enumerates the available modes for a SwitchBot humidifier2."""
+
+    HIGH = 1
+    MEDIUM = 2
+    LOW = 3
+    QUIET = 4
+    TARGET_HUMIDITY = 5
+    SLEEP = 6
+    AUTO = 7
+    DRYING_FILTER = 8
+
+    @classmethod
+    def get_modes(cls) -> list[str]:
+        """Return a list of available humidifier2 modes as lowercase strings."""
+        return [mode.name.lower() for mode in cls]
+
+
+class SwitchbotCloudDeviceLockState(Enum):
+    """Lock State."""
+
+    LOCKED = "locked"
+    UNLOCKED = "unlocked"
+    LOCKING = "locking"
+    UNLOCKING = "unlocking"
+    JAMMED = "jammed"
+    LATCH_BOLT_LOCKED = "latchBoltLocked"
+    HALF_LOCKED = "halfLocked"
+
+    @classmethod
+    def get_states(cls) -> list[SwitchbotCloudDeviceLockState]:
+        """Get lock states."""
+        return list(cls)
+
+    @classmethod
+    def get_values(cls) -> list[str]:
+        """Get lock value."""
+        return [mode.value for mode in cls]

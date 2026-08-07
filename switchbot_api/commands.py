@@ -241,6 +241,7 @@ class RGBWWLightCommands(Commands):
             "RGBICWW Floor Lamp",
             "RGBICWW Strip Light",
             "Permanent Outdoor Lights",
+            "RGBICWW Light Bars",
         ]
 
 
@@ -295,7 +296,7 @@ class ArtFrameCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["AI Art Frame"]
+        return ["AI Art Frame", "AI Art Frame Luma"]
 
 
 class DoorBellCommands(Commands):
@@ -478,6 +479,22 @@ class KeyPadCommands(Commands):
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
         return ["Keypad", "Keypad Touch", "Keypad Vision", "Keypad Vision Pro"]
+
+
+class KataFriendsCommands(Commands):
+    """Kata Friends commands."""
+
+    MODE = "mode"
+    BACK_HOME = "backHome"
+    SNAPSHOTS = "snapshots"
+    CHILD_LOCK = "childLock"
+    PICTURE_TAKING = "pictureTaking"
+    TALK = "talk"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return ["Kata Friends"]
 
 
 T = TypeVar("T", bound=CommonCommands)
