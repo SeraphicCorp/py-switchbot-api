@@ -8,7 +8,11 @@ from aiohttp import ClientError, ClientSession
 from aioresponses import CallbackResult, aioresponses
 import pytest
 
-from switchbot_api import SwitchBotAPI, SwitchBotConnectionError
+from switchbot_api import (
+    SwitchBotAPI,
+    SwitchBotAuthenticationError,
+    SwitchBotConnectionError,
+)
 from tests import load_fixture
 from tests.const import MOCK_URL
 
@@ -65,6 +69,49 @@ async def test_client_error(
         f"{MOCK_URL}/devices",
         callback=response_handler,
     )
+    with pytest.raises(SwitchBotConnectionError):
+        await client.list_devices()
+
+
+@pytest.mark.parametrize(
+    ("status", "content_type", "exception"),
+    [
+        (401, "", SwitchBotAuthenticationError),
+        (401, "application/json", SwitchBotAuthenticationError),
+        (403, "", SwitchBotAuthenticationError),
+        (429, "", SwitchBotConnectionError),
+        (429, "application/json", SwitchBotConnectionError),
+        (500, "", SwitchBotConnectionError),
+    ],
+)
+async def test_error_status(
+    client: SwitchBotAPI,
+    responses: aioresponses,
+    status: int,
+    content_type: str,
+    exception: type[Exception],
+) -> None:
+    """Test error statuses, with and without a Content-Type header.
+
+    SwitchBot answers 401 and 429 with a JSON body but no Content-Type
+    header. This used to raise ``aiohttp.ContentTypeError``.
+    """
+    responses.get(
+        f"{MOCK_URL}/devices",
+        status=status,
+        body='{"message":"error"}',
+        content_type=content_type,
+    )
+    with pytest.raises(exception):
+        await client.list_devices()
+
+
+async def test_invalid_json_body(
+    client: SwitchBotAPI,
+    responses: aioresponses,
+) -> None:
+    """Test that a body which is not JSON raises a connection error."""
+    responses.get(f"{MOCK_URL}/devices", status=200, body="<html>", content_type="")
     with pytest.raises(SwitchBotConnectionError):
         await client.list_devices()
 
