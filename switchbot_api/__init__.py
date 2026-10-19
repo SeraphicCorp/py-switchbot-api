@@ -239,9 +239,11 @@ class SwitchBotAPI:
         except (
             ClientError,
             ClientResponseError,
-            socket.gaierror,
         ) as exception:
-            msg = "Error occurred while communicating with the SwitchBot API"
+            msg = f"Error occurred while communicating, Status Code: {exception}"
+            raise SwitchBotConnectionError(msg) from exception
+        except socket.gaierror as exception:
+            msg = "DNS resolution failed."
             raise SwitchBotConnectionError(msg) from exception
         if response.status == 403:
             raise SwitchBotAuthenticationError
