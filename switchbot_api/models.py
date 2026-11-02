@@ -207,3 +207,42 @@ class SwitchbotCloudDeviceLockState(Enum):
     def get_values(cls) -> list[str]:
         """Get lock value."""
         return [mode.value for mode in cls]
+
+
+class RGBICWWLightBarsMusicMode(Enum):
+    """RGBICWW Light Bars Music Mode."""
+
+    DYNAMIC = (0, "Dynamic")
+    WAVE = (1, "Wave")
+    BLOOM = (2, "Bloom")
+    CRASH = (3, "Crash")
+    FLOW = (4, "Flow")
+    ENERGY = (5, "Energy")
+
+    @property
+    def code(self) -> int:
+        """Code."""
+        return self.value[0]
+
+    @property
+    def desc_en(self) -> str:
+        """desc_en."""
+        return self.value[1]
+
+
+class RGBICWWLightBarsControlMode(Enum):
+    """RGBICWW Light Bars ControlMode."""
+
+    CONTROLLER = (0, "controller")
+    PHONE = (1, "phone")
+    VOLUME = (2, "volume")
+
+    @property
+    def code(self) -> int:
+        """Code."""
+        return self.value[0]
+
+    @property
+    def desc_en(self) -> str:
+        """desc_en."""
+        return self.value[1]
