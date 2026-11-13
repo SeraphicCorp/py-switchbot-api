@@ -296,7 +296,7 @@ class ArtFrameCommands(Commands):
     @classmethod
     def get_supported_devices(cls) -> list[str]:
         """Get supported devices."""
-        return ["AI Art Frame", "AI Art Frame Luma"]
+        return ["AI Art Frame", "AI Art Frame Luma", "AI Art Frame 2"]
 
 
 class DoorBellCommands(Commands):

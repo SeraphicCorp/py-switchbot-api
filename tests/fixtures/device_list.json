@@ -39,6 +39,13 @@
         "calibrate": true,
         "master": true,
         "openDirection": "left"
+      },
+      {
+        "deviceId": "B0E9FEC395F0",
+        "deviceName": "Art Frame 2",
+        "deviceType": "AI Art Frame 2",
+        "enableCloudService": true,
+        "hubDeviceId": ""
       }
     ],
     "infraredRemoteList": [

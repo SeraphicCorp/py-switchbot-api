@@ -34,12 +34,32 @@
       'master': True,
     }),
     dict({
+      'device_id': 'B0E9FEC395F0',
+      'device_name': 'Art Frame 2',
+      'device_type': 'AI Art Frame 2',
+      'group': False,
+      'hub_device_id': '',
+      'master': None,
+    }),
+    dict({
       'device_id': '01-202501201703-63754985',
       'device_name': 'TV',
       'device_type': 'DIY TV',
       'hub_device_id': 'D82812821F08',
     }),
   ])
+# ---
+# name: test_device_status[art_frame_2]
+  dict({
+    'battery': 46,
+    'deviceId': 'B0E9FEC395F0',
+    'deviceType': 'AI Art Frame 2',
+    'displayMode': 0,
+    'hubDeviceId': 'B0E9FEC395F0',
+    'imageUrl': 'https://example.com/art-frame-2.jpg',
+    'onlineStatus': 'online',
+    'version': 'V0.7-0.7',
+  })
 # ---
 # name: test_device_status[curtain3]
   dict({

@@ -89,6 +89,7 @@ async def test_device_list(
         "curtain",
         "curtain3",
         "hub_2",
+        "art_frame_2",
     ],
 )
 async def test_device_status(
