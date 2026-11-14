@@ -245,6 +245,53 @@ class RGBWWLightCommands(Commands):
         ]
 
 
+class RGBWWLightBarsCommands(Commands):
+    """RGBWW Light Bars commands."""
+
+    SET_BRIGHTNESS = "setBrightness"
+    SET_COLOR = "setColor"
+    SET_COLOR_TEMPERATURE = "setColorTemperature"
+    SET_BRIGHTNESS_AND_TEMPERATURE = "setBrightnessAndTemperature"
+    SET_MUSIC_COLOR_MODE = "setMusicColorMode"
+    SET_MUSIC_PARAM_MODE = "setMusicParamMode"
+    SET_EFFECT_COLOR_MODE = "setEffectColorMode"
+    SET_EFFECT_SPEED_MODE = "setEffectSpeedMode"
+    SET_SEGMENT_COLOR_MODE = "setSegmentColorMode"
+    SET_LIGHT_EFFECT = "setLightEffect"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return [
+            "RGBICWW Light Bars",
+        ]
+
+
+class ModernCeilingFanCommands(Commands):
+    """Modern Ceiling Fan commands."""
+
+    TURN_ON_FAN = "turnOnFan"
+    TURN_OFF_FAN = "turnOffFan"
+    SET_WIND_MODE = "setWindMode"
+    SET_WIND_SPEED = "setWindSpeed"
+    CLOSE_DELAY = "closeDelay"
+    TURN_ON_MAIN_LIGHT = "turnOnMainLight"
+    TURN_OFF_MAIN_LIGHT = "turnOffMainLight"
+    SET_MAIN_BRIGHTNESS = "setMainBrightness"
+    TURN_ON_BACK_LIGHT = "turnOnBackLight"
+    TURN_OFF_BACK_LIGHT = "turnOffBackLight"
+    SET_BACK_BRIGHTNESS = "setBackBrightness"
+    SET_COLOR_TEMPERATURE = "setColorTemperature"
+    SET_COLOR = "setColor"
+
+    @classmethod
+    def get_supported_devices(cls) -> list[str]:
+        """Get supported devices."""
+        return [
+            "Modern Ceiling Fan",
+        ]
+
+
 class CeilingLightCommands(Commands):
     """Ceiling light commands."""
 
@@ -279,6 +326,8 @@ class RGBICWWCeilingLightCommands(Commands):
     SET_COLOR_LIGHT_BRIGHTNESS = "setColorLightBrightness"
     # R:G:B
     SET_COLOR_LIGHT_RGB = "setColorLightRGB"
+
+    SET_LIGHT_EFFECT = "setLightEffect"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
