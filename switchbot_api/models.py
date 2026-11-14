@@ -212,37 +212,37 @@ class SwitchbotCloudDeviceLockState(Enum):
 class RGBICWWLightBarsMusicMode(Enum):
     """RGBICWW Light Bars Music Mode."""
 
-    DYNAMIC = (0, "Dynamic")
-    WAVE = (1, "Wave")
-    BLOOM = (2, "Bloom")
-    CRASH = (3, "Crash")
-    FLOW = (4, "Flow")
-    ENERGY = (5, "Energy")
+    DYNAMIC = 0
+    WAVE = 1
+    BLOOM = 2
+    CRASH = 3
+    FLOW = 4
+    ENERGY = 5
 
-    @property
-    def code(self) -> int:
-        """Code."""
-        return self.value[0]
+    @classmethod
+    def get_states(cls) -> list[RGBICWWLightBarsMusicMode]:
+        """Get states."""
+        return list(cls)
 
-    @property
-    def desc_en(self) -> str:
-        """desc_en."""
-        return self.value[1]
+    @classmethod
+    def get_values(cls) -> list[int]:
+        """Get value."""
+        return [mode.value for mode in cls]
 
 
 class RGBICWWLightBarsControlMode(Enum):
     """RGBICWW Light Bars ControlMode."""
 
-    CONTROLLER = (0, "controller")
-    PHONE = (1, "phone")
-    VOLUME = (2, "volume")
+    CONTROLLER = 0
+    PHONE = 1
+    VOLUME = 2
 
-    @property
-    def code(self) -> int:
-        """Code."""
-        return self.value[0]
+    @classmethod
+    def get_states(cls) -> list[RGBICWWLightBarsControlMode]:
+        """Get states."""
+        return list(cls)
 
-    @property
-    def desc_en(self) -> str:
-        """desc_en."""
-        return self.value[1]
+    @classmethod
+    def get_values(cls) -> list[int]:
+        """Get value."""
+        return [mode.value for mode in cls]
