@@ -253,10 +253,15 @@ class SwitchBotAPI:
         except socket.gaierror as exception:
             msg = "DNS resolution failed."
             raise SwitchBotConnectionError(msg) from exception
-        if response.status == 403:
+        if response.status in (401, 403):
             raise SwitchBotAuthenticationError
 
-        body = await response.json()
+        try:
+            # Error replies such as 429 carry no Content-Type header
+            body = await response.json(content_type=None)
+        except (ClientError, ValueError) as exception:
+            msg = f"Invalid response from the SwitchBot API: {response.status}"
+            raise SwitchBotConnectionError(msg) from exception
 
         if response.status >= 400:
             _LOGGER.error("Error %d: %s", response.status, body)
