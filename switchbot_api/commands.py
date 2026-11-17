@@ -211,6 +211,7 @@ class RGBWLightCommands(Commands):
     # RGBIC Neon Wire Rope Light
     SET_BRIGHTNESS = "setBrightness"
     SET_COLOR = "setColor"
+    SET_EFFECT = "setLightEffect"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
@@ -229,6 +230,7 @@ class RGBWWLightCommands(Commands):
     # RGBICWW Strip Light
     SET_BRIGHTNESS = "setBrightness"
     SET_COLOR = "setColor"
+    SET_EFFECT = "setLightEffect"
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
     @classmethod
@@ -241,7 +243,6 @@ class RGBWWLightCommands(Commands):
             "RGBICWW Floor Lamp",
             "RGBICWW Strip Light",
             "Permanent Outdoor Lights",
-            "RGBICWW Light Bars",
         ]
 
 
@@ -448,6 +449,9 @@ class BatteryCirculatorFanCommands(Commands):
     SET_WIND_SPEED = "setWindSpeed"
     SET_WIND_MODE = "setWindMode"
     SET_NIGHT_LIGHT_MODE = "setNightLightMode"
+    SET_CLOSE_DELAY = "closeDelay"
+    SET_OSCILLATION = "setOscillation"
+    SET_VERTICAL_OSCILLATION = "setVerticalOscillation"
 
     @classmethod
     def get_supported_devices(cls) -> list[str]:
@@ -456,6 +460,7 @@ class BatteryCirculatorFanCommands(Commands):
             "Circulator Fan",
             "Battery Circulator Fan",
             "Battery Circulator Fan 2 Pro",
+            "Standing Fan",
         ]
 
 

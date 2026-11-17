@@ -27,7 +27,6 @@ class BatteryCirculatorFan2ProMode(StrEnum):
     DIRECT = "direct"
     NATURAL = "natural"
     SLEEP = "sleep"
-    BABY = "baby"
     HURRICANE = "hurricane"
 
 
@@ -246,3 +245,115 @@ class RGBICWWLightBarsControlMode(Enum):
     def get_values(cls) -> list[int]:
         """Get value."""
         return [mode.value for mode in cls]
+
+
+class SwitchbotCloudCurtainWorkMode(Enum):
+    """Curtain Work Mode."""
+
+    NORMAL = "normal"
+    SILENT = "silent"
+    DEFAULT = "default"
+
+    @classmethod
+    def get_states(cls) -> list[SwitchbotCloudCurtainWorkMode]:
+        """Get states."""
+        return list(cls)
+
+    @classmethod
+    def get_values(cls) -> list[str]:
+        """Get value."""
+        return [mode.value for mode in cls]
+
+    @classmethod
+    def get_map(cls) -> dict[str, str]:
+        """Get map."""
+        return {
+            cls.NORMAL.value: "0",
+            cls.SILENT.value: "1",
+            cls.DEFAULT.value: "ff",
+        }
+
+
+class FanNightLightState(Enum):
+    """Fan Night Light State."""
+
+    ON = "on"
+    OFF = "off"
+    BRIGHT = "bright"
+    SOFT = "soft"
+
+    @classmethod
+    def get_states(cls) -> list[FanNightLightState]:
+        """Get states."""
+        return list(cls)
+
+    @classmethod
+    def get_values(cls) -> list[str]:
+        """Get value."""
+        return [mode.value for mode in cls]
+
+    @classmethod
+    def get_map(cls) -> dict[str, str]:
+        """Get map."""
+        return {
+            cls.ON.value: "on",
+            cls.OFF.value: "off",
+            cls.BRIGHT.value: "1",
+            cls.SOFT.value: "2",
+        }
+
+    @classmethod
+    def get_battery_circulator_fan2_pro_map(cls) -> dict[str, str]:
+        """Get Battery Circulator Fan2 Pro map."""
+        return {
+            cls.ON.value: "on",
+            cls.OFF.value: "off",
+            cls.BRIGHT.value: "0",
+            cls.SOFT.value: "1",
+        }
+
+
+class LightEffect(Enum):
+    """Light Effect."""
+
+    ROMANCE = 0
+    VITALITY = 1
+    HEARTTHROB = 2
+    PARTY = 3
+    DYNAMIC = 4
+    MYSTERY = 5
+    LIGHTNING = 6
+    ROCK = 7
+    STARLIGHT = 8
+    VALENTINES_DAY = 9
+    DREAM = 10
+    ALARM = 11
+    FIREWORKS = 12
+    WAVES = 13
+    CHRISTMAS = 14
+    RAINBOW = 15
+    GAME = 16
+    HALLOWEEN = 17
+    MEDITATION = 18
+    STARLIT_SKY = 19
+    SLEEP = 20
+    FILM = 21
+    SUNRISE = 22
+    SUNSET = 23
+    NEW_YEAR = 24
+    CHERRY_BLOSSOM = 25
+
+    @classmethod
+    def get_states(cls) -> list[LightEffect]:
+        """Get states."""
+        return list(cls)
+
+    @classmethod
+    def get_values(cls) -> list[int]:
+        """Get value."""
+        return [mode.value for mode in cls]
+
+    @classmethod
+    def get_modes(cls) -> list[str]:
+        """Get modes."""
+        return [mode.name.title() for mode in cls]
