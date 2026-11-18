@@ -6,7 +6,11 @@ from switchbot_api.commands import Commands as LegacyCommands
 
 
 class Commands(LegacyCommands):
-    """Base for V2 commands with the legacy device lookup methods disabled."""
+    """Base for V2 command enums.
+
+    The legacy base lets SwitchBotAPI.send_command serialize these enums by
+    their value. Device type lookup uses constants from each V2 device module.
+    """
 
     @classmethod
     def get_supported_devices(cls) -> NoReturn:

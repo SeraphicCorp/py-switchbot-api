@@ -12,9 +12,10 @@ from switchbot_api.sensor.models import WaterLeakState
 def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:
     """Read a status body or webhook context for a motion/presence sensor.
 
-    Presence status uses Detected or detected; motion/contact status uses
-    moveDetected. Use water_leak_state for the Water Detector's integer
-    detectionState field.
+    The detectionState string takes precedence over the boolean aliases,
+    which are checked in the order moveDetected, Detected, then detected.
+    Return None if the payload omits all motion fields. Use water_leak_state
+    for the Water Detector's integer detectionState.
     """
     if "detectionState" in payload:
         value = payload["detectionState"]
@@ -35,7 +36,8 @@ def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:
 def water_leak_state(payload: Mapping[str, Any]) -> WaterLeakState | None:
     """Read the webhook detectionState or the REST status as a water leak state.
 
-    When both fields are present, use detectionState even when it is unknown.
+    Prefer detectionState whenever the key is present. Its value can be
+    unknown or null. Fall back to status only if detectionState is absent.
     """
     value = payload.get("detectionState", payload.get("status"))
     if isinstance(value, bool) or not isinstance(value, int):

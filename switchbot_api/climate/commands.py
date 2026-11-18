@@ -22,7 +22,7 @@ class EvaporativeHumidifierCommands(Commands):
 
     ON = "turnOn"
     OFF = "turnOff"
-    # Object parameter: mode 1-8 and optional targetHumidify 0-100 (API spelling).
+    # The helper builds an object with mode and optional humidity (0-100).
     SET_MODE = "setMode"
     # String parameter: true or false, unlike purifier's numeric 0/1.
     SET_CHILD_LOCK = "setChildLock"

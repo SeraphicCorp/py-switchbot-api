@@ -12,10 +12,12 @@ def get_latest_image_url(
     *,
     now: float | None = None,
 ) -> str | None:
-    """Return a usable latestImage URL from an Outdoor 3K or Solar 2K status.
+    """Read the latestImage URL from an Outdoor 3K or Solar 2K status body.
 
-    expireAt and now use Unix seconds. Missing, empty, malformed, and expired
-    image metadata return None. This only inspects the supplied status body.
+    expireAt and now both use Unix seconds. Pass now to check the metadata
+    against a fixed clock. The URL expires as soon as now reaches expireAt.
+    Missing or malformed metadata returns None. Fetching the image is the
+    caller's responsibility.
     """
     image = status.get("latestImage")
     if not isinstance(image, Mapping):

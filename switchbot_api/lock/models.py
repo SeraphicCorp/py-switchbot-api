@@ -71,7 +71,7 @@ class LockState(Enum):
 
     @property
     def is_locked(self) -> bool:
-        """Return whether Home Assistant treats this state as locked."""
+        """Treat locked, latch-bolt locked, and half-locked as locked."""
         return self in (
             LockState.LOCKED,
             LockState.LATCH_BOLT_LOCKED,

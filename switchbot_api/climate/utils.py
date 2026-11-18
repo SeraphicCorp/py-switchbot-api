@@ -27,7 +27,11 @@ def evaporative_humidifier_mode_parameters(
     mode: EvaporativeHumidifierMode,
     target_humidity: int | None = None,
 ) -> dict[str, int]:
-    """Build setMode with an optional targetHumidify value from 0 to 100."""
+    """Build the evaporative humidifier setMode object.
+
+    The optional humidity key carries a 0-100 percent target. It is omitted
+    when no target is supplied. The public API table calls it targetHumidify.
+    """
     if not isinstance(mode, EvaporativeHumidifierMode):
         msg = "mode must be an EvaporativeHumidifierMode member"
         raise TypeError(msg)
@@ -75,7 +79,7 @@ def air_purifier_child_lock_parameter(*, enabled: bool) -> str:
 
 
 def thermostat_mode_parameter(mode: SmartRadiatorThermostatMode) -> int:
-    """Encode the radiator mode as the integer used by Home Assistant."""
+    """Encode the radiator setMode parameter as an integer."""
     if not isinstance(mode, SmartRadiatorThermostatMode):
         msg = "mode must be a SmartRadiatorThermostatMode member"
         raise TypeError(msg)
@@ -83,7 +87,10 @@ def thermostat_mode_parameter(mode: SmartRadiatorThermostatMode) -> int:
 
 
 def thermostat_temperature_parameter(temperature: float) -> str:
-    """Build a finite 4-35 celsius target without imposing an undocumented step."""
+    """Encode a 4-35 Celsius target as the manual mode command's string.
+
+    Fractional temperatures are sent as supplied within the supported range.
+    """
     temperature = finite_number(temperature, "temperature")
     if not 4 <= temperature <= 35:
         msg = "temperature must be between 4 and 35 celsius"

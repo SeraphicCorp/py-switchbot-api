@@ -11,9 +11,9 @@ or motion changes. The context uses detectionState (DETECTED or NOT_DETECTED)
 for motion, lightLevel on the same 1-10 scale, and scale for temperature units.
 
 OnlineStatus and DetectionState enums are shared in common.models.
-Webhook temperature units remain in the raw scale field; status temperature
-is documented in celsius. Hub 2 webhook deviceType is WoHub2, whereas
-Hub 3 uses its discovery type, Hub 3.
+Use sensor.utils.sensor_detection_state for the boolean moveDetected status
+or the detectionState webhook field. REST status temperature is in Celsius.
+Webhook payloads keep their scale field so callers can determine the unit.
 
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/hubs
 """
@@ -29,6 +29,7 @@ HUB_4: Final = "Hub 4"
 HUB_4_LIGHT_LEVEL_RANGE: Final = range(1, 11)
 AI_HUB: Final = "AI Hub"
 
+# Discovery names are used here. Hub 2 webhooks identify it as WoHub2.
 HUB_DEVICE_TYPES: Final[list[str]] = [
     HUB,
     HUB_PLUS,

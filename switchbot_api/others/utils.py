@@ -23,6 +23,8 @@ def art_frame_upload_image_parameters(
 ) -> dict[str, str]:
     """Build uploadImage with exactly one source, without fetching the image.
 
+    Pass the returned object directly as the command's parameters. It contains
+    either imageUrl or imageBase64.
     AI Art Frame 2 explicitly accepts bare Base64 or a data:image/...;base64,
     prefix. Preserve the supplied representation and do not impose a size limit
     absent from the specifications; the server may return statusCode 402.
@@ -88,7 +90,11 @@ def infrared_air_conditioner_parameter(
     fan_speed: InfraredAirConditionerFanSpeed,
     power: PowerState,
 ) -> str:
-    """Build temperature,mode,fan,power in Celsius with no invented range."""
+    """Encode setAll as temperature,mode,fan,power in that order.
+
+    The first field is already in Celsius. For example, 26.0 becomes 26
+    and 26.5 becomes 26.5. The power field uses lowercase on or off.
+    """
     temperature = finite_number(temperature, "temperature")
     if not isinstance(mode, InfraredAirConditionerMode):
         msg = "mode must be an InfraredAirConditionerMode member"
@@ -112,7 +118,10 @@ def infrared_channel_parameter(channel: str | int) -> str:
 
 
 def weather_station_text_parameter(text: str) -> str:
-    """Build customPage text without adding JSON string quotes."""
+    """Return the customPage text to use as the command parameter.
+
+    The client applies JSON string quoting when it serializes the request.
+    """
     if not isinstance(text, str):
         msg = "text must be a string"
         raise TypeError(msg)

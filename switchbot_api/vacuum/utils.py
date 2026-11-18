@@ -18,6 +18,7 @@ from switchbot_api.vacuum.models import (
     VacuumWaterLevel,
 )
 
+# Both reported S20 names share the same command and validation rules.
 _S20_DEVICE_TYPES = S10_S20_DEVICE_TYPES - {FLOOR_CLEANING_ROBOT_S10}
 _MODERN_ROBOTS = S10_S20_DEVICE_TYPES | {
     K10_PRO_COMBO,
@@ -35,7 +36,7 @@ def _fan_level(value: VacuumFanLevel | int) -> int:
 
 
 def _fan_level_for_preset(preset: str | None) -> VacuumFanLevel | None:
-    """Resolve a preset name to its modern numeric fan level."""
+    """Resolve a case-insensitive preset name to its modern fan level."""
     if preset is None:
         return None
     if not isinstance(preset, str):
@@ -116,7 +117,11 @@ def vacuum_start_clean_parameters(
 def vacuum_start_clean_parameters_from_preset(
     device_type: str, fan_speed: str | None = None
 ) -> dict[str, Any]:
-    """Build the HA sweep request with a quiet fallback and 1-4 fan levels."""
+    """Build a sweep request from a fan preset.
+
+    Use QUIET when the preset is absent or unknown. S10 and S20 also
+    require waterLevel in the request, so use LOW for those models.
+    """
     fan_level = _fan_level_for_preset(fan_speed) or VacuumFanLevel.QUIET
     water_level = VacuumWaterLevel.LOW if device_type in S10_S20_DEVICE_TYPES else None
     return vacuum_start_clean_parameters(
@@ -152,7 +157,11 @@ def vacuum_change_parameters(
 def vacuum_change_fan_speed_parameters(
     device_type: str, fan_speed: str
 ) -> dict[str, int]:
-    """Build the HA fan speed update with one cycle and the model's water field."""
+    """Build a fan speed update that applies for one cleaning cycle.
+
+    Unknown presets raise ValueError. The request includes LOW waterLevel
+    except on K10 Pro Combo, whose changeParam leaves that field out.
+    """
     fan_level = _fan_level_for_preset(fan_speed)
     if fan_level is None:
         msg = f"unknown fan speed preset: {fan_speed!r}"

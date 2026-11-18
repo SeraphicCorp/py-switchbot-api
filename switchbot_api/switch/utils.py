@@ -25,7 +25,11 @@ def relay_mode_parameter(
     *,
     channel: RelayChannel | None = None,
 ) -> str:
-    """Build mode for Relay 1/1PM, or channel;mode for Relay 2PM."""
+    """Encode the relay mode as a string.
+
+    Relay 1 and 1PM use the mode code alone. Relay 2PM prefixes the mode
+    with the channel code and a semicolon to target a single channel.
+    """
     if not isinstance(mode, RelaySwitchMode):
         msg = "mode must be a RelaySwitchMode member"
         raise TypeError(msg)
@@ -46,8 +50,9 @@ def switch_power_state(
 ) -> PowerState:
     """Translate switchStatus or garage doorStatus into shared ON/OFF.
 
-    Use garage_door=True for raw garage integers. Enum arguments carry their
-    own protocol, so GarageDoorStatus.ON always means ON.
+    For raw integers, 0 means OFF for switchStatus and ON for doorStatus.
+    Use garage_door=True for doorStatus inputs. Enum members carry their own
+    protocol through their names. The result describes power state.
     """
     if isinstance(status, (SwitchStatus, GarageDoorStatus)):
         return PowerState[status.name]

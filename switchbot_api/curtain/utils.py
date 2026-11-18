@@ -7,7 +7,11 @@ from switchbot_api.curtain.models import BlindTiltDirection, CurtainMode
 
 
 def curtain_open_percentage(slide_position: int | str | None) -> int | None:
-    """Convert Curtain slidePosition to an open percentage, preserving missing data."""
+    """Convert Curtain slidePosition to an open percentage.
+
+    Accept an integer or its ASCII decimal string form. For example, a
+    Curtain reporting "30" is 70 percent open. A missing value stays unknown.
+    """
     if slide_position is None:
         return None
     if isinstance(slide_position, str):
@@ -19,7 +23,11 @@ def curtain_open_percentage(slide_position: int | str | None) -> int | None:
 
 
 def blind_tilt_open_percentage(slide_position: int | None) -> int | None:
-    """Convert Blind Tilt status to an open percentage with 50 fully open."""
+    """Convert the distance from the fully open midpoint into a percentage.
+
+    Positions 25 and 75 both report 50 percent open. They represent opposite
+    tilt directions on the status scale, so the percentage alone loses direction.
+    """
     if slide_position is None:
         return None
     position = integer_in_range(slide_position, 0, 100, "slide_position")
@@ -76,5 +84,8 @@ def blind_tilt_open_percentage_parameter(
 
 
 def roller_shade_position_parameter(position: int) -> int:
-    """Build the integer Roller Shade parameter; 0 opens and 100 closes."""
+    """Build the Roller Shade position as a JSON integer.
+
+    The device scale still uses 0 for fully open and 100 for fully closed.
+    """
     return integer_in_range(position, 0, 100, "position")

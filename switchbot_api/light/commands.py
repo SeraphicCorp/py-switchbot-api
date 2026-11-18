@@ -169,7 +169,7 @@ class StripLightCommands(Commands):
     TOGGLE = "toggle"
     # String parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
-    # String parameter: B:G:R in Home Assistant, each component 0-255.
+    # Use strip_light_color_parameter for the B:G:R string with 0-255 channels.
     SET_COLOR = "setColor"
 
 

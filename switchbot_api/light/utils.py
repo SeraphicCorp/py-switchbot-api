@@ -29,7 +29,7 @@ from switchbot_api.light.models import (
     RGBICWWLightBarsMusicMode,
 )
 
-# Brightness bounds follow the public command tables.
+# Key by enum member because models can have different bounds for setBrightness.
 _BRIGHTNESS_MINIMUMS: Final[dict[Commands, int]] = {
     CandleWarmerLampCommands.SET_BRIGHTNESS: 0,
     CeilingLightCommands.SET_BRIGHTNESS: 1,
@@ -61,7 +61,7 @@ _TEMPERATURE_COMMANDS: Final[frozenset[Commands]] = frozenset(
         StripLight3Commands.SET_COLOR_TEMPERATURE,
     }
 )
-# Keep the numeric formats of models outside the Home Assistant Cloud light set.
+# These scalar commands take a JSON number. The remaining ones use a string.
 _INTEGER_SCALAR_COMMANDS: Final[frozenset[Commands]] = frozenset(
     {
         RGBICWWCeilingLightCommands.SET_MAIN_LIGHT_BRIGHTNESS,
@@ -101,9 +101,10 @@ def light_brightness_parameter(command: Commands, brightness: int) -> int | str:
 def light_brightness_parameter_from_255(
     command: Commands, brightness: int
 ) -> int | str:
-    """Encode a positive 1-255 brightness request using the device minimum.
+    """Scale a positive 1-255 brightness request to a command parameter.
 
-    Home Assistant handles a zero brightness request as a turn-off action.
+    Round down to an integer percent and clamp to the model's lower bound.
+    Use the power-off command when the request's brightness is zero.
     """
     value = integer_in_range(brightness, 1, 255, "brightness")
     percentage = max(value * 100 // 255, _BRIGHTNESS_MINIMUMS.get(command, 0))
@@ -111,7 +112,10 @@ def light_brightness_parameter_from_255(
 
 
 def light_brightness_to_255(brightness: int | None) -> int | None:
-    """Scale a reported percentage to 0-255 while preserving zero and missing data."""
+    """Scale a reported percentage to 0-255, rounding down.
+
+    Zero is a valid brightness reading. A missing reading returns None.
+    """
     if brightness is None:
         return None
     return integer_in_range(brightness, 0, 100, "brightness") * 255 // 100
@@ -135,7 +139,7 @@ def light_color_parameter(red: int, green: int, blue: int) -> str:
 
 
 def strip_light_color_parameter(red: int, green: int, blue: int) -> str:
-    """Build the original Strip Light's B:G:R parameter used by Home Assistant."""
+    """Encode RGB arguments in B:G:R order for the original Strip Light."""
     red = rgb_component(red, "red")
     green = rgb_component(green, "green")
     blue = rgb_component(blue, "blue")

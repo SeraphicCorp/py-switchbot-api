@@ -25,6 +25,7 @@ _STANDARD_CIRCULATOR_FAN_TYPES: Final = (
     STANDING_FAN,
     STANDING_CIRCULATOR_FAN,
 )
+# The same brightness option has a different command code on Fan 2 Pro.
 _STANDARD_NIGHT_LIGHT_PARAMETERS: Final = {
     "off": CirculatorFanNightLightMode.OFF.value,
     "bright": CirculatorFanNightLightMode.BRIGHT.value,
@@ -58,7 +59,11 @@ def fan_wind_mode_parameter(
 
 
 def fan_writable_wind_modes(device_type: str) -> list[str]:
-    """Return writable presets for a supported circulator fan's device type."""
+    """Return writable presets for a supported circulator fan's device type.
+
+    Fan 2 Pro accepts custom as a command. The ceiling fan's custom state
+    is webhook-only and belongs to a separate mode enum.
+    """
     if device_type == BATTERY_CIRCULATOR_FAN_2_PRO:
         return [mode.value for mode in BatteryCirculatorFan2ProMode]
     if device_type in _STANDARD_CIRCULATOR_FAN_TYPES:
@@ -72,7 +77,10 @@ def fan_restore_wind_mode_parameter(device_type: str, mode: str | None) -> str |
 
 
 def fan_night_light_parameter(device_type: str, option: str) -> str:
-    """Encode an on, off, bright, or soft option for the fan's night light."""
+    """Encode an on, off, bright, or soft option for the fan's night light.
+
+    A generic on request uses the model's bright command code.
+    """
     if device_type == BATTERY_CIRCULATOR_FAN_2_PRO:
         parameters = _FAN_2_PRO_NIGHT_LIGHT_PARAMETERS
     elif device_type in _STANDARD_CIRCULATOR_FAN_TYPES:
@@ -91,7 +99,11 @@ def fan_night_light_parameter(device_type: str, option: str) -> str:
 def fan_night_light_option(
     device_type: str, night_status: str | int | None
 ) -> str | None:
-    """Decode nightStatus to a select option when the payload identifies one."""
+    """Decode nightStatus to a select option when the payload identifies one.
+
+    Standard circulators can report both on/off and brightness codes. The
+    Fan 2 Pro branch accepts the on/off report and leaves brightness unknown.
+    """
     if device_type == BATTERY_CIRCULATOR_FAN_2_PRO:
         if isinstance(night_status, str) and night_status in ("on", "off"):
             return night_status

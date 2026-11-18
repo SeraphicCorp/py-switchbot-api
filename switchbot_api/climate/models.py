@@ -66,7 +66,7 @@ class EvaporativeHumidifierMode(Enum):
 
     @classmethod
     def get_modes(cls) -> list[str]:
-        """Return the preset names used by Home Assistant."""
+        """Return lowercase preset names, omitting aliases for the same mode."""
         return [mode.name.lower() for mode in cls]
 
 
@@ -80,7 +80,7 @@ class AirPurifierMode(Enum):
 
     @classmethod
     def get_modes(cls) -> list[str]:
-        """Return mode names in the format used by Home Assistant."""
+        """Return lowercase mode names for display or preset selection."""
         return [mode.name.lower() for mode in cls]
 
 

@@ -8,7 +8,9 @@ Status and webhook payloads remain ordinary dictionaries. Calibration,
 grouping, and moving fields are booleans. Battery values are retained as
 reported; no conversion to the documented battery buckets is performed.
 Blind Tilt has no documented webhook. Curtain and Roller Shade positions
-use 0 for open and 100 for closed; Blind Tilt uses the opposite convention.
+use 0 for open and 100 for closed. Blind Tilt commands use 0 for closed and
+100 for open. Its slidePosition reports 50 when open and 0 or 100 when closed
+in either direction.
 
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/curtains-blinds
 """

@@ -23,7 +23,11 @@ def lock_state(payload: Mapping[str, Any]) -> LockState | None:
 
 
 def lock_door_state(payload: Mapping[str, Any]) -> DoorState | None:
-    """Read doorState from a status or webhook payload, returning None if unknown."""
+    """Read the door contact state from a status body or webhook context.
+
+    The contact reading is independent of lockState. A missing or unknown
+    value returns None even when lockState reports locked.
+    """
     try:
         return DoorState(payload.get("doorState"))
     except ValueError:
@@ -162,9 +166,10 @@ def get_key_command_result(
 ) -> KeyCommandResult | None:
     """Parse a Keypad createKey/deleteKey webhook, optionally matching commandId.
 
-    Non-key events, missing context/result/ID, and other command IDs return
-    None. The documented trailing space in deleteKey eventName is accepted.
-    Unknown result strings raise ValueError rather than implying success.
+    The command response only acknowledges submission. Pass the webhook
+    event to read the final outcome. When command_id is supplied, it must
+    match context.commandId exactly. Missing or unrelated events return None.
+    Whitespace around eventName is ignored and unknown results raise ValueError.
     """
     context = event.get("context")
     if not isinstance(context, Mapping):

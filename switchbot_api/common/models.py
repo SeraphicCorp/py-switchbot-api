@@ -62,8 +62,9 @@ class DetectionState(Enum):
 class PowerState(Enum):
     """Power states shared by device status responses and webhook events.
 
-    Accept either case when parsing API values. Canonical values are
-    uppercase. PARTIAL represents devices with independently powered parts.
+    Parsing accepts different letter cases and returns an enum with an
+    uppercase value. PARTIAL describes a device with independently powered
+    parts. A command that takes only on or off needs a binary state.
     """
 
     ON = "ON"
