@@ -15,7 +15,9 @@ from switchbot_api.sensor import (
     WATER_LEAK_DETECTOR,
     ContactDoorMode,
     WaterLeakState,
+    contact_door_state,
     sensor_detection_state,
+    water_leak_state,
 )
 
 
@@ -89,6 +91,57 @@ def test_unknown_motion_state() -> None:
     """Do not convert an unknown webhook value into absence of motion."""
     with pytest.raises(ValueError, match="DetectionState"):
         sensor_detection_state({"detectionState": "unknown"})
+
+
+@pytest.mark.parametrize("field", ["status", "detectionState"])
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        (0, WaterLeakState.DRY),
+        (1, WaterLeakState.LEAK_DETECTED),
+        (None, None),
+        ("0", None),
+        ("1", None),
+        (False, None),
+        (True, None),
+        (1.0, None),
+        (2, None),
+    ],
+)
+def test_water_leak_state_accepts_only_documented_integer_codes(
+    field: str, value: object, expected: WaterLeakState | None
+) -> None:
+    """Resolve both payload fields without coercing unknown codes into alarms."""
+    assert water_leak_state({field: value}) is expected
+
+
+def test_water_leak_state_prefers_webhook_field() -> None:
+    """Let a dry webhook reading replace an older leak status."""
+    assert water_leak_state({"status": 1, "detectionState": 0}) is WaterLeakState.DRY
+    assert water_leak_state({"status": 1, "detectionState": None}) is None
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("open", DoorState.OPEN),
+        ("OPENED", DoorState.OPEN),
+        ("close", DoorState.CLOSED),
+        ("timeOutNotClose", DoorState.TIMEOUT_NOT_CLOSED),
+        (None, None),
+        ("unknown", None),
+    ],
+)
+def test_contact_door_state(value: object, expected: DoorState | None) -> None:
+    """Resolve contact position while preserving a door-open timeout."""
+    assert contact_door_state({"openState": value}) is expected
+
+
+def test_sensor_payload_without_readings_is_unknown() -> None:
+    """Keep missing contact and water readings unknown in partial events."""
+    payload = {"battery": 50}
+    assert contact_door_state(payload) is None
+    assert water_leak_state(payload) is None
 
 
 def test_sensor_protocol_values() -> None:

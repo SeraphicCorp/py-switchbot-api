@@ -14,7 +14,11 @@ from switchbot_api.sensor.models import (
     ContactDoorMode,
     WaterLeakState,
 )
-from switchbot_api.sensor.utils import sensor_detection_state
+from switchbot_api.sensor.utils import (
+    contact_door_state,
+    sensor_detection_state,
+    water_leak_state,
+)
 
 __all__ = [
     "CONTACT_SENSOR",
@@ -29,5 +33,7 @@ __all__ = [
     "WATER_LEAK_DETECTOR",
     "ContactDoorMode",
     "WaterLeakState",
+    "contact_door_state",
     "sensor_detection_state",
+    "water_leak_state",
 ]
