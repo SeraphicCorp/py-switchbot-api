@@ -5,6 +5,25 @@ from __future__ import annotations
 from enum import Enum
 
 
+class DoorState(Enum):
+    """Door position shared by lock and sensor state payloads."""
+
+    OPEN = "open"
+    CLOSED = "close"
+
+    @classmethod
+    def _missing_(cls, value: object) -> DoorState | None:
+        """Accept uppercase values and the equivalent closed spelling."""
+        if not isinstance(value, str):
+            return None
+        normalized = value.casefold()
+        if normalized == "open":
+            return cls.OPEN
+        if normalized in {"close", "closed"}:
+            return cls.CLOSED
+        return None
+
+
 class ChargingStatus(Enum):
     """Battery charging states shared by rechargeable devices."""
 

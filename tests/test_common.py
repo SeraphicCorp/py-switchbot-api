@@ -2,7 +2,7 @@
 
 import pytest
 
-from switchbot_api.common import PowerState
+from switchbot_api.common import DoorState, PowerState
 
 
 @pytest.mark.parametrize(
@@ -29,3 +29,26 @@ def test_reject_invalid_power_state(value: object) -> None:
     """Unknown and non-string states must not silently become ON or OFF."""
     with pytest.raises(ValueError, match="is not a valid PowerState"):
         PowerState(value)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("open", DoorState.OPEN),
+        ("OPEN", DoorState.OPEN),
+        ("close", DoorState.CLOSED),
+        ("CLOSE", DoorState.CLOSED),
+        ("closed", DoorState.CLOSED),
+        ("Closed", DoorState.CLOSED),
+    ],
+)
+def test_parse_door_state(value: str, expected: DoorState) -> None:
+    """Normalize door position spellings without confusing them with power."""
+    assert DoorState(value) is expected
+
+
+@pytest.mark.parametrize("value", ["unknown", "", True, 1, None])
+def test_reject_invalid_door_state(value: object) -> None:
+    """Unknown and boolean door values are not silently considered closed."""
+    with pytest.raises(ValueError, match="is not a valid DoorState"):
+        DoorState(value)
