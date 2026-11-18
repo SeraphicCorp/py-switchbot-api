@@ -8,21 +8,28 @@ from aioresponses import CallbackResult, aioresponses
 import pytest
 
 from switchbot_api.fan import (
+    BATTERY_CIRCULATOR_FAN,
+    BATTERY_CIRCULATOR_FAN_2_PRO,
+    CIRCULATOR_FAN,
     FAN_DEVICE_TYPES,
     MODERN_CEILING_FAN,
+    STANDING_CIRCULATOR_FAN,
+    STANDING_FAN,
     BatteryCirculatorFan2ProCommands,
     BatteryCirculatorFan2ProMode,
-    BatteryCirculatorFan2ProNightLightMode,
     BatteryCirculatorFanCommands,
     CirculatorFanCommands,
     CirculatorFanMode,
-    CirculatorFanNightLightMode,
     ModernCeilingFanCommands,
     ModernCeilingFanMode,
     StandingCirculatorFanCommands,
     fan_close_delay_parameter,
+    fan_night_light_option,
+    fan_night_light_parameter,
+    fan_restore_wind_mode_parameter,
     fan_wind_mode_parameter,
     fan_wind_speed_parameter,
+    fan_writable_wind_modes,
     modern_ceiling_fan_brightness_parameter,
     modern_ceiling_fan_close_delay_parameter,
     modern_ceiling_fan_color_parameter,
@@ -85,17 +92,113 @@ def test_fan_rejects_non_integer_values(
         builder(value)
 
 
-def test_fan_2_pro_custom_is_status_only() -> None:
-    """CUSTOM can be parsed from a status but must not become a wind command."""
+def test_fan_2_pro_custom_can_be_sent() -> None:
+    """Allow a reported CUSTOM mode to become a wind command."""
     mode = BatteryCirculatorFan2ProMode("custom")
-    with pytest.raises(ValueError, match="status-only"):
-        fan_wind_mode_parameter(mode)
+    assert fan_wind_mode_parameter(mode) == "custom"
 
 
 def test_fan_rejects_untyped_mode() -> None:
     """Use a family-specific enum instead of an unchecked string."""
     with pytest.raises(TypeError, match="fan mode enum member"):
         fan_wind_mode_parameter("direct")  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize(
+    "device_type",
+    [BATTERY_CIRCULATOR_FAN, CIRCULATOR_FAN, STANDING_FAN, STANDING_CIRCULATOR_FAN],
+)
+def test_standard_circulator_fans_offer_baby_mode(device_type: str) -> None:
+    """Treat both standing fan names as the same preset family."""
+    assert fan_writable_wind_modes(device_type) == [
+        "direct",
+        "natural",
+        "sleep",
+        "baby",
+    ]
+
+
+def test_fan_2_pro_offers_only_its_writable_modes() -> None:
+    """Expose the Pro's hurricane and custom modes in place of baby mode."""
+    assert fan_writable_wind_modes(BATTERY_CIRCULATOR_FAN_2_PRO) == [
+        "direct",
+        "natural",
+        "sleep",
+        "hurricane",
+        "custom",
+    ]
+    assert fan_writable_wind_modes(MODERN_CEILING_FAN) == []
+
+
+@pytest.mark.parametrize(
+    ("device_type", "reported_mode", "expected"),
+    [
+        (BATTERY_CIRCULATOR_FAN_2_PRO, "hurricane", "hurricane"),
+        (BATTERY_CIRCULATOR_FAN_2_PRO, "custom", "custom"),
+        (BATTERY_CIRCULATOR_FAN_2_PRO, "baby", None),
+        (BATTERY_CIRCULATOR_FAN_2_PRO, None, None),
+        (STANDING_FAN, "baby", "baby"),
+        (STANDING_FAN, "hurricane", None),
+        (STANDING_FAN, "custom", None),
+        (STANDING_FAN, "unknown", None),
+    ],
+)
+def test_fan_restores_only_writable_modes(
+    device_type: str, reported_mode: str | None, expected: str | None
+) -> None:
+    """Restore a mode only when the requested fan supports it."""
+    assert fan_restore_wind_mode_parameter(device_type, reported_mode) == expected
+
+
+@pytest.mark.parametrize(
+    ("option", "standard", "pro"),
+    [("on", "1", "0"), ("off", "off", "off"), ("bright", "1", "0"), ("soft", "2", "1")],
+)
+def test_fan_night_light_parameters(option: str, standard: str, pro: str) -> None:
+    """Use the different command codes for standard and Pro night lights."""
+    assert fan_night_light_parameter(STANDING_FAN, option) == standard
+    assert fan_night_light_parameter(BATTERY_CIRCULATOR_FAN_2_PRO, option) == pro
+
+
+def test_night_light_parameters_reject_unknown_models_and_options() -> None:
+    """Avoid falling back to a command code for the wrong device or option."""
+    with pytest.raises(ValueError, match="unsupported fan device type"):
+        fan_night_light_parameter(MODERN_CEILING_FAN, "on")
+    with pytest.raises(ValueError, match="unsupported fan night light option"):
+        fan_night_light_parameter(STANDING_FAN, "unknown")
+
+
+@pytest.mark.parametrize(
+    ("night_status", "expected"),
+    [
+        (1, "bright"),
+        ("1", "bright"),
+        (2, "soft"),
+        ("2", "soft"),
+        ("on", "on"),
+        ("off", "off"),
+        (None, None),
+        (True, None),
+    ],
+)
+def test_standard_night_light_status(
+    night_status: str | int | None, expected: str | None
+) -> None:
+    """Read both integer and string status codes without treating unknown as off."""
+    assert fan_night_light_option(BATTERY_CIRCULATOR_FAN, night_status) == expected
+
+
+@pytest.mark.parametrize(
+    ("night_status", "expected"),
+    [("on", "on"), ("off", "off"), (None, None), ("0", None), (1, None)],
+)
+def test_fan_2_pro_night_light_status(
+    night_status: str | int | None, expected: str | None
+) -> None:
+    """Keep the reported on/off state without inferring a brightness level."""
+    assert (
+        fan_night_light_option(BATTERY_CIRCULATOR_FAN_2_PRO, night_status) == expected
+    )
 
 
 def test_ceiling_fan_discovery_and_mode() -> None:
@@ -144,13 +247,13 @@ def test_ceiling_fan_delay_uses_positive_integer_minutes() -> None:
         ),
         (
             CirculatorFanCommands.SET_NIGHT_LIGHT_MODE,
-            CirculatorFanNightLightMode.BRIGHT.value,
+            fan_night_light_parameter(CIRCULATOR_FAN, "on"),
             "setNightLightMode",
             "1",
         ),
         (
             StandingCirculatorFanCommands.SET_NIGHT_LIGHT_MODE,
-            CirculatorFanNightLightMode.DIM.value,
+            fan_night_light_parameter(STANDING_FAN, "soft"),
             "setNightLightMode",
             "2",
         ),
@@ -162,14 +265,20 @@ def test_ceiling_fan_delay_uses_positive_integer_minutes() -> None:
             "hurricane",
         ),
         (
+            BatteryCirculatorFan2ProCommands.SET_WIND_MODE,
+            fan_wind_mode_parameter(BatteryCirculatorFan2ProMode.CUSTOM),
+            "setWindMode",
+            "custom",
+        ),
+        (
             BatteryCirculatorFan2ProCommands.SET_NIGHT_LIGHT_MODE,
-            BatteryCirculatorFan2ProNightLightMode.BRIGHT.value,
+            fan_night_light_parameter(BATTERY_CIRCULATOR_FAN_2_PRO, "on"),
             "setNightLightMode",
             "0",
         ),
         (
             BatteryCirculatorFan2ProCommands.SET_NIGHT_LIGHT_MODE,
-            BatteryCirculatorFan2ProNightLightMode.SOFT.value,
+            fan_night_light_parameter(BATTERY_CIRCULATOR_FAN_2_PRO, "soft"),
             "setNightLightMode",
             "1",
         ),

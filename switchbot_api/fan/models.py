@@ -2,8 +2,8 @@
 
 Standing Circulator Fan is reported as Standing Fan; both names are listed.
 Battery Circulator Fan 2 Pro has different nightlight command codes and no
-documented closeDelay command. Its custom mode is status-only, and nightStatus
-reports on/off rather than the numeric command codes. Shared power and
+documented closeDelay command. The SDK allows custom as a wind mode, and
+nightStatus reports on/off rather than the numeric command codes. Shared power and
 charging states live in common.models. Status payloads remain dictionaries.
 Modern Ceiling Fan reports an integer mode in REST status and a string mode
 in webhooks. The numeric mapping is undocumented. REST mainLightBrightness
@@ -41,7 +41,7 @@ class CirculatorFanMode(Enum):
 
 
 class BatteryCirculatorFan2ProMode(Enum):
-    """Fan 2 Pro modes; CUSTOM is reported by status, not accepted as a command."""
+    """Fan 2 Pro wind modes, including CUSTOM for commands and state."""
 
     DIRECT = "direct"
     NATURAL = "natural"
@@ -51,7 +51,10 @@ class BatteryCirculatorFan2ProMode(Enum):
 
 
 class CirculatorFanNightLightMode(Enum):
-    """Nightlight command codes for Battery, Circulator, and Standing Fan."""
+    """Nightlight values for Battery, Circulator, and Standing Fan.
+
+    Use fan_night_light_parameter to encode the ON option as a command.
+    """
 
     ON = "on"
     OFF = "off"
@@ -71,7 +74,10 @@ class ModernCeilingFanMode(Enum):
 
 
 class BatteryCirculatorFan2ProNightLightMode(Enum):
-    """Fan 2 Pro nightlight command codes, distinct from nightStatus on/off."""
+    """Fan 2 Pro nightlight values, including the reported ON/OFF states.
+
+    Use fan_night_light_parameter to encode the ON option as a command.
+    """
 
     ON = "on"
     OFF = "off"

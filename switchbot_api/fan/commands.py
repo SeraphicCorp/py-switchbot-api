@@ -60,7 +60,7 @@ class BatteryCirculatorFan2ProCommands(Commands):
     OFF = "turnOff"
     # String parameter: off / 0 (bright) / 1 (soft).
     SET_NIGHT_LIGHT_MODE = "setNightLightMode"
-    # String parameter: direct / natural / sleep / hurricane.
+    # String parameter: direct / natural / sleep / hurricane / custom.
     SET_WIND_MODE = "setWindMode"
     # String parameter: 1-100.
     SET_WIND_SPEED = "setWindSpeed"
