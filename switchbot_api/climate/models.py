@@ -50,14 +50,24 @@ class HumidifierMode(Enum):
 class EvaporativeHumidifierMode(Enum):
     """Humidifier2 modes used by both evaporative humidifier variants."""
 
-    LEVEL_4 = 1
-    LEVEL_3 = 2
-    LEVEL_2 = 3
-    LEVEL_1 = 4
+    HIGH = 1
+    MEDIUM = 2
+    LOW = 3
+    QUIET = 4
     TARGET_HUMIDITY = 5
     SLEEP = 6
     AUTO = 7
     DRYING_FILTER = 8
+
+    LEVEL_4 = HIGH
+    LEVEL_3 = MEDIUM
+    LEVEL_2 = LOW
+    LEVEL_1 = QUIET
+
+    @classmethod
+    def get_modes(cls) -> list[str]:
+        """Return the preset names used by Home Assistant."""
+        return [mode.name.lower() for mode in cls]
 
 
 class AirPurifierMode(Enum):
@@ -67,6 +77,11 @@ class AirPurifierMode(Enum):
     AUTO = 2
     SLEEP = 3
     PET = 4
+
+    @classmethod
+    def get_modes(cls) -> list[str]:
+        """Return mode names in the format used by Home Assistant."""
+        return [mode.name.lower() for mode in cls]
 
 
 class AirPurifierFanGear(Enum):

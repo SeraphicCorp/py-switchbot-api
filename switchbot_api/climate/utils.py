@@ -33,7 +33,7 @@ def evaporative_humidifier_mode_parameters(
         raise TypeError(msg)
     parameters: dict[str, int] = {"mode": mode.value}
     if target_humidity is not None:
-        parameters["targetHumidify"] = integer_in_range(
+        parameters["humidity"] = integer_in_range(
             target_humidity, 0, 100, "target_humidity"
         )
     return parameters
@@ -43,22 +43,19 @@ def air_purifier_mode_parameters(
     mode: AirPurifierMode,
     fan_gear: AirPurifierFanGear | None = None,
 ) -> dict[str, int]:
-    """Build a purifier mode; NORMAL requires a gear, other modes forbid it."""
+    """Build a purifier mode with an optional gear for NORMAL mode."""
     if not isinstance(mode, AirPurifierMode):
         msg = "mode must be an AirPurifierMode member"
         raise TypeError(msg)
-    if mode is AirPurifierMode.NORMAL:
-        if fan_gear is None:
-            msg = "fan_gear is required for NORMAL mode"
-            raise ValueError(msg)
-        if not isinstance(fan_gear, AirPurifierFanGear):
-            msg = "fan_gear must be an AirPurifierFanGear member"
-            raise TypeError(msg)
-        return {"mode": mode.value, "fanGear": fan_gear.value}
-    if fan_gear is not None:
+    if fan_gear is None:
+        return {"mode": mode.value}
+    if mode is not AirPurifierMode.NORMAL:
         msg = "fan_gear can only be set in NORMAL mode"
         raise ValueError(msg)
-    return {"mode": mode.value}
+    if not isinstance(fan_gear, AirPurifierFanGear):
+        msg = "fan_gear must be an AirPurifierFanGear member"
+        raise TypeError(msg)
+    return {"mode": mode.value, "fanGear": fan_gear.value}
 
 
 def evaporative_humidifier_child_lock_parameter(*, enabled: bool) -> str:
@@ -77,12 +74,12 @@ def air_purifier_child_lock_parameter(*, enabled: bool) -> str:
     return "1" if enabled else "0"
 
 
-def thermostat_mode_parameter(mode: SmartRadiatorThermostatMode) -> str:
-    """Encode the radiator mode enum as a scalar string 0-5."""
+def thermostat_mode_parameter(mode: SmartRadiatorThermostatMode) -> int:
+    """Encode the radiator mode as the integer used by Home Assistant."""
     if not isinstance(mode, SmartRadiatorThermostatMode):
         msg = "mode must be a SmartRadiatorThermostatMode member"
         raise TypeError(msg)
-    return str(mode.value)
+    return mode.value
 
 
 def thermostat_temperature_parameter(temperature: float) -> str:

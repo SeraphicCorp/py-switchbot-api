@@ -73,13 +73,34 @@ def test_humidifier_rejects_untyped_mode(value: Any) -> None:
         humidifier_mode_parameter(value)
 
 
+def test_evaporative_humidifier_presets_match_home_assistant() -> None:
+    """Keep Home Assistant's existing preset keys and mode codes."""
+    presets = [
+        "high",
+        "medium",
+        "low",
+        "quiet",
+        "target_humidity",
+        "sleep",
+        "auto",
+        "drying_filter",
+    ]
+    assert EvaporativeHumidifierMode.get_modes() == presets
+    for code, preset in enumerate(presets, start=1):
+        assert EvaporativeHumidifierMode[preset.upper()].value == code
+    assert EvaporativeHumidifierMode.LEVEL_4 is EvaporativeHumidifierMode.HIGH
+    assert EvaporativeHumidifierMode.LEVEL_3 is EvaporativeHumidifierMode.MEDIUM
+    assert EvaporativeHumidifierMode.LEVEL_2 is EvaporativeHumidifierMode.LOW
+    assert EvaporativeHumidifierMode.LEVEL_1 is EvaporativeHumidifierMode.QUIET
+
+
 @pytest.mark.parametrize("humidity", [0, 100])
 def test_evaporative_humidifier_payload(humidity: int) -> None:
-    """Use targetHumidify, including the API spelling and integer value types."""
+    """Send the humidity field and integer values used by Home Assistant."""
     assert evaporative_humidifier_mode_parameters(
         EvaporativeHumidifierMode.TARGET_HUMIDITY,
         humidity,
-    ) == {"mode": 5, "targetHumidify": humidity}
+    ) == {"mode": 5, "humidity": humidity}
 
 
 @pytest.mark.parametrize("humidity", [-1, 101])
@@ -128,10 +149,14 @@ def test_air_purifier_mode_payload(
     assert air_purifier_mode_parameters(mode, gear) == expected
 
 
-def test_air_purifier_normal_requires_gear() -> None:
-    """The NORMAL parameter builder requires an explicit fan level."""
-    with pytest.raises(ValueError, match="fan_gear is required"):
-        air_purifier_mode_parameters(AirPurifierMode.NORMAL)
+def test_air_purifier_normal_can_omit_gear() -> None:
+    """Match the preset command Home Assistant sends in normal mode."""
+    assert air_purifier_mode_parameters(AirPurifierMode.NORMAL) == {"mode": 1}
+
+
+def test_air_purifier_presets_match_home_assistant() -> None:
+    """Expose the existing preset keys in device mode order."""
+    assert AirPurifierMode.get_modes() == ["normal", "auto", "sleep", "pet"]
 
 
 def test_air_purifier_auto_rejects_gear() -> None:
@@ -187,12 +212,13 @@ def test_child_lock_rejects_non_boolean(
 @pytest.mark.parametrize(
     ("mode", "expected"),
     [
-        (SmartRadiatorThermostatMode.SCHEDULE, "0"),
-        (SmartRadiatorThermostatMode.FAST_HEATING, "5"),
+        (SmartRadiatorThermostatMode.SCHEDULE, 0),
+        (SmartRadiatorThermostatMode.OFF, 2),
+        (SmartRadiatorThermostatMode.FAST_HEATING, 5),
     ],
 )
-def test_thermostat_mode(mode: SmartRadiatorThermostatMode, expected: str) -> None:
-    """Convert ordinary numeric enums into scalar strings."""
+def test_thermostat_mode(mode: SmartRadiatorThermostatMode, expected: int) -> None:
+    """Send numeric modes as JSON integers, including schedule and off."""
     assert thermostat_mode_parameter(mode) == expected
 
 
@@ -249,7 +275,7 @@ def test_thermostat_rejects_temperature_types(value: Any) -> None:
                 EvaporativeHumidifierMode.TARGET_HUMIDITY, 0
             ),
             "setMode",
-            {"mode": 5, "targetHumidify": 0},
+            {"mode": 5, "humidity": 0},
         ),
         (
             EvaporativeHumidifierCommands.SET_CHILD_LOCK,
@@ -267,6 +293,12 @@ def test_thermostat_rejects_temperature_types(value: Any) -> None:
         ),
         (
             AirPurifierCommands.SET_MODE,
+            air_purifier_mode_parameters(AirPurifierMode.NORMAL),
+            "setMode",
+            {"mode": 1},
+        ),
+        (
+            AirPurifierCommands.SET_MODE,
             air_purifier_mode_parameters(AirPurifierMode.AUTO),
             "setMode",
             {"mode": 2},
@@ -281,7 +313,7 @@ def test_thermostat_rejects_temperature_types(value: Any) -> None:
             SmartRadiatorThermostatCommands.SET_MODE,
             thermostat_mode_parameter(SmartRadiatorThermostatMode.MANUAL),
             "setMode",
-            "1",
+            1,
         ),
         (
             SmartRadiatorThermostatCommands.SET_MANUAL_MODE_TEMPERATURE,
@@ -295,9 +327,9 @@ async def test_send_climate_command(
     send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
-    parameter: dict[str, int] | str,
+    parameter: dict[str, int] | str | int,
     expected_command: str,
-    expected_parameter: dict[str, int] | str,
+    expected_parameter: dict[str, int] | str | int,
 ) -> None:
     """Encode nested JSON integers and distinct scalar parameter formats."""
     captured: list[dict[str, Any]] = []

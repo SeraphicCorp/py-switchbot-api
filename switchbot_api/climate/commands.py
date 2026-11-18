@@ -35,7 +35,7 @@ class AirPurifierCommands(Commands):
 
     ON = "turnOn"
     OFF = "turnOff"
-    # Object parameter: mode 1-4; fanGear 1-3 only for NORMAL mode (1).
+    # Object parameter: mode 1-4; optional fanGear 1-3 only for NORMAL mode (1).
     SET_MODE = "setMode"
     # String parameter: 0 (disable) or 1 (enable).
     SET_CHILD_LOCK = "setChildLock"
@@ -52,7 +52,7 @@ class SmartRadiatorThermostatCommands(Commands):
 
     ON = "turnOn"
     OFF = "turnOff"
-    # String parameter: 0-5.
+    # Integer parameter: 0-5.
     SET_MODE = "setMode"
     # String parameter: 4-35 celsius, inclusive; no step size is documented.
     SET_MANUAL_MODE_TEMPERATURE = "setManualModeTemperature"
