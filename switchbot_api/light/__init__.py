@@ -1,6 +1,6 @@
 """Lighting commands, device constants, and enums for SwitchBot API v1.1."""
 
-from switchbot_api.light.commands import (
+from .commands import (
     CandleWarmerLampCommands,
     CeilingLightCommands,
     CeilingLightProCommands,
@@ -16,7 +16,7 @@ from switchbot_api.light.commands import (
     StripLight3Commands,
     StripLightCommands,
 )
-from switchbot_api.light.models import (
+from .models import (
     CANDLE_WARMER_LAMP,
     CEILING_LIGHT,
     CEILING_LIGHT_PRO,
