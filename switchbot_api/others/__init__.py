@@ -1,6 +1,6 @@
 """Others device support."""
 
-from .commands import (
+from switchbot_api.others.commands import (
     ArtFrame2Commands,
     ArtFrameCommands,
     BotCommands,
@@ -16,7 +16,7 @@ from .commands import (
     KataFriendsCommands,
     WeatherStationCommands,
 )
-from .models import (
+from switchbot_api.others.models import (
     AI_ART_FRAME,
     AI_ART_FRAME_2,
     AI_ART_FRAME_2_DEVICE_TYPE,
@@ -51,7 +51,7 @@ from .models import (
     MindClipTranscriptionStatus,
     MindClipUploadStatus,
 )
-from .utils import (
+from switchbot_api.others.utils import (
     art_frame_delete_image_parameter,
     art_frame_upload_image_parameters,
     infrared_air_conditioner_parameter,

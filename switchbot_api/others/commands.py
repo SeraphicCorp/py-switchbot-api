@@ -7,7 +7,7 @@ not a fixed command named customize. All default actions use parameter default.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/others
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class BotCommands(Commands):

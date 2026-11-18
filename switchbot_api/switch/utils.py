@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from switchbot_api.common import PowerState
+from switchbot_api.common.models import PowerState
 from switchbot_api.common.utils import integer_in_range
-
-from .models import GarageDoorStatus, RelayChannel, RelaySwitchMode, SwitchStatus
+from switchbot_api.switch.models import (
+    GarageDoorStatus,
+    RelayChannel,
+    RelaySwitchMode,
+    SwitchStatus,
+)
 
 
 def relay_channel_parameter(channel: RelayChannel) -> str:

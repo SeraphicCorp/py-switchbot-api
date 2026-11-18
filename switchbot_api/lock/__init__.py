@@ -1,6 +1,6 @@
 """Lock and keypad commands, device types, enums, and passcode helpers."""
 
-from .commands import (
+from switchbot_api.lock.commands import (
     KeypadCommands,
     KeypadTouchCommands,
     KeypadVisionCommands,
@@ -16,7 +16,7 @@ from .commands import (
     LockVisionProCommands,
     UWBLockCommands,
 )
-from .models import (
+from switchbot_api.lock.models import (
     KEYPAD,
     KEYPAD_TOUCH,
     KEYPAD_VISION,
@@ -43,7 +43,7 @@ from .models import (
     PasscodeStatus,
     PasscodeType,
 )
-from .utils import (
+from switchbot_api.lock.utils import (
     delete_key_parameters,
     get_key_command_result,
     keypad_create_key_parameters,

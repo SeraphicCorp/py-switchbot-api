@@ -6,10 +6,9 @@ import base64
 import binascii
 from urllib.parse import urlsplit
 
-from switchbot_api.common import PowerState
+from switchbot_api.common.models import PowerState
 from switchbot_api.common.utils import finite_number
-
-from .models import (
+from switchbot_api.others.models import (
     ArtFrameDeleteImageMode,
     InfraredAirConditionerFanSpeed,
     InfraredAirConditionerMode,

@@ -1,8 +1,7 @@
 """Build documented Curtain and Blind Tilt position parameter strings."""
 
 from switchbot_api.common.utils import integer_in_range
-
-from .models import BlindTiltDirection, CurtainMode
+from switchbot_api.curtain.models import BlindTiltDirection, CurtainMode
 
 
 def curtain_position_parameter(

@@ -5,7 +5,7 @@ to the client; parameter shapes and ranges are noted alongside each command.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/lighting
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class CandleWarmerLampCommands(Commands):

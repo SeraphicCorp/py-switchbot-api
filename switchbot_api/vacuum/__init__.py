@@ -1,6 +1,6 @@
 """Vacuum device support."""
 
-from .commands import (
+from switchbot_api.vacuum.commands import (
     FloorCleaningRobotS10Commands,
     FloorCleaningRobotS20Commands,
     FloorCleaningRobotS30Commands,
@@ -13,7 +13,7 @@ from .commands import (
     RobotVacuumK11Commands,
     RobotVacuumK11ProCommands,
 )
-from .models import (
+from switchbot_api.vacuum.models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
     FLOOR_CLEANING_ROBOT_S20_SHORT,
@@ -35,7 +35,7 @@ from .models import (
     VacuumWaterLevel,
     VacuumWorkingStatus,
 )
-from .utils import (
+from switchbot_api.vacuum.utils import (
     s30_change_parameters,
     s30_self_clean_parameter,
     s30_start_clean_parameters,

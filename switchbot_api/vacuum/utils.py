@@ -5,8 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from switchbot_api.common.utils import integer_in_range
-
-from .models import (
+from switchbot_api.vacuum.models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
     FLOOR_CLEANING_ROBOT_S20_SHORT,

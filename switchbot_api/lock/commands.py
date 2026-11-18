@@ -6,7 +6,7 @@ webhooks; an accepted HTTP request does not establish completion.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/locks-security
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class LockCommands(Commands):

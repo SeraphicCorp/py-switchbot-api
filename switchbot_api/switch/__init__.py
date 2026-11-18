@@ -1,6 +1,6 @@
 """Switch device support."""
 
-from .commands import (
+from switchbot_api.switch.commands import (
     GarageDoorOpenerCommands,
     OutdoorPlugEUCommands,
     PlugCommands,
@@ -12,7 +12,7 @@ from .commands import (
     RelaySwitch1PMCommands,
     RelaySwitch2PMCommands,
 )
-from .models import (
+from switchbot_api.switch.models import (
     GARAGE_DOOR_OPENER,
     OUTDOOR_PLUG_EU,
     PLUG,
@@ -29,7 +29,7 @@ from .models import (
     RelaySwitchMode,
     SwitchStatus,
 )
-from .utils import (
+from switchbot_api.switch.utils import (
     relay_channel_parameter,
     relay_mode_parameter,
     relay_position_parameter,

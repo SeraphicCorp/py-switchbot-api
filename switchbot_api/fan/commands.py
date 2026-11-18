@@ -5,7 +5,7 @@ use string settings, while Modern Ceiling Fan uses several integer settings.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/climate-control
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class BatteryCirculatorFanCommands(Commands):

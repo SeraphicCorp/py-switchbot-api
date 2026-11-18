@@ -1,13 +1,13 @@
 """Fan commands, device constants, enums, and parameter builders."""
 
-from .commands import (
+from switchbot_api.fan.commands import (
     BatteryCirculatorFan2ProCommands,
     BatteryCirculatorFanCommands,
     CirculatorFanCommands,
     ModernCeilingFanCommands,
     StandingCirculatorFanCommands,
 )
-from .models import (
+from switchbot_api.fan.models import (
     BATTERY_CIRCULATOR_FAN,
     BATTERY_CIRCULATOR_FAN_2_PRO,
     CIRCULATOR_FAN,
@@ -21,7 +21,7 @@ from .models import (
     CirculatorFanNightLightMode,
     ModernCeilingFanMode,
 )
-from .utils import (
+from switchbot_api.fan.utils import (
     fan_close_delay_parameter,
     fan_oscillation_parameter,
     fan_wind_mode_parameter,

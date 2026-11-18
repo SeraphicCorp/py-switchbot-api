@@ -5,7 +5,7 @@ default parameter; utils provides position parameter builders.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/curtains-blinds
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class CurtainCommands(Commands):

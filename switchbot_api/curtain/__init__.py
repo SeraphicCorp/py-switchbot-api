@@ -1,13 +1,13 @@
 """Curtain device support."""
 
-from .commands import (
+from switchbot_api.curtain.commands import (
     BlindTiltCommands,
     Curtain3Commands,
     Curtain4Commands,
     CurtainCommands,
     RollerShadeCommands,
 )
-from .models import (
+from switchbot_api.curtain.models import (
     BLIND_TILT,
     CURTAIN,
     CURTAIN_3,
@@ -19,7 +19,7 @@ from .models import (
     BlindTiltDirection,
     CurtainMode,
 )
-from .utils import (
+from switchbot_api.curtain.utils import (
     blind_tilt_position_parameter,
     curtain_position_parameter,
     roller_shade_position_parameter,

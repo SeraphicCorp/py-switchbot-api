@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from switchbot_api.common import PowerState
+from switchbot_api.common.models import PowerState
 from switchbot_api.common.utils import integer_in_range, rgb_component
-
-from .models import (
+from switchbot_api.fan.models import (
     BatteryCirculatorFan2ProMode,
     CirculatorFanMode,
     ModernCeilingFanMode,

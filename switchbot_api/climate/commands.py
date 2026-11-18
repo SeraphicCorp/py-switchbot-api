@@ -5,7 +5,7 @@ Home Climate Panel exposes readings and webhooks, with no control commands.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/climate-control
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class HumidifierCommands(Commands):

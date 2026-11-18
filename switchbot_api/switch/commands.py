@@ -3,7 +3,7 @@
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/plugs-switches
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class GarageDoorOpenerCommands(Commands):

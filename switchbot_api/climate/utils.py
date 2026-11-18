@@ -5,9 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from switchbot_api.common.utils import finite_number, integer_in_range, rgb_component
-
-from .models import (
+from switchbot_api.climate.models import (
     AirPurifierFanGear,
     AirPurifierLightSensorMode,
     AirPurifierMode,
@@ -15,6 +13,7 @@ from .models import (
     HumidifierMode,
     SmartRadiatorThermostatMode,
 )
+from switchbot_api.common.utils import finite_number, integer_in_range, rgb_component
 
 
 def humidifier_mode_parameter(mode: HumidifierMode | int) -> str:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping  # noqa: TC003 - runtime type hints
 from typing import Any
 
-from switchbot_api.common import DetectionState
+from switchbot_api.common.models import DetectionState
 
 
 def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:

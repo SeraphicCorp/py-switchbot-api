@@ -1,6 +1,6 @@
 """Hub device support."""
 
-from .models import (
+from switchbot_api.hub.models import (
     AI_HUB,
     HUB,
     HUB_2,

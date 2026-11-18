@@ -1,12 +1,12 @@
 """Climate control commands, device constants, enums, and parameter builders."""
 
-from .commands import (
+from switchbot_api.climate.commands import (
     AirPurifierCommands,
     EvaporativeHumidifierCommands,
     HumidifierCommands,
     SmartRadiatorThermostatCommands,
 )
-from .models import (
+from switchbot_api.climate.models import (
     AIR_PURIFIER_PM25,
     AIR_PURIFIER_TABLE_PM25,
     AIR_PURIFIER_TABLE_VOC,
@@ -26,7 +26,7 @@ from .models import (
     HumidifierMode,
     SmartRadiatorThermostatMode,
 )
-from .utils import (
+from switchbot_api.climate.utils import (
     air_purifier_brightness_parameter,
     air_purifier_child_lock_parameter,
     air_purifier_light_color_parameters,

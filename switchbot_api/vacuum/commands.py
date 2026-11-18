@@ -5,7 +5,7 @@ codes and does not document addWaterForHumi.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/robot-vacuum
 """
 
-from switchbot_api.common import Commands
+from switchbot_api.common.commands import Commands
 
 
 class RobotVacuumCleanerS1Commands(Commands):

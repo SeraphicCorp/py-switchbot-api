@@ -1,6 +1,6 @@
 """Lighting commands, device models, and parameter builders for SwitchBot API v1.1."""
 
-from .commands import (
+from switchbot_api.light.commands import (
     CandleWarmerLampCommands,
     CeilingLightCommands,
     CeilingLightProCommands,
@@ -16,7 +16,7 @@ from .commands import (
     StripLight3Commands,
     StripLightCommands,
 )
-from .models import (
+from switchbot_api.light.models import (
     CANDLE_WARMER_LAMP,
     CEILING_LIGHT,
     CEILING_LIGHT_PRO,
@@ -36,7 +36,7 @@ from .models import (
     RGBICWWLightBarsControlMode,
     RGBICWWLightBarsMusicMode,
 )
-from .utils import (
+from switchbot_api.light.utils import (
     light_bars_brightness_temperature_parameters,
     light_bars_effect_color_parameters,
     light_bars_effect_speed_parameters,

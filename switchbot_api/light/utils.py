@@ -7,8 +7,7 @@ from typing import Final
 
 from switchbot_api.common.commands import Commands  # noqa: TC001 - runtime type hints
 from switchbot_api.common.utils import integer_in_range, rgb_component
-
-from .commands import (
+from switchbot_api.light.commands import (
     CandleWarmerLampCommands,
     CeilingLightCommands,
     CeilingLightProCommands,
@@ -24,7 +23,11 @@ from .commands import (
     StripLight3Commands,
     StripLightCommands,
 )
-from .models import LightEffect, RGBICWWLightBarsControlMode, RGBICWWLightBarsMusicMode
+from switchbot_api.light.models import (
+    LightEffect,
+    RGBICWWLightBarsControlMode,
+    RGBICWWLightBarsMusicMode,
+)
 
 # Brightness bounds follow the public command tables.
 _BRIGHTNESS_MINIMUMS: Final[dict[Commands, int]] = {

@@ -10,9 +10,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from switchbot_api.common import DoorState
-
-from .models import KeyCommandResult, PasscodeType
+from switchbot_api.common.models import DoorState
+from switchbot_api.lock.models import KeyCommandResult, PasscodeType
 
 
 def lock_door_state(payload: Mapping[str, Any]) -> DoorState | None:

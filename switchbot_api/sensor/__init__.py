@@ -1,6 +1,6 @@
 """Sensor device support."""
 
-from .models import (
+from switchbot_api.sensor.models import (
     CONTACT_SENSOR,
     METER,
     METER_PLUS,
@@ -14,7 +14,7 @@ from .models import (
     ContactDoorMode,
     WaterLeakState,
 )
-from .utils import sensor_detection_state
+from switchbot_api.sensor.utils import sensor_detection_state
 
 __all__ = [
     "CONTACT_SENSOR",
