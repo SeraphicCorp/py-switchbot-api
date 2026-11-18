@@ -11,17 +11,25 @@ from switchbot_api.common.commands import Commands as V2Commands
 from switchbot_api.light import ColorBulbCommands
 
 
-def test_v2_commands_have_an_independent_base() -> None:
-    """V2 commands must not inherit V1's unsupported capability lookup."""
+def test_v2_commands_are_compatible_with_the_legacy_base() -> None:
+    """A V2 command can be passed to a caller typed against the legacy base."""
     assert Commands is V2Commands
     assert issubclass(ColorBulbCommands, Commands)
-    assert not issubclass(ColorBulbCommands, LegacyCommands)
-    assert not hasattr(ColorBulbCommands, "get_supported_devices")
-    assert not hasattr(ColorBulbCommands, "is_supported")
+    assert isinstance(ColorBulbCommands.ON, LegacyCommands)
+
+
+def test_v2_device_query_methods_raise_as_deprecated() -> None:
+    """Reject both legacy capability queries with actionable messages."""
+    with pytest.raises(
+        NotImplementedError, match=r"get_supported_devices\(\) is deprecated"
+    ):
+        ColorBulbCommands.get_supported_devices()
+    with pytest.raises(NotImplementedError, match=r"is_supported\(\) is deprecated"):
+        ColorBulbCommands.is_supported("Color Bulb")
 
 
 def test_legacy_command_capabilities_are_preserved() -> None:
-    """Separating V2 commands must leave V1 capability queries intact."""
+    """V1 callers can still query a command's supported devices."""
     assert LegacyBotCommands.get_supported_devices() == ["Bot"]
     assert LegacyBotCommands.is_supported("Bot")
     assert not LegacyBotCommands.is_supported("Color Bulb")

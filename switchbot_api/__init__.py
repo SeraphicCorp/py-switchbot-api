@@ -56,7 +56,6 @@ from switchbot_api.commands import (
     VacuumCleanerV3Commands,
     VacuumCommands,
 )
-from switchbot_api.common.commands import Commands as _V2Commands
 from switchbot_api.exceptions import (
     SwitchBotAuthenticationError,
     SwitchBotConnectionError,
@@ -325,16 +324,16 @@ class SwitchBotAPI:
         device_id: str,
         command: T | str,
         command_type: str = "command",
-        parameters: dict[str, Any] | list[dict[str, Any]] | str | int = "default",
+        parameters: dict | str = "default",  # type: ignore[type-arg]
     ) -> None:
         """Send command to device.
 
         Args:
             device_id (str): The ID of the device.
-            command (V1 Commands | V2 Commands | str): The command to be sent.
+            command (string | extends CommonCommands): The command to be sent.
             command_type (str, optional): The type of the command.
             Defaults to "command".
-            parameters (dict | list[dict] | str | int, optional): Command parameters.
+            parameters (dict | str, optional): The parameters for the command.
             Defaults to "default".
 
         Example JSON:
@@ -347,11 +346,7 @@ class SwitchBotAPI:
         """
         json = {
             "commandType": command_type,
-            "command": (
-                command.value
-                if isinstance(command, (Commands, _V2Commands))
-                else command
-            ),
+            "command": command.value if isinstance(command, Commands) else command,
             "parameter": parameters,
         }
         await self._request(METH_POST, f"devices/{device_id}/commands", json=json)
