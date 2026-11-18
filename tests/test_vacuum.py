@@ -11,6 +11,7 @@ import pytest
 from switchbot_api.vacuum import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S20_SHORT,
     FLOOR_CLEANING_ROBOT_S30,
     K10_PRO_COMBO,
     K20_PRO,
@@ -52,7 +53,11 @@ if TYPE_CHECKING:
 
 @pytest.mark.parametrize(
     "device_type",
-    [FLOOR_CLEANING_ROBOT_S10, FLOOR_CLEANING_ROBOT_S20],
+    [
+        FLOOR_CLEANING_ROBOT_S10,
+        FLOOR_CLEANING_ROBOT_S20,
+        FLOOR_CLEANING_ROBOT_S20_SHORT,
+    ],
 )
 def test_water_robot_clean_payload(device_type: str) -> None:
     """S10/S20 use sweep_mop and include numeric waterLevel inside param."""
@@ -90,12 +95,24 @@ def test_modern_k_robot_clean_payload(device_type: str) -> None:
         )
 
 
-def test_s20_first_sweep_then_mop() -> None:
-    """Accept the extra S20 action and keep the same nested water settings."""
+def test_s20_device_types_include_the_short_alias() -> None:
+    """Keep both exact discovery names in the public device list."""
+    assert FLOOR_CLEANING_ROBOT_S20 == "Robot Vacuum Cleaner S20"
+    assert FLOOR_CLEANING_ROBOT_S20_SHORT == "S20"
+    assert {FLOOR_CLEANING_ROBOT_S20, FLOOR_CLEANING_ROBOT_S20_SHORT}.issubset(
+        VACUUM_DEVICE_TYPES
+    )
+
+
+@pytest.mark.parametrize(
+    "device_type", [FLOOR_CLEANING_ROBOT_S20, FLOOR_CLEANING_ROBOT_S20_SHORT]
+)
+def test_s20_first_sweep_then_mop(device_type: str) -> None:
+    """Accept the extra S20 action and require a water level for both names."""
     mode = VacuumCleanMode.FIRST_SWEEP_THEN_MOP
-    assert vacuum_start_clean_parameters(
-        FLOOR_CLEANING_ROBOT_S20, mode, 2, water_level=1
-    ) == {
+    with pytest.raises(ValueError, match="water_level is required"):
+        vacuum_start_clean_parameters(device_type, mode, 2)
+    assert vacuum_start_clean_parameters(device_type, mode, 2, water_level=1) == {
         "action": "first_sweep_then_mop",
         "param": {"fanLevel": 2, "waterLevel": 1, "times": 1},
     }
@@ -198,6 +215,7 @@ def test_change_parameter_profiles() -> None:
     [
         (FLOOR_CLEANING_ROBOT_S10, {"fan_level": 2}, {"fanLevel": 2}),
         (FLOOR_CLEANING_ROBOT_S20, {"times": 1}, {"times": 1}),
+        (FLOOR_CLEANING_ROBOT_S20_SHORT, {"times": 1}, {"times": 1}),
         (K10_PRO_COMBO, {"fan_level": VacuumFanLevel.STRONG}, {"fanLevel": 3}),
         (K20_PRO, {"water_level": 2}, {"waterLevel": 2}),
         (ROBOT_VACUUM_K11, {"times": 2639999}, {"times": 2639999}),
@@ -366,7 +384,7 @@ def test_volume_type(volume: Any) -> None:
         (
             FloorCleaningRobotS20Commands.START_CLEAN,
             vacuum_start_clean_parameters(
-                FLOOR_CLEANING_ROBOT_S20,
+                FLOOR_CLEANING_ROBOT_S20_SHORT,
                 VacuumCleanMode.FIRST_SWEEP_THEN_MOP,
                 2,
                 water_level=1,

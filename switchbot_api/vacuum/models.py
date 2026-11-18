@@ -13,6 +13,7 @@ from typing import Final
 
 FLOOR_CLEANING_ROBOT_S10: Final = "Robot Vacuum Cleaner S10"
 FLOOR_CLEANING_ROBOT_S20: Final = "Robot Vacuum Cleaner S20"
+FLOOR_CLEANING_ROBOT_S20_SHORT: Final = "S20"
 FLOOR_CLEANING_ROBOT_S30: Final = "Robot Vacuum Cleaner S30"
 K10_PRO_COMBO: Final = "Robot Vacuum Cleaner K10+ Pro Combo"
 K20_PRO: Final = "Robot Vacuum Cleaner K20 Plus Pro"
@@ -26,6 +27,7 @@ ROBOT_VACUUM_K11_PRO: Final = "Robot Vacuum Cleaner K11 Plus Pro"
 VACUUM_DEVICE_TYPES: Final[list[str]] = [
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S20_SHORT,
     FLOOR_CLEANING_ROBOT_S30,
     K10_PRO_COMBO,
     K20_PRO,

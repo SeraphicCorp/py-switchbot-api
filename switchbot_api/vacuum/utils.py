@@ -9,6 +9,7 @@ from switchbot_api.common.utils import integer_in_range
 from .models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S20_SHORT,
     K10_PRO_COMBO,
     K20_PRO,
     ROBOT_VACUUM_K11,
@@ -19,7 +20,10 @@ from .models import (
     VacuumWaterLevel,
 )
 
-_WATER_ROBOTS = frozenset({FLOOR_CLEANING_ROBOT_S10, FLOOR_CLEANING_ROBOT_S20})
+_S20_DEVICE_TYPES = frozenset(
+    {FLOOR_CLEANING_ROBOT_S20, FLOOR_CLEANING_ROBOT_S20_SHORT}
+)
+_WATER_ROBOTS = _S20_DEVICE_TYPES | {FLOOR_CLEANING_ROBOT_S10}
 _MODERN_ROBOTS = _WATER_ROBOTS | {
     K10_PRO_COMBO,
     K20_PRO,
@@ -84,7 +88,7 @@ def vacuum_start_clean_parameters(
         if device_type in _WATER_ROBOTS
         else {VacuumCleanMode.SWEEP, VacuumCleanMode.MOP}
     )
-    if device_type == FLOOR_CLEANING_ROBOT_S20:
+    if device_type in _S20_DEVICE_TYPES:
         allowed_modes.add(VacuumCleanMode.FIRST_SWEEP_THEN_MOP)
     if mode not in allowed_modes:
         msg = "clean mode is not documented for this device_type"

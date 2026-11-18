@@ -16,6 +16,7 @@ from .commands import (
 from .models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S20_SHORT,
     FLOOR_CLEANING_ROBOT_S30,
     K10_PRO_COMBO,
     K20_PRO,
@@ -48,6 +49,7 @@ from .utils import (
 __all__ = [
     "FLOOR_CLEANING_ROBOT_S10",
     "FLOOR_CLEANING_ROBOT_S20",
+    "FLOOR_CLEANING_ROBOT_S20_SHORT",
     "FLOOR_CLEANING_ROBOT_S30",
     "K10_PRO_COMBO",
     "K20_PRO",
