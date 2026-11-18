@@ -5,6 +5,17 @@ from __future__ import annotations
 from enum import Enum
 
 
+class DetectionState(Enum):
+    """Motion states reported by device detectionState webhook fields.
+
+    Some devices report only DETECTED. A missing field, such as in a Solar
+    camera battery-only event, does not imply NOT_DETECTED.
+    """
+
+    DETECTED = "DETECTED"
+    NOT_DETECTED = "NOT_DETECTED"
+
+
 class PowerState(Enum):
     """Power states shared by device status responses and webhook events.
 
