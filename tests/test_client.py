@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING, Any
 
 from aiohttp import ClientError, ClientSession
@@ -9,11 +10,50 @@ from aioresponses import CallbackResult, aioresponses
 import pytest
 
 from switchbot_api import SwitchBotAPI, SwitchBotConnectionError
+from switchbot_api.commands import BotCommands, CommonCommands
+from switchbot_api.light import ColorBulbCommands
 from tests import load_fixture
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
+    from switchbot_api.commands import Commands
     from syrupy import SnapshotAssertion
+    from tests import CommandSender
+
+
+@pytest.mark.parametrize(
+    ("command", "expected", "command_type"),
+    [
+        (CommonCommands.ON, "turnOn", "command"),
+        (BotCommands.PRESS, "press", "command"),
+        (ColorBulbCommands.ON, "turnOn", "command"),
+        ("Custom button", "Custom button", "customize"),
+    ],
+)
+async def test_send_v1_v2_and_custom_commands(
+    send_command: CommandSender,
+    responses: aioresponses,
+    command: Commands | str,
+    expected: str,
+    command_type: str,
+) -> None:
+    """Accept both command bases and serialize their members as wire strings."""
+    captured: list[dict[str, Any]] = []
+
+    def capture(_: str, **kwargs: Any) -> CallbackResult:
+        """Reject leaked enum instances through actual JSON serialization."""
+        captured.append(json.loads(json.dumps(kwargs["json"])))
+        return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
+
+    responses.post(f"{MOCK_URL}/devices/command-id/commands", callback=capture)
+    await send_command(
+        "command-id",
+        command,
+        command_type=command_type,
+    )
+    assert captured == [
+        {"command": expected, "commandType": command_type, "parameter": "default"},
+    ]
 
 
 async def test_providing_session(
