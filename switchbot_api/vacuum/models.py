@@ -70,6 +70,7 @@ class VacuumCleanMode(Enum):
     SWEEP = "sweep"
     MOP = "mop"
     SWEEP_MOP = "sweep_mop"
+    FIRST_SWEEP_THEN_MOP = "first_sweep_then_mop"
 
 
 class VacuumSelfCleanMode(Enum):

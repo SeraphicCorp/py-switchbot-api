@@ -29,7 +29,7 @@ class ArtFrameCommands(Commands):
 
 
 class ArtFrame2Commands(Commands):
-    """Image navigation, upload, and one-image cloud deletion."""
+    """Shared image controls for AI Art Frame 2 and AI Art Frame Luma."""
 
     NEXT = "next"
     PREVIOUS = "previous"
@@ -41,6 +41,7 @@ class ArtFrame2Commands(Commands):
 class WeatherStationCommands(Commands):
     """Custom display text and cancelCustom (default parameter)."""
 
+    # String parameter: at most 100 characters; use weather_station_quote_parameter.
     CUSTOM_QUOTE = "customQuote"
     CANCEL_CUSTOM = "cancelCustom"
     CUSTOM_PAGE = "customPage"

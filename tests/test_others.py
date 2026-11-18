@@ -11,6 +11,10 @@ import pytest
 from switchbot_api.common import PowerState
 from switchbot_api.others import (
     AI_ART_FRAME_2,
+    AI_ART_FRAME_2_DEVICE_TYPE,
+    AI_ART_FRAME_2_DEVICE_TYPES,
+    AI_ART_FRAME_LUMA,
+    OTHERS_DEVICE_TYPES,
     WEATHER_STATION,
     ArtFrame2Commands,
     ArtFrameCommands,
@@ -33,6 +37,7 @@ from switchbot_api.others import (
     infrared_channel_parameter,
     kata_friends_mode_parameter,
     on_off_parameter,
+    weather_station_quote_parameter,
     weather_station_text_parameter,
 )
 from tests.const import MOCK_URL
@@ -44,7 +49,10 @@ if TYPE_CHECKING:
 
 def test_device_protocol_names() -> None:
     """Use deviceType values rather than product headings."""
-    assert AI_ART_FRAME_2 == "AI Art Frame Luma"
+    assert AI_ART_FRAME_2_DEVICE_TYPE == "AI Art Frame 2"
+    assert AI_ART_FRAME_LUMA == AI_ART_FRAME_2 == "AI Art Frame Luma"
+    assert set(AI_ART_FRAME_2_DEVICE_TYPES) == {"AI Art Frame 2", "AI Art Frame Luma"}
+    assert set(AI_ART_FRAME_2_DEVICE_TYPES).issubset(OTHERS_DEVICE_TYPES)
     assert WEATHER_STATION == "WeatherStation"
 
 
@@ -202,6 +210,15 @@ def test_weather_text_type() -> None:
         weather_station_text_parameter(42)  # type: ignore[arg-type]
 
 
+def test_weather_station_quote_length() -> None:
+    """Measure the quote limit in characters and leave customPage unrestricted."""
+    text = "\u6d77" * 100
+    assert weather_station_quote_parameter(text) == text
+    with pytest.raises(ValueError, match="at most 100 characters"):
+        weather_station_quote_parameter(text + "\u6d77")
+    assert weather_station_text_parameter(text + "\u6d77") == text + "\u6d77"
+
+
 @pytest.mark.parametrize(
     ("command", "parameter", "expected", "command_type"),
     [
@@ -217,6 +234,12 @@ def test_weather_text_type() -> None:
             ArtFrame2Commands.UPLOAD_IMAGE,
             art_frame_upload_image_parameters(image_base64="aW1hZ2U="),
             "uploadImage",
+            "command",
+        ),
+        (
+            WeatherStationCommands.CUSTOM_QUOTE,
+            weather_station_quote_parameter("\u6d77" * 100),
+            "customQuote",
             "command",
         ),
         (

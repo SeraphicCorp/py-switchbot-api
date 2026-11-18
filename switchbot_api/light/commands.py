@@ -17,7 +17,7 @@ class CandleWarmerLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100 in the public command table; Feishu lists 1-100.
     SET_BRIGHTNESS = "setBrightness"
 
 
@@ -30,9 +30,9 @@ class CeilingLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 1-100.
+    # Integer parameter: 1-100 in the public command table; Feishu lists 0-100.
     SET_BRIGHTNESS = "setBrightness"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -45,9 +45,9 @@ class CeilingLightProCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 1-100.
+    # Integer parameter: 1-100 in the public command table; Feishu lists 0-100.
     SET_BRIGHTNESS = "setBrightness"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -77,11 +77,11 @@ class FloorLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -94,7 +94,7 @@ class RGBICNeonRopeLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
@@ -112,11 +112,11 @@ class RGBICNeonWireRopeLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # object parameter with an integer effectId.
+    # Object parameter with an integer effectId.
     SET_LIGHT_EFFECT = "setLightEffect"
 
 
@@ -129,11 +129,11 @@ class RGBICWWFloorLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter: effectId 0-25.
     SET_LIGHT_EFFECT = "setLightEffect"
@@ -148,11 +148,11 @@ class RGBICWWStripLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter: effectId 0-25.
     SET_LIGHT_EFFECT = "setLightEffect"
@@ -182,11 +182,11 @@ class StripLight3Commands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -199,11 +199,11 @@ class RGBICWWLightBarsCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter: brightness 1-100, temperature 2700-6500.
     SET_BRIGHTNESS_AND_TEMPERATURE = "setBrightnessAndTemperature"
@@ -212,7 +212,7 @@ class RGBICWWLightBarsCommands(Commands):
     # Object parameter: musicMode 0-5, musicLevel/sensitivity 1-100,
     # controllerMode 0-2.
     SET_MUSIC_PARAM_MODE = "setMusicParamMode"
-    # Object parameter: style integer (values unspecified), colorList.
+    # Object parameter: algorithm style integer and colorList.
     SET_EFFECT_COLOR_MODE = "setEffectColorMode"
     # Object parameter: speed 1-255.
     SET_EFFECT_SPEED_MODE = "setEffectSpeedMode"
@@ -231,11 +231,11 @@ class PermanentOutdoorLightsCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # String parameter: 0-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Feishu revision 11124: object parameter with an integer effectId.
     SET_LIGHT_EFFECT = "setLightEffect"
@@ -254,11 +254,11 @@ class RGBICWWCeilingLightCommands(Commands):
     TURN_OFF_MAIN_LIGHT = "turnOffMainLight"
     TURN_ON_COLOR_LIGHT = "turnOnColorLight"
     TURN_OFF_COLOR_LIGHT = "turnOffColorLight"
-    # String parameter: 1-100.
+    # Integer parameter: 1-100.
     SET_MAIN_LIGHT_BRIGHTNESS = "setMainLightBrightness"
-    # String parameter: 2700-6500 kelvin.
+    # Integer parameter: 2700-6500 kelvin.
     SET_MAIN_LIGHT_COLOR_TEMP = "setMainLightColorTemp"
-    # String parameter: 1-100.
+    # Integer parameter: 1-100.
     SET_COLOR_LIGHT_BRIGHTNESS = "setColorLightBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR_LIGHT_RGB = "setColorLightRGB"

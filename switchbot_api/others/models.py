@@ -1,7 +1,8 @@
 """Other physical devices and infrared remote models.
 
 Physical deviceType and virtual remoteType lists are separate. AI Art Frame 2
-is discovered as AI Art Frame Luma; Weather Station uses WeatherStation.
+and AI Art Frame Luma are deviceType names used by different versions of the
+same generation. Weather Station uses WeatherStation.
 Shared ON/OFF and online/offline states live in common.models. MindClip uses
 numeric charging codes and therefore has a separate protocol enum.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/others
@@ -13,7 +14,13 @@ from typing import Final
 BOT: Final = "Bot"
 REMOTE: Final = "Remote"
 AI_ART_FRAME: Final = "AI Art Frame"
-AI_ART_FRAME_2: Final = "AI Art Frame Luma"
+AI_ART_FRAME_2_DEVICE_TYPE: Final = "AI Art Frame 2"
+AI_ART_FRAME_LUMA: Final = "AI Art Frame Luma"
+AI_ART_FRAME_2: Final = AI_ART_FRAME_LUMA  # Preserve the existing public constant.
+AI_ART_FRAME_2_DEVICE_TYPES: Final[list[str]] = [
+    AI_ART_FRAME_2_DEVICE_TYPE,
+    AI_ART_FRAME_LUMA,
+]
 WEATHER_STATION: Final = "WeatherStation"
 KATA_FRIENDS: Final = "Kata Friends"
 AI_MINDCLIP: Final = "AI MindClip"
@@ -22,7 +29,7 @@ OTHERS_DEVICE_TYPES: Final[list[str]] = [
     BOT,
     REMOTE,
     AI_ART_FRAME,
-    AI_ART_FRAME_2,
+    *AI_ART_FRAME_2_DEVICE_TYPES,
     WEATHER_STATION,
     KATA_FRIENDS,
     AI_MINDCLIP,

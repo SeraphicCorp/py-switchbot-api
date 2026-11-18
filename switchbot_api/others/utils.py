@@ -113,12 +113,21 @@ def infrared_channel_parameter(channel: str | int) -> str:
 
 
 def weather_station_text_parameter(text: str) -> str:
-    """Preserve customQuote/customPage text without adding JSON string quotes."""
+    """Build customPage text without adding JSON string quotes."""
     if not isinstance(text, str):
         msg = "text must be a string"
         raise TypeError(msg)
     if not text.strip():
         msg = "text must not be blank"
+        raise ValueError(msg)
+    return text
+
+
+def weather_station_quote_parameter(text: str) -> str:
+    """Build customQuote text with its 100-character limit."""
+    text = weather_station_text_parameter(text)
+    if len(text) > 100:
+        msg = "text must contain at most 100 characters"
         raise ValueError(msg)
     return text
 

@@ -90,6 +90,35 @@ def test_modern_k_robot_clean_payload(device_type: str) -> None:
         )
 
 
+def test_s20_first_sweep_then_mop() -> None:
+    """Accept the extra S20 action and keep the same nested water settings."""
+    mode = VacuumCleanMode.FIRST_SWEEP_THEN_MOP
+    assert vacuum_start_clean_parameters(
+        FLOOR_CLEANING_ROBOT_S20, mode, 2, water_level=1
+    ) == {
+        "action": "first_sweep_then_mop",
+        "param": {"fanLevel": 2, "waterLevel": 1, "times": 1},
+    }
+
+
+@pytest.mark.parametrize(
+    "device_type",
+    [
+        FLOOR_CLEANING_ROBOT_S10,
+        K10_PRO_COMBO,
+        K20_PRO,
+        ROBOT_VACUUM_K11,
+        ROBOT_VACUUM_K11_PRO,
+    ],
+)
+def test_first_sweep_then_mop_is_s20_only(device_type: str) -> None:
+    """Limit the action to S20 in the modeled startClean family."""
+    with pytest.raises(ValueError, match="clean mode"):
+        vacuum_start_clean_parameters(
+            device_type, VacuumCleanMode.FIRST_SWEEP_THEN_MOP, 1
+        )
+
+
 def test_water_robot_requires_valid_mode_and_water() -> None:
     """Do not accept the K-family mop code or omit S10 waterLevel."""
     with pytest.raises(ValueError, match="clean mode"):
@@ -333,6 +362,16 @@ def test_volume_type(volume: Any) -> None:
             FloorCleaningRobotS10Commands.CHANGE_PARAMETERS,
             vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, fan_level=2),
             "changeParam",
+        ),
+        (
+            FloorCleaningRobotS20Commands.START_CLEAN,
+            vacuum_start_clean_parameters(
+                FLOOR_CLEANING_ROBOT_S20,
+                VacuumCleanMode.FIRST_SWEEP_THEN_MOP,
+                2,
+                water_level=1,
+            ),
+            "startClean",
         ),
         (
             FloorCleaningRobotS20Commands.SELF_CLEAN,

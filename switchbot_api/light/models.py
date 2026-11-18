@@ -41,7 +41,10 @@ LIGHT_DEVICE_TYPES: Final[list[str]] = [
 
 
 class LightEffect(Enum):
-    """Preset IDs for Neon Rope, RGBICWW Floor/Strip, and RGBICWW Light Bars."""
+    """Preset effectId values for supported setLightEffect commands.
+
+    Light Bars setEffectColorMode takes an algorithm style code instead.
+    """
 
     ROMANCE = 0
     VITALITY = 1

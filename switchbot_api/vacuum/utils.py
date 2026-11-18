@@ -71,8 +71,9 @@ def vacuum_start_clean_parameters(
 ) -> dict[str, Any]:
     """Build startClean with model-specific action and nested param fields.
 
-    S10/S20 accept sweep/sweep_mop and require waterLevel. K10 Pro Combo,
-    K20 Pro, and K11/K11 Pro accept sweep/mop with fanLevel and times only.
+    S10/S20 accept sweep/sweep_mop and require waterLevel. S20 also accepts
+    first_sweep_then_mop. K10 Pro Combo, K20 Pro, and K11/K11 Pro accept
+    sweep/mop with fanLevel and times only.
     """
     _validate_modern_robot(device_type)
     if not isinstance(mode, VacuumCleanMode):
@@ -83,6 +84,8 @@ def vacuum_start_clean_parameters(
         if device_type in _WATER_ROBOTS
         else {VacuumCleanMode.SWEEP, VacuumCleanMode.MOP}
     )
+    if device_type == FLOOR_CLEANING_ROBOT_S20:
+        allowed_modes.add(VacuumCleanMode.FIRST_SWEEP_THEN_MOP)
     if mode not in allowed_modes:
         msg = "clean mode is not documented for this device_type"
         raise ValueError(msg)

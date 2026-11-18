@@ -1,4 +1,4 @@
-"""Lighting commands, device constants, and enums for SwitchBot API v1.1."""
+"""Lighting commands, device models, and parameter builders for SwitchBot API v1.1."""
 
 from .commands import (
     CandleWarmerLampCommands,
@@ -36,6 +36,18 @@ from .models import (
     RGBICWWLightBarsControlMode,
     RGBICWWLightBarsMusicMode,
 )
+from .utils import (
+    light_bars_brightness_temperature_parameters,
+    light_bars_effect_color_parameters,
+    light_bars_effect_speed_parameters,
+    light_bars_music_color_parameters,
+    light_bars_music_parameters,
+    light_bars_segment_color_parameters,
+    light_brightness_parameter,
+    light_color_parameter,
+    light_color_temperature_parameter,
+    light_effect_parameters,
+)
 
 __all__ = [
     "CANDLE_WARMER_LAMP",
@@ -70,4 +82,14 @@ __all__ = [
     "RGBICWWStripLightCommands",
     "StripLight3Commands",
     "StripLightCommands",
+    "light_bars_brightness_temperature_parameters",
+    "light_bars_effect_color_parameters",
+    "light_bars_effect_speed_parameters",
+    "light_bars_music_color_parameters",
+    "light_bars_music_parameters",
+    "light_bars_segment_color_parameters",
+    "light_brightness_parameter",
+    "light_color_parameter",
+    "light_color_temperature_parameter",
+    "light_effect_parameters",
 ]
