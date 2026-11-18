@@ -16,7 +16,10 @@ from switchbot_api.curtain import (
     CurtainCommands,
     CurtainMode,
     RollerShadeCommands,
+    blind_tilt_open_percentage,
+    blind_tilt_open_percentage_parameter,
     blind_tilt_position_parameter,
+    curtain_open_percentage,
     curtain_position_parameter,
     roller_shade_position_parameter,
 )
@@ -30,6 +33,26 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.parametrize(
+    ("slide_position", "expected"),
+    [(0, 100), (20, 80), ("20", 80), ("100", 0), (None, None)],
+)
+def test_curtain_open_percentage(
+    slide_position: int | str | None, expected: int | None
+) -> None:
+    """Read Curtain 3's REST string and the equivalent integer Webhook value."""
+    assert curtain_open_percentage(slide_position) == expected
+
+
+@pytest.mark.parametrize("slide_position", [-1, "101", "", "20.5"])
+def test_curtain_open_percentage_rejects_invalid_readings(
+    slide_position: int | str,
+) -> None:
+    """Reject malformed strings and out-of-range readings."""
+    with pytest.raises(ValueError, match="slide_position"):
+        curtain_open_percentage(slide_position)
+
+
+@pytest.mark.parametrize(
     ("position", "mode", "expected"),
     [
         (0, CurtainMode.NORMAL, "0,0,0"),
@@ -40,6 +63,44 @@ if TYPE_CHECKING:
 def test_curtain_position(position: int, mode: CurtainMode, expected: str) -> None:
     """Encode the documented modes and open/closed boundary positions."""
     assert curtain_position_parameter(position, mode) == expected
+
+
+@pytest.mark.parametrize(
+    ("slide_position", "expected"),
+    [(0, 0), (25, 50), (50, 100), (75, 50), (100, 0), (None, None)],
+)
+def test_blind_tilt_open_percentage(
+    slide_position: int | None, expected: int | None
+) -> None:
+    """Read both halves of Blind Tilt travel using the Home Assistant scale."""
+    assert blind_tilt_open_percentage(slide_position) == expected
+
+
+@pytest.mark.parametrize(
+    ("direction", "open_percentage", "expected"),
+    [
+        (BlindTiltDirection.UP, 0, "up;0"),
+        ("Down", 1, "down;2"),
+        ("UP", 49, "up;48"),
+        (BlindTiltDirection.DOWN, 99, "down;98"),
+        ("down", 100, "down;100"),
+        (None, 48, None),
+        ("unknown", 48, None),
+    ],
+)
+def test_blind_tilt_slider_parameter(
+    direction: BlindTiltDirection | str | None,
+    open_percentage: int,
+    expected: str | None,
+) -> None:
+    """Encode valid steps without guessing which way an unknown blind tilts."""
+    assert blind_tilt_open_percentage_parameter(direction, open_percentage) == expected
+
+
+def test_blind_tilt_slider_rejects_out_of_range_input() -> None:
+    """Validate the slider before converting to an even device step."""
+    with pytest.raises(ValueError, match="open_percentage must be between"):
+        blind_tilt_open_percentage_parameter("up", 101)
 
 
 @pytest.mark.parametrize(
@@ -60,9 +121,9 @@ def test_blind_tilt_position(
     assert blind_tilt_position_parameter(direction, position) == expected
 
 
-@pytest.mark.parametrize(("position", "expected"), [(0, "0"), (100, "100")])
-def test_roller_shade_position(position: int, expected: str) -> None:
-    """Roller Shade takes a scalar string without direction or mode fields."""
+@pytest.mark.parametrize(("position", "expected"), [(0, 0), (20, 20), (100, 100)])
+def test_roller_shade_position(position: int, expected: int) -> None:
+    """Roller Shade takes a JSON integer without direction or mode fields."""
     assert roller_shade_position_parameter(position) == expected
 
 
@@ -77,7 +138,7 @@ def test_roller_shade_position(position: int, expected: str) -> None:
 )
 @pytest.mark.parametrize("position", [-1, 101])
 def test_reject_position_out_of_range(
-    builder: Callable[[int], str],
+    builder: Callable[[int], str | int],
     position: int,
 ) -> None:
     """Reject percentages outside the documented 0-100 range."""
@@ -96,7 +157,7 @@ def test_reject_position_out_of_range(
 )
 @pytest.mark.parametrize("position", [True, False, 48.5, "48", None])
 def test_reject_non_integer_position(
-    builder: Callable[[int], str],
+    builder: Callable[[int], str | int],
     position: Any,
 ) -> None:
     """Prevent invalid input from being coerced into a movement command."""
@@ -142,7 +203,7 @@ def test_reject_invalid_blind_tilt_direction() -> None:
         ),
         (
             BlindTiltCommands.SET_POSITION,
-            blind_tilt_position_parameter(BlindTiltDirection.DOWN, 48),
+            blind_tilt_open_percentage_parameter(BlindTiltDirection.DOWN, 49),
             "setPosition",
             "down;48",
         ),
@@ -151,7 +212,19 @@ def test_reject_invalid_blind_tilt_direction() -> None:
             RollerShadeCommands.SET_POSITION,
             roller_shade_position_parameter(0),
             "setPosition",
-            "0",
+            0,
+        ),
+        (
+            RollerShadeCommands.SET_POSITION,
+            roller_shade_position_parameter(20),
+            "setPosition",
+            20,
+        ),
+        (
+            RollerShadeCommands.SET_POSITION,
+            roller_shade_position_parameter(100),
+            "setPosition",
+            100,
         ),
     ],
 )
@@ -159,9 +232,9 @@ async def test_send_curtain_command(
     send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
-    parameter: str,
+    parameter: str | int,
     expected_command: str,
-    expected_parameter: str,
+    expected_parameter: str | int,
 ) -> None:
     """Shared Commands members and parameter builders produce the API payload."""
     captured: list[dict[str, Any]] = []

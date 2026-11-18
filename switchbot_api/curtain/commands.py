@@ -53,6 +53,6 @@ class BlindTiltCommands(Commands):
 class RollerShadeCommands(Commands):
     """Roller Shade exposes only the documented setPosition command."""
 
-    # String parameter: 0-100; 0 open, 100 closed.
+    # Integer parameter: 0-100; 0 open, 100 closed.
     SET_POSITION = "setPosition"
     PAUSE = "pause"

@@ -20,7 +20,10 @@ from switchbot_api.curtain.models import (
     CurtainMode,
 )
 from switchbot_api.curtain.utils import (
+    blind_tilt_open_percentage,
+    blind_tilt_open_percentage_parameter,
     blind_tilt_position_parameter,
+    curtain_open_percentage,
     curtain_position_parameter,
     roller_shade_position_parameter,
 )
@@ -41,7 +44,10 @@ __all__ = [
     "CurtainCommands",
     "CurtainMode",
     "RollerShadeCommands",
+    "blind_tilt_open_percentage",
+    "blind_tilt_open_percentage_parameter",
     "blind_tilt_position_parameter",
+    "curtain_open_percentage",
     "curtain_position_parameter",
     "roller_shade_position_parameter",
 ]
