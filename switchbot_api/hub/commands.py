@@ -7,5 +7,4 @@ client methods; infrared control targets virtual remote device IDs.
 
 Hub 2, Hub 3 and Hub 4 support sensor webhooks; AI Hub has no documented webhook.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI#hubs
-Hub 4 source: SwitchBot OpenAPI document, revision 11124, Hub 4 section.
 """

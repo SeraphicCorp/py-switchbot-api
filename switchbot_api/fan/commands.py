@@ -3,7 +3,6 @@
 Commands inherit common.Commands. Power actions use default. Circulator fans
 use string settings, while Modern Ceiling Fan uses several integer settings.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/climate-control
-Modern Ceiling Fan source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands

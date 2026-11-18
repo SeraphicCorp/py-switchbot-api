@@ -1,4 +1,4 @@
-"""Verify Feishu revision 11124 additions without contacting real devices."""
+"""Verify additional device commands using mocked HTTP responses."""
 
 from __future__ import annotations
 

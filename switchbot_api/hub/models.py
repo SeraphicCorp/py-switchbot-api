@@ -16,7 +16,6 @@ is documented in celsius. Hub 2 webhook deviceType is WoHub2, whereas
 Hub 3 uses its discovery type, Hub 3.
 
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/hubs
-Hub 4 source: SwitchBot OpenAPI document, revision 11124, Hub 4 section.
 """
 
 from typing import Final

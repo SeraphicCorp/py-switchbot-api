@@ -8,7 +8,6 @@ in common.models. Passcode lists are discovery data, not keypad status data.
 Nano omits doorState from the documented REST status. UWB REST doorState
 uses closed/opened; both devices' webhooks use CLOSED/OPENED.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/locks-security
-Nano and UWB source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from __future__ import annotations

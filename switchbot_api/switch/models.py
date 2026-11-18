@@ -7,7 +7,6 @@ and webhooks. Status reports onlineStatus (online/offline), voltage (V),
 power (W), electricCurrent (mA), and usedElectricity (W min). Their webhook
 types match discovery and use boolean online, overTemperature, and overload.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/plugs-switches
-IT and Outdoor EU source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from enum import Enum

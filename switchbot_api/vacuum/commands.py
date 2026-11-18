@@ -3,7 +3,6 @@
 S10/S20 support selfClean and addWaterForHumi. S30 supports numeric selfClean
 codes and does not document addWaterForHumi.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/robot-vacuum
-S30 source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands

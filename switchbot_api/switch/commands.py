@@ -1,7 +1,6 @@
 """Documented plug, relay, and garage command enums.
 
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/plugs-switches
-IT and Outdoor EU source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands

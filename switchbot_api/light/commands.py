@@ -17,7 +17,7 @@ class CandleWarmerLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100 in the public command table; Feishu lists 1-100.
+    # Integer parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
 
 
@@ -30,7 +30,7 @@ class CeilingLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 1-100 in the public command table; Feishu lists 0-100.
+    # Integer parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
     # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
@@ -45,7 +45,7 @@ class CeilingLightProCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 1-100 in the public command table; Feishu lists 0-100.
+    # Integer parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
     # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
@@ -237,7 +237,7 @@ class PermanentOutdoorLightsCommands(Commands):
     SET_COLOR = "setColor"
     # Integer parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
-    # Feishu revision 11124: object parameter with an integer effectId.
+    # Object parameter with an integer effectId.
     SET_LIGHT_EFFECT = "setLightEffect"
 
 
@@ -262,5 +262,5 @@ class RGBICWWCeilingLightCommands(Commands):
     SET_COLOR_LIGHT_BRIGHTNESS = "setColorLightBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR_LIGHT_RGB = "setColorLightRGB"
-    # Feishu revision 11124: object parameter with an integer effectId.
+    # Object parameter with an integer effectId.
     SET_LIGHT_EFFECT = "setLightEffect"

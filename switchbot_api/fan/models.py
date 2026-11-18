@@ -9,7 +9,6 @@ Modern Ceiling Fan reports an integer mode in REST status and a string mode
 in webhooks. The numeric mapping is undocumented. REST mainLightBrightness
 and backLightBrightness are mainBrightness and backBrightness in webhooks.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/climate-control
-Modern Ceiling Fan source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from enum import Enum

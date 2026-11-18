@@ -28,7 +28,7 @@ from .models import LightEffect, RGBICWWLightBarsControlMode, RGBICWWLightBarsMu
 if TYPE_CHECKING:
     from switchbot_api.common import Commands
 
-# Use the public command table for bounds where revision 11124 disagrees.
+# Brightness bounds follow the public command tables.
 _BRIGHTNESS_MINIMUMS: Final[dict[Commands, int]] = {
     CandleWarmerLampCommands.SET_BRIGHTNESS: 0,
     CeilingLightCommands.SET_BRIGHTNESS: 1,

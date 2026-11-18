@@ -6,7 +6,6 @@ spelling. Shared connectivity states live in common.OnlineStatus.
 S30 reports waterBaseBattery and may send only changed readings in a webhook.
 Its workingStatus and taskType reuse VacuumWorkingStatus and VacuumTaskType.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/robot-vacuum
-S30 source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from enum import Enum
