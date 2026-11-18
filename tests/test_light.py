@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, get_type_hints
 
 from aioresponses import CallbackResult, aioresponses
 import pytest
 
+from switchbot_api.common import Commands
 from switchbot_api.light import (
     CandleWarmerLampCommands,
     CeilingLightCommands,
@@ -42,8 +43,22 @@ from tests.const import MOCK_URL
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from switchbot_api.common import Commands
     from tests import CommandSender
+
+
+@pytest.mark.parametrize(
+    "builder",
+    [
+        light_brightness_parameter,
+        light_color_temperature_parameter,
+        light_effect_parameters,
+    ],
+)
+def test_light_command_annotations_resolve_at_runtime(
+    builder: Callable[..., object],
+) -> None:
+    """Resolve command annotations to the canonical V2 command base."""
+    assert get_type_hints(builder)["command"] is Commands
 
 
 @pytest.mark.parametrize(

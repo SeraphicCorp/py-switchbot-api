@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from collections.abc import Mapping  # noqa: TC003 - runtime type hints
+from typing import Any
 
 from switchbot_api.common import DetectionState
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
 
 
 def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:

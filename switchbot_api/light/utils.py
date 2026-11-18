@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Final
+from typing import Final
 
+from switchbot_api.common.commands import Commands  # noqa: TC001 - runtime type hints
 from switchbot_api.common.utils import integer_in_range, rgb_component
 
 from .commands import (
@@ -24,9 +25,6 @@ from .commands import (
     StripLightCommands,
 )
 from .models import LightEffect, RGBICWWLightBarsControlMode, RGBICWWLightBarsMusicMode
-
-if TYPE_CHECKING:
-    from switchbot_api.common import Commands
 
 # Brightness bounds follow the public command tables.
 _BRIGHTNESS_MINIMUMS: Final[dict[Commands, int]] = {

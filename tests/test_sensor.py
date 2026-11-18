@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Mapping
+from typing import Any, get_type_hints
 
 import pytest
 
@@ -16,6 +17,11 @@ from switchbot_api.sensor import (
     WaterLeakState,
     sensor_detection_state,
 )
+
+
+def test_sensor_detection_annotations_resolve_at_runtime() -> None:
+    """Keep the Mapping annotation available to runtime consumers."""
+    assert get_type_hints(sensor_detection_state)["payload"] == Mapping[str, Any]
 
 
 @pytest.mark.parametrize(
