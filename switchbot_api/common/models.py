@@ -5,6 +5,20 @@ from __future__ import annotations
 from enum import Enum
 
 
+class ChargingStatus(Enum):
+    """Battery charging states shared by rechargeable devices."""
+
+    CHARGING = "charging"
+    UNCHARGED = "uncharged"
+
+
+class BrightnessLevel(Enum):
+    """Qualitative webhook brightness, distinct from numeric light readings."""
+
+    BRIGHT = "bright"
+    DIM = "dim"
+
+
 class DetectionState(Enum):
     """Motion states reported by device detectionState webhook fields.
 
