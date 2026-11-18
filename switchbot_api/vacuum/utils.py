@@ -117,11 +117,7 @@ def vacuum_change_parameters(
     water_level: VacuumWaterLevel | int | None = None,
     times: int | None = None,
 ) -> dict[str, int]:
-    """Build changeParam; K11 Pro explicitly allows a nonempty partial update.
-
-    For the other models, supply the full documented parameter object.
-    K10 Pro Combo does not document waterLevel in changeParam.
-    """
+    """Build a changeParam update containing at least one supported setting."""
     _validate_modern_robot(device_type)
     parameters = {}
     if fan_level is not None:
@@ -135,11 +131,5 @@ def vacuum_change_parameters(
         parameters["waterLevel"] = _water_level(water_level)
     if not parameters:
         msg = "at least one cleaning parameter is required"
-        raise ValueError(msg)
-    required = {"fanLevel", "times"}
-    if device_type != K10_PRO_COMBO:
-        required.add("waterLevel")
-    if device_type != ROBOT_VACUUM_K11_PRO and not required <= parameters.keys():
-        msg = "this device requires the full documented cleaning parameter object"
         raise ValueError(msg)
     return parameters

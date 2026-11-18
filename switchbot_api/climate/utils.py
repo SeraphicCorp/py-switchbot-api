@@ -35,14 +35,18 @@ def humidifier_mode_parameter(mode: HumidifierMode | int) -> str:
 
 def evaporative_humidifier_mode_parameters(
     mode: EvaporativeHumidifierMode,
-    target_humidity: int,
+    target_humidity: int | None = None,
 ) -> dict[str, int]:
-    """Build mode and targetHumidify, preserving the API's exact key spelling."""
+    """Build setMode with an optional targetHumidify value from 0 to 100."""
     if not isinstance(mode, EvaporativeHumidifierMode):
         msg = "mode must be an EvaporativeHumidifierMode member"
         raise TypeError(msg)
-    humidity = _integer_value(target_humidity, 0, 100, "target_humidity")
-    return {"mode": mode.value, "targetHumidify": humidity}
+    parameters: dict[str, int] = {"mode": mode.value}
+    if target_humidity is not None:
+        parameters["targetHumidify"] = _integer_value(
+            target_humidity, 0, 100, "target_humidity"
+        )
+    return parameters
 
 
 def air_purifier_mode_parameters(

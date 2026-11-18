@@ -139,16 +139,12 @@ def test_reject_legacy_device_and_raw_mode() -> None:
 
 
 def test_change_parameter_profiles() -> None:
-    """K10 Pro Combo has no waterLevel; K11 Pro can update one setting."""
+    """Preserve supported full updates and reject unavailable settings or devices."""
     assert vacuum_change_parameters(
         K10_PRO_COMBO,
         fan_level=2,
         times=1,
     ) == {"fanLevel": 2, "times": 1}
-    assert vacuum_change_parameters(
-        ROBOT_VACUUM_K11_PRO,
-        water_level=VacuumWaterLevel.LOW,
-    ) == {"waterLevel": 1}
     assert vacuum_change_parameters(
         K20_PRO,
         fan_level=VacuumFanLevel.STRONG,
@@ -157,12 +153,41 @@ def test_change_parameter_profiles() -> None:
     ) == {"fanLevel": 3, "waterLevel": 2, "times": 1}
     with pytest.raises(ValueError, match="not documented"):
         vacuum_change_parameters(K10_PRO_COMBO, fan_level=1, water_level=1, times=1)
-    with pytest.raises(ValueError, match="full documented"):
-        vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, fan_level=2)
-    with pytest.raises(ValueError, match="at least one"):
-        vacuum_change_parameters(ROBOT_VACUUM_K11_PRO)
     with pytest.raises(ValueError, match="startClean vacuum"):
         vacuum_change_parameters("Robot Vacuum Cleaner S1", times=1)
+
+
+@pytest.mark.parametrize(
+    ("device_type", "settings", "expected"),
+    [
+        (FLOOR_CLEANING_ROBOT_S10, {"fan_level": 2}, {"fanLevel": 2}),
+        (FLOOR_CLEANING_ROBOT_S20, {"times": 1}, {"times": 1}),
+        (K10_PRO_COMBO, {"fan_level": VacuumFanLevel.STRONG}, {"fanLevel": 3}),
+        (K20_PRO, {"water_level": 2}, {"waterLevel": 2}),
+        (ROBOT_VACUUM_K11, {"times": 2639999}, {"times": 2639999}),
+        (
+            ROBOT_VACUUM_K11_PRO,
+            {"water_level": VacuumWaterLevel.LOW},
+            {"waterLevel": 1},
+        ),
+    ],
+)
+def test_single_setting_change(
+    device_type: str,
+    settings: dict[str, Any],
+    expected: dict[str, int],
+) -> None:
+    """Build a changeParam object without resending other settings."""
+    assert vacuum_change_parameters(device_type, **settings) == expected
+
+
+@pytest.mark.parametrize(
+    "device_type", [FLOOR_CLEANING_ROBOT_S10, ROBOT_VACUUM_K11_PRO]
+)
+def test_empty_setting_change(device_type: str) -> None:
+    """Require at least one parameter for a changeParam update."""
+    with pytest.raises(ValueError, match="at least one"):
+        vacuum_change_parameters(device_type)
 
 
 @pytest.mark.parametrize(
@@ -170,9 +195,19 @@ def test_change_parameter_profiles() -> None:
     [{"fan_level": 0}, {"water_level": 3}, {"times": 2640000}],
 )
 def test_partial_change_still_validates(settings: dict[str, int]) -> None:
-    """K11 Pro partial updates obey the same numeric bounds."""
+    """Partial updates obey the same numeric bounds as full updates."""
     with pytest.raises(ValueError, match="must be between"):
-        vacuum_change_parameters(ROBOT_VACUUM_K11_PRO, **settings)
+        vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, **settings)
+
+
+@pytest.mark.parametrize(
+    "settings",
+    [{"fan_level": True}, {"water_level": "1"}, {"times": 1.5}],
+)
+def test_partial_change_rejects_invalid_types(settings: dict[str, Any]) -> None:
+    """Reject invalid supplied values even when only one field is sent."""
+    with pytest.raises(TypeError, match="must be an integer"):
+        vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, **settings)
 
 
 @pytest.mark.parametrize(
@@ -235,6 +270,11 @@ def test_volume_type(volume: Any) -> None:
                 FLOOR_CLEANING_ROBOT_S10, VacuumCleanMode.SWEEP_MOP, 4, water_level=2
             ),
             "startClean",
+        ),
+        (
+            FloorCleaningRobotS10Commands.CHANGE_PARAMETERS,
+            vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, fan_level=2),
+            "changeParam",
         ),
         (
             FloorCleaningRobotS20Commands.SELF_CLEAN,

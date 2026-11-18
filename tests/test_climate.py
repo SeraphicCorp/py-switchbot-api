@@ -89,11 +89,18 @@ def test_evaporative_humidifier_rejects_invalid_humidity(humidity: int) -> None:
         evaporative_humidifier_mode_parameters(EvaporativeHumidifierMode.AUTO, humidity)
 
 
-@pytest.mark.parametrize("humidity", [True, 50.5, "50", None])
+@pytest.mark.parametrize("humidity", [True, 50.5, "50"])
 def test_evaporative_humidifier_rejects_humidity_types(humidity: Any) -> None:
     """Keep humidity a JSON integer rather than coercing external values."""
     with pytest.raises(TypeError, match="target_humidity must be an integer"):
         evaporative_humidifier_mode_parameters(EvaporativeHumidifierMode.AUTO, humidity)
+
+
+def test_evaporative_humidifier_omits_none_humidity() -> None:
+    """An unset target stays absent from the request object."""
+    assert evaporative_humidifier_mode_parameters(
+        EvaporativeHumidifierMode.SLEEP, target_humidity=None
+    ) == {"mode": 6}
 
 
 def test_evaporative_humidifier_requires_mode_enum() -> None:
@@ -225,6 +232,12 @@ def test_thermostat_rejects_temperature_types(value: Any) -> None:
     [
         (HumidifierCommands.ON, "default", "turnOn", "default"),
         (HumidifierCommands.SET_MODE, humidifier_mode_parameter(33), "setMode", "33"),
+        (
+            EvaporativeHumidifierCommands.SET_MODE,
+            evaporative_humidifier_mode_parameters(EvaporativeHumidifierMode.AUTO),
+            "setMode",
+            {"mode": 7},
+        ),
         (
             EvaporativeHumidifierCommands.SET_MODE,
             evaporative_humidifier_mode_parameters(
