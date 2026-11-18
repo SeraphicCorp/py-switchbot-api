@@ -48,6 +48,7 @@ from switchbot_api.lock.utils import (
     get_key_command_result,
     keypad_create_key_parameters,
     lock_door_state,
+    lock_state,
     vision_lock_create_key_parameters,
 )
 
@@ -95,5 +96,6 @@ __all__ = [
     "get_key_command_result",
     "keypad_create_key_parameters",
     "lock_door_state",
+    "lock_state",
     "vision_lock_create_key_parameters",
 ]

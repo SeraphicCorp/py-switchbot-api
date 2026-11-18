@@ -1,4 +1,4 @@
-"""Build passcode dictionaries and parse asynchronous Keypad result events.
+"""Read lock states, build passcode dictionaries, and parse Keypad events.
 
 These helpers do not send requests or infer completion from an HTTP response.
 Keypad passcodes are supplied as plaintext strings to createKey; encrypted
@@ -11,14 +11,23 @@ from collections.abc import Mapping
 from typing import Any
 
 from switchbot_api.common.models import DoorState
-from switchbot_api.lock.models import KeyCommandResult, PasscodeType
+from switchbot_api.lock.models import KeyCommandResult, LockState, PasscodeType
+
+
+def lock_state(payload: Mapping[str, Any]) -> LockState | None:
+    """Read lockState from a status or webhook payload, returning None if unknown."""
+    try:
+        return LockState(payload.get("lockState"))
+    except ValueError:
+        return None
 
 
 def lock_door_state(payload: Mapping[str, Any]) -> DoorState | None:
-    """Read a status body or webhook context; a missing doorState is unknown."""
-    if "doorState" not in payload:
+    """Read doorState from a status or webhook payload, returning None if unknown."""
+    try:
+        return DoorState(payload.get("doorState"))
+    except ValueError:
         return None
-    return DoorState(payload["doorState"])
 
 
 def _validate_key_identity(

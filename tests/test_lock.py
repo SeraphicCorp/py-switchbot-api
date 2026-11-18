@@ -36,6 +36,7 @@ from switchbot_api.lock import (
     get_key_command_result,
     keypad_create_key_parameters,
     lock_door_state,
+    lock_state,
     vision_lock_create_key_parameters,
 )
 from tests.const import MOCK_URL
@@ -69,6 +70,7 @@ END_TIME = 1_800_000_060
 def test_parse_lock_state(value: str, expected: LockState) -> None:
     """Resolve documented status spellings and uppercase webhook states."""
     assert LockState(value) is expected
+    assert lock_state({"lockState": value}) is expected
 
 
 @pytest.mark.parametrize("value", ["unknown", "", None, True, 1])
@@ -76,6 +78,31 @@ def test_reject_invalid_lock_state(value: object) -> None:
     """Never interpret an unknown state as locked or unlocked."""
     with pytest.raises(ValueError, match="is not a valid LockState"):
         LockState(value)
+    assert lock_state({"lockState": value}) is None
+
+
+def test_lock_state_is_unknown_when_missing() -> None:
+    """A status update may omit the lock state entirely."""
+    assert lock_state({"battery": 75, "doorState": "closed"}) is None
+
+
+@pytest.mark.parametrize(
+    ("state", "expected"),
+    [
+        (LockState.LOCKED, True),
+        (LockState.LATCH_BOLT_LOCKED, True),
+        (LockState.HALF_LOCKED, True),
+        (LockState.UNLOCKED, False),
+        (LockState.LOCKING, False),
+        (LockState.UNLOCKING, False),
+        (LockState.JAMMED, False),
+    ],
+)
+def test_lock_state_uses_home_assistant_locked_semantics(
+    state: LockState, *, expected: bool
+) -> None:
+    """Use HA's locked classification while retaining the underlying state."""
+    assert state.is_locked is expected
 
 
 @pytest.mark.parametrize(
@@ -98,23 +125,33 @@ def test_lock_device_type_identifiers(
     assert webhook_type not in LOCK_DEVICE_TYPES
 
 
-@pytest.mark.parametrize("door_state", ["opened", "OPENED"])
-def test_new_lock_door_state(door_state: str) -> None:
-    """Read UWB REST and both webhook spellings as the common door position."""
-    assert lock_door_state({"doorState": door_state}) is DoorState.OPEN
+@pytest.mark.parametrize(
+    ("door_state", "expected"),
+    [
+        ("open", DoorState.OPEN),
+        ("opened", DoorState.OPEN),
+        ("OPENED", DoorState.OPEN),
+        ("close", DoorState.CLOSED),
+        ("closed", DoorState.CLOSED),
+        ("CLOSED", DoorState.CLOSED),
+    ],
+)
+def test_lock_door_state(door_state: str, expected: DoorState) -> None:
+    """Normalize the open and closed spellings from status and webhooks."""
+    assert lock_door_state({"doorState": door_state}) is expected
 
 
 def test_nano_rest_without_door_state() -> None:
     """An available lock state does not imply a known door position."""
     status = {"deviceType": SMART_LOCK_NANO, "lockState": "unlocked"}
-    assert LockState(status["lockState"]) is LockState.UNLOCKED
+    assert lock_state(status) is LockState.UNLOCKED
     assert lock_door_state(status) is None
 
 
-def test_unknown_lock_door_state() -> None:
+@pytest.mark.parametrize("value", ["unknown", "", None, True, 1])
+def test_unknown_lock_door_state(value: object) -> None:
     """Unknown values must not be interpreted as a closed door."""
-    with pytest.raises(ValueError, match="DoorState"):
-        lock_door_state({"doorState": "unknown"})
+    assert lock_door_state({"doorState": value}) is None
 
 
 @pytest.mark.parametrize("kind", [PasscodeType.PERMANENT, PasscodeType.URGENT])

@@ -69,6 +69,15 @@ class LockState(Enum):
     LATCH_BOLT_LOCKED = "latchBoltLocked"
     HALF_LOCKED = "halfLocked"
 
+    @property
+    def is_locked(self) -> bool:
+        """Return whether Home Assistant treats this state as locked."""
+        return self in (
+            LockState.LOCKED,
+            LockState.LATCH_BOLT_LOCKED,
+            LockState.HALF_LOCKED,
+        )
+
     @classmethod
     def _missing_(cls, value: object) -> LockState | None:
         """Accept case differences and the REST lock/unlock spellings."""
