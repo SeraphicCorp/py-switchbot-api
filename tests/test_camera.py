@@ -15,8 +15,8 @@ from switchbot_api.camera import (
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 IMAGE_URL = "https://example.com/latest.jpg"
 
@@ -31,7 +31,7 @@ IMAGE_URL = "https://example.com/latest.jpg"
     ],
 )
 async def test_send_camera_command(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     expected_command: str,
@@ -48,7 +48,7 @@ async def test_send_camera_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/camera-id/commands", callback=capture_request)
-    await client.send_command("camera-id", command)
+    await send_command("camera-id", command)
     assert captured == [
         {
             "commandType": "command",

@@ -1,6 +1,7 @@
 """Asynchronous Python client for SwitchBot."""
 
 from collections.abc import AsyncGenerator, Generator
+from typing import cast
 
 from aiohttp import ClientSession
 from aioresponses import aioresponses
@@ -8,6 +9,7 @@ import pytest
 
 from switchbot_api import SwitchBotAPI
 from syrupy import SnapshotAssertion
+from tests import CommandSender
 
 from .syrupy import SwitchBotSnapshotExtension
 
@@ -26,6 +28,12 @@ async def client() -> AsyncGenerator[SwitchBotAPI, None]:
         SwitchBotAPI("token", "secret", session) as client,
     ):
         yield client
+
+
+@pytest.fixture
+def send_command(client: SwitchBotAPI) -> CommandSender:
+    """Bind the real method with its wider runtime input types for tests."""
+    return cast("CommandSender", client.send_command)
 
 
 @pytest.fixture(name="responses")

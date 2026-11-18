@@ -17,8 +17,8 @@ from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
     from switchbot_api.commands import Commands
-    from switchbot_api.common.commands import Commands as V2Commands
     from syrupy import SnapshotAssertion
+    from tests import CommandSender
 
 
 @pytest.mark.parametrize(
@@ -31,9 +31,9 @@ if TYPE_CHECKING:
     ],
 )
 async def test_send_v1_v2_and_custom_commands(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
-    command: Commands | V2Commands | str,
+    command: Commands | str,
     expected: str,
     command_type: str,
 ) -> None:
@@ -46,7 +46,7 @@ async def test_send_v1_v2_and_custom_commands(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/command-id/commands", callback=capture)
-    await client.send_command(
+    await send_command(
         "command-id",
         command,
         command_type=command_type,

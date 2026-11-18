@@ -46,8 +46,8 @@ from switchbot_api.vacuum import (
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 @pytest.mark.parametrize(
@@ -424,7 +424,7 @@ def test_volume_type(volume: Any) -> None:
     ],
 )
 async def test_vacuum_command_serialization(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameter: dict[str, Any] | str | int,
@@ -439,7 +439,7 @@ async def test_vacuum_command_serialization(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/vacuum-id/commands", callback=capture)
-    await client.send_command(
+    await send_command(
         "vacuum-id",
         command,
         parameters=parameter,

@@ -42,8 +42,8 @@ from tests.const import MOCK_URL
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 @pytest.mark.parametrize(
@@ -263,7 +263,7 @@ def test_unlisted_effect_ids_are_not_limited_to_shared_presets() -> None:
     ],
 )
 async def test_send_lighting_command(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameters: dict[str, Any] | str | int,
@@ -286,7 +286,7 @@ async def test_send_lighting_command(
         callback=capture_request,
     )
 
-    await client.send_command(
+    await send_command(
         "light-id",
         command,
         parameters=parameters,

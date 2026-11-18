@@ -25,8 +25,8 @@ from tests.const import MOCK_URL
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ def test_reject_invalid_blind_tilt_direction() -> None:
     ],
 )
 async def test_send_curtain_command(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameter: str,
@@ -175,7 +175,7 @@ async def test_send_curtain_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/curtain-id/commands", callback=capture_request)
-    await client.send_command(
+    await send_command(
         "curtain-id",
         command,
         parameters=parameter,

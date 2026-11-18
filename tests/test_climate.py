@@ -33,8 +33,8 @@ from tests.const import MOCK_URL
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 def test_device_categories_do_not_overlap() -> None:
@@ -292,7 +292,7 @@ def test_thermostat_rejects_temperature_types(value: Any) -> None:
     ],
 )
 async def test_send_climate_command(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameter: dict[str, int] | str,
@@ -308,7 +308,7 @@ async def test_send_climate_command(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/climate-id/commands", callback=capture)
-    await client.send_command(
+    await send_command(
         "climate-id",
         command,
         parameters=parameter,

@@ -43,8 +43,8 @@ from switchbot_api.others import (
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 def test_device_protocol_names() -> None:
@@ -287,7 +287,7 @@ def test_weather_station_quote_length() -> None:
     ],
 )
 async def test_other_device_commands(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands | str,
     parameter: dict[str, str] | str,
@@ -303,7 +303,7 @@ async def test_other_device_commands(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/other-id/commands", callback=capture)
-    await client.send_command(
+    await send_command(
         "other-id",
         command,
         command_type=command_type,

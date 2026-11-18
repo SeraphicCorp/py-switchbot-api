@@ -41,8 +41,8 @@ from switchbot_api.lock import (
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 START_TIME = 1_800_000_000
 END_TIME = 1_800_000_060
@@ -463,7 +463,7 @@ def test_key_command_rejects_unknown_result() -> None:
     ],
 )
 async def test_send_lock_command(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameter: dict[str, str | int] | str,
@@ -482,7 +482,7 @@ async def test_send_lock_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/lock-id/commands", callback=capture)
-    await client.send_command(
+    await send_command(
         "lock-id",
         command,
         parameters=parameter,

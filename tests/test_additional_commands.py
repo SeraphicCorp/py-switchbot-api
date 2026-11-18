@@ -42,8 +42,8 @@ from switchbot_api.others import (
 from tests.const import MOCK_URL
 
 if TYPE_CHECKING:
-    from switchbot_api import SwitchBotAPI
     from switchbot_api.common import Commands
+    from tests import CommandSender
 
 
 @pytest.mark.parametrize(
@@ -133,7 +133,7 @@ if TYPE_CHECKING:
     ],
 )
 async def test_additional_command_wire_payloads(
-    client: SwitchBotAPI,
+    send_command: CommandSender,
     responses: aioresponses,
     command: Commands,
     parameters: dict[str, Any] | list[dict[str, Any]] | str | int,
@@ -149,7 +149,7 @@ async def test_additional_command_wire_payloads(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/additional-id/commands", callback=capture)
-    await client.send_command("additional-id", command, parameters=parameters)
+    await send_command("additional-id", command, parameters=parameters)
     assert captured == [
         {
             "commandType": "command",
