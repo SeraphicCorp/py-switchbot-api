@@ -35,6 +35,7 @@ from .models import (
     OTHERS_DEVICE_TYPES,
     REMOTE,
     WEATHER_STATION,
+    ArtFrameDeleteImageMode,
     ArtFrameDisplayMode,
     BotMode,
     InfraredAirConditionerFanSpeed,
@@ -48,11 +49,13 @@ from .models import (
     MindClipUploadStatus,
 )
 from .utils import (
+    art_frame_delete_image_parameter,
     art_frame_upload_image_parameters,
     infrared_air_conditioner_parameter,
     infrared_channel_parameter,
     kata_friends_mode_parameter,
     on_off_parameter,
+    weather_station_component_parameters,
     weather_station_text_parameter,
 )
 
@@ -77,6 +80,7 @@ __all__ = [
     "WEATHER_STATION",
     "ArtFrame2Commands",
     "ArtFrameCommands",
+    "ArtFrameDeleteImageMode",
     "ArtFrameDisplayMode",
     "BotCommands",
     "BotMode",
@@ -100,10 +104,12 @@ __all__ = [
     "MindClipTranscriptionStatus",
     "MindClipUploadStatus",
     "WeatherStationCommands",
+    "art_frame_delete_image_parameter",
     "art_frame_upload_image_parameters",
     "infrared_air_conditioner_parameter",
     "infrared_channel_parameter",
     "kata_friends_mode_parameter",
     "on_off_parameter",
+    "weather_station_component_parameters",
     "weather_station_text_parameter",
 ]

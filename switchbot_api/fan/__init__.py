@@ -20,6 +20,7 @@ from .models import (
 )
 from .utils import (
     fan_close_delay_parameter,
+    fan_oscillation_parameter,
     fan_wind_mode_parameter,
     fan_wind_speed_parameter,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "CirculatorFanNightLightMode",
     "StandingCirculatorFanCommands",
     "fan_close_delay_parameter",
+    "fan_oscillation_parameter",
     "fan_wind_mode_parameter",
     "fan_wind_speed_parameter",
 ]

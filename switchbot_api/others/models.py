@@ -66,6 +66,14 @@ class ArtFrameDisplayMode(Enum):
     SLIDESHOW = 1
 
 
+class ArtFrameDeleteImageMode(Enum):
+    """Choose one cloud image to delete, excluding the currently displayed one."""
+
+    RANDOM = "random"
+    NEWEST = "newest"
+    OLDEST = "oldest"
+
+
 class KataFriendsMode(Enum):
     """Case-sensitive Kata Friends command and status modes."""
 

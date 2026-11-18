@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 from switchbot_api.common import PowerState
 
 from .models import (
+    ArtFrameDeleteImageMode,
     InfraredAirConditionerFanSpeed,
     InfraredAirConditionerMode,
     KataFriendsMode,
@@ -125,3 +126,30 @@ def weather_station_text_parameter(text: str) -> str:
         msg = "text must not be blank"
         raise ValueError(msg)
     return text
+
+
+def art_frame_delete_image_parameter(mode: ArtFrameDeleteImageMode) -> str:
+    """Select random/newest/oldest for one-image deletion on either frame."""
+    if not isinstance(mode, ArtFrameDeleteImageMode):
+        msg = "mode must be an ArtFrameDeleteImageMode member"
+        raise TypeError(msg)
+    return str(mode.value)
+
+
+def weather_station_component_parameters(
+    template_id: int,
+    component_id: int,
+    text: str,
+) -> dict[str, str | int]:
+    """Build customPutComponent with exact ID casing and at most 100 characters."""
+    for name, value in (("template_id", template_id), ("component_id", component_id)):
+        if isinstance(value, bool) or not isinstance(value, int):
+            msg = f"{name} must be an integer"
+            raise TypeError(msg)
+    if not isinstance(text, str):
+        msg = "text must be a string"
+        raise TypeError(msg)
+    if len(text) > 100:
+        msg = "text must contain at most 100 characters"
+        raise ValueError(msg)
+    return {"templateID": template_id, "componentID": component_id, "text": text}

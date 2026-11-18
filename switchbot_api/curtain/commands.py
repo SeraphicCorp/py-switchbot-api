@@ -55,3 +55,4 @@ class RollerShadeCommands(Commands):
 
     # String parameter: 0-100; 0 open, 100 closed.
     SET_POSITION = "setPosition"
+    PAUSE = "pause"

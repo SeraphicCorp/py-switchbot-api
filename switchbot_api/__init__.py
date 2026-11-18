@@ -325,7 +325,7 @@ class SwitchBotAPI:
         device_id: str,
         command: T | str,
         command_type: str = "command",
-        parameters: dict | str = "default",  # type: ignore[type-arg]
+        parameters: dict[str, Any] | list[dict[str, Any]] | str | int = "default",
     ) -> None:
         """Send command to device.
 
@@ -334,7 +334,7 @@ class SwitchBotAPI:
             command (V1 Commands | V2 Commands | str): The command to be sent.
             command_type (str, optional): The type of the command.
             Defaults to "command".
-            parameters (dict | str, optional): The parameters for the command.
+            parameters (dict | list[dict] | str | int, optional): Command parameters.
             Defaults to "default".
 
         Example JSON:

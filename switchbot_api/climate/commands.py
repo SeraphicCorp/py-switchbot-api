@@ -26,6 +26,8 @@ class EvaporativeHumidifierCommands(Commands):
     SET_MODE = "setMode"
     # String parameter: true or false, unlike purifier's numeric 0/1.
     SET_CHILD_LOCK = "setChildLock"
+    # Array parameter: up to ten weekDay/start/end objects; [] clears settings.
+    SET_AUTO_ADD_TIME = "setAutoAddTime"
 
 
 class AirPurifierCommands(Commands):
@@ -37,6 +39,12 @@ class AirPurifierCommands(Commands):
     SET_MODE = "setMode"
     # String parameter: 0 (disable) or 1 (enable).
     SET_CHILD_LOCK = "setChildLock"
+    # Object parameter: red, green, blue integers, each 0-255.
+    SET_LIGHT_COLOR = "setLightColor"
+    # Integer parameter: 0-100.
+    SET_BRIGHTNESS = "setBrightness"
+    # String parameter: on, off, or steadyMode.
+    SET_LIGHT_SENSOR = "setLightSensor"
 
 
 class SmartRadiatorThermostatCommands(Commands):

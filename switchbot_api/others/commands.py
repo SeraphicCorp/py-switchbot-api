@@ -19,19 +19,23 @@ class BotCommands(Commands):
 
 
 class ArtFrameCommands(Commands):
-    """Image navigation and uploadImage with exactly one image source."""
+    """Image navigation, upload, and one-image cloud deletion."""
 
     NEXT = "next"
     PREVIOUS = "previous"
     UPLOAD_IMAGE = "uploadImage"
+    # String parameter: random, newest, or oldest; protects the displayed image.
+    DELETE_IMAGE = "deleteImage"
 
 
 class ArtFrame2Commands(Commands):
-    """Image navigation and uploadImage with exactly one image source."""
+    """Image navigation, upload, and one-image cloud deletion."""
 
     NEXT = "next"
     PREVIOUS = "previous"
     UPLOAD_IMAGE = "uploadImage"
+    # String parameter: random, newest, or oldest; protects the displayed image.
+    DELETE_IMAGE = "deleteImage"
 
 
 class WeatherStationCommands(Commands):
@@ -40,6 +44,8 @@ class WeatherStationCommands(Commands):
     CUSTOM_QUOTE = "customQuote"
     CANCEL_CUSTOM = "cancelCustom"
     CUSTOM_PAGE = "customPage"
+    # Object parameter: templateID, componentID, text (at most 100 characters).
+    CUSTOM_PUT_COMPONENT = "customPutComponent"
 
 
 class KataFriendsCommands(Commands):

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from switchbot_api.common import PowerState
+
 from .models import BatteryCirculatorFan2ProMode, CirculatorFanMode
 
 
@@ -37,3 +39,14 @@ def fan_wind_mode_parameter(
         msg = "custom is a status-only mode and cannot be sent as a wind command"
         raise ValueError(msg)
     return str(mode.value)
+
+
+def fan_oscillation_parameter(state: PowerState) -> str:
+    """Build Fan 2 Pro horizontal/vertical oscillation as lowercase on/off."""
+    if not isinstance(state, PowerState):
+        msg = "state must be a common.PowerState member"
+        raise TypeError(msg)
+    if state is PowerState.PARTIAL:
+        msg = "oscillation state must be ON or OFF"
+        raise ValueError(msg)
+    return str(state.value).lower()

@@ -65,3 +65,6 @@ class BatteryCirculatorFan2ProCommands(Commands):
     SET_WIND_MODE = "setWindMode"
     # String parameter: 1-100.
     SET_WIND_SPEED = "setWindSpeed"
+    # String parameter: on or off.
+    SET_OSCILLATION = "setOscillation"
+    SET_VERTICAL_OSCILLATION = "setVerticalOscillation"

@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import re
+from typing import Any
+
 from .models import (
     AirPurifierFanGear,
+    AirPurifierLightSensorMode,
     AirPurifierMode,
     EvaporativeHumidifierMode,
     HumidifierMode,
@@ -96,3 +100,75 @@ def thermostat_temperature_parameter(temperature: float) -> str:
         msg = "temperature must be between 4 and 35 celsius"
         raise ValueError(msg)
     return str(temperature)
+
+
+def air_purifier_light_color_parameters(
+    red: int,
+    green: int,
+    blue: int,
+) -> dict[str, int]:
+    """Build purifier light color as JSON RGB integers, not an R:G:B string."""
+    return {
+        "red": _integer_value(red, 0, 255, "red"),
+        "green": _integer_value(green, 0, 255, "green"),
+        "blue": _integer_value(blue, 0, 255, "blue"),
+    }
+
+
+def air_purifier_brightness_parameter(brightness: int) -> int:
+    """Build the numeric purifier setBrightness parameter, including zero."""
+    return _integer_value(brightness, 0, 100, "brightness")
+
+
+def air_purifier_light_sensor_parameter(mode: AirPurifierLightSensorMode) -> str:
+    """Build the purifier's on/off/steadyMode light-sensor setting."""
+    if not isinstance(mode, AirPurifierLightSensorMode):
+        msg = "mode must be an AirPurifierLightSensorMode member"
+        raise TypeError(msg)
+    return str(mode.value)
+
+
+def _auto_add_time_period(period: dict[str, Any]) -> dict[str, Any]:
+    """Validate one schedule without inventing overlap or cross-midnight rules."""
+    if not isinstance(period, dict):
+        msg = "each period must be a dictionary"
+        raise TypeError(msg)
+    if set(period) != {"weekDay", "start", "end"}:
+        msg = "each period must contain exactly weekDay, start, and end"
+        raise ValueError(msg)
+    weekdays = period["weekDay"]
+    if not isinstance(weekdays, list):
+        msg = "weekDay must be a list of integer weekdays"
+        raise TypeError(msg)
+    if not weekdays:
+        msg = "weekDay must contain at least one weekday"
+        raise ValueError(msg)
+    for day in weekdays:
+        _integer_value(day, 1, 7, "weekday")
+    for field in ("start", "end"):
+        value = period[field]
+        if not isinstance(value, str):
+            msg = f"{field} must be a string in HH:mm format"
+            raise TypeError(msg)
+        if re.fullmatch(r"(?:[01][0-9]|2[0-3]):[0-5][0-9]", value) is None:
+            msg = f"{field} must be a valid time in HH:mm format"
+            raise ValueError(msg)
+    return {"weekDay": weekdays.copy(), "start": period["start"], "end": period["end"]}
+
+
+def evaporative_humidifier_auto_add_time_parameters(
+    periods: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build up to ten automatic refill periods; an empty list clears all.
+
+    Weekdays use 1 (Monday) through 7 (Sunday), and times use HH:mm.
+    Preserve supplied ordering and allow cross-midnight or overlapping periods
+    because the specification does not define restrictions on those cases.
+    """
+    if not isinstance(periods, list):
+        msg = "periods must be a list"
+        raise TypeError(msg)
+    if len(periods) > 10:
+        msg = "periods must contain at most ten entries"
+        raise ValueError(msg)
+    return [_auto_add_time_period(period) for period in periods]

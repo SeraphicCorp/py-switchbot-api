@@ -116,6 +116,8 @@ class RGBICNeonWireRopeLightCommands(Commands):
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
+    # object parameter with an integer effectId.
+    SET_LIGHT_EFFECT = "setLightEffect"
 
 
 class RGBICWWFloorLampCommands(Commands):
@@ -235,6 +237,8 @@ class PermanentOutdoorLightsCommands(Commands):
     SET_COLOR = "setColor"
     # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
+    # Feishu revision 11124: object parameter with an integer effectId.
+    SET_LIGHT_EFFECT = "setLightEffect"
 
 
 class RGBICWWCeilingLightCommands(Commands):
@@ -258,3 +262,5 @@ class RGBICWWCeilingLightCommands(Commands):
     SET_COLOR_LIGHT_BRIGHTNESS = "setColorLightBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR_LIGHT_RGB = "setColorLightRGB"
+    # Feishu revision 11124: object parameter with an integer effectId.
+    SET_LIGHT_EFFECT = "setLightEffect"

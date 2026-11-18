@@ -81,6 +81,14 @@ class AirPurifierFanGear(Enum):
     HIGH = 3
 
 
+class AirPurifierLightSensorMode(Enum):
+    """Purifier light settings; ON enables sensor-based light shutdown."""
+
+    ON = "on"
+    OFF = "off"
+    STEADY = "steadyMode"
+
+
 class SmartRadiatorThermostatMode(Enum):
     """Radiator thermostat modes encoded as 0-5 in command parameters."""
 
