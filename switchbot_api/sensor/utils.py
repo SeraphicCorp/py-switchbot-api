@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:
     """Read a status body or webhook context for a motion/presence sensor.
 
-    Presence status uses the case-sensitive Detected field; motion/contact
-    status uses moveDetected. Water Detector uses integer detectionState and
-    must instead be parsed with WaterLeakState.
+    Presence status uses Detected or detected; motion/contact status uses
+    moveDetected. Water Detector uses integer detectionState and must instead
+    be parsed with WaterLeakState. Existing field precedence is preserved.
     """
     if "detectionState" in payload:
         value = payload["detectionState"]
@@ -23,7 +23,7 @@ def sensor_detection_state(payload: Mapping[str, Any]) -> DetectionState | None:
             msg = "motion detectionState must be a string; use WaterLeakState for water"
             raise TypeError(msg)
         return DetectionState(value)
-    for key in ("moveDetected", "Detected"):
+    for key in ("moveDetected", "Detected", "detected"):
         if key in payload:
             value = payload[key]
             if not isinstance(value, bool):

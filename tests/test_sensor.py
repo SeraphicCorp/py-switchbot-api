@@ -28,14 +28,16 @@ from switchbot_api.sensor import (
         ({"detectionState": "DETECTED"}, DetectionState.DETECTED),
         ({"detectionState": "NOT_DETECTED"}, DetectionState.NOT_DETECTED),
         ({"battery": 100}, None),
-        ({"detected": True}, None),
+        ({"detected": True}, DetectionState.DETECTED),
+        ({"detected": False}, DetectionState.NOT_DETECTED),
+        ({}, None),
     ],
 )
 def test_detection_status_and_webhook(
     payload: dict[str, Any],
     expected: DetectionState | None,
 ) -> None:
-    """Respect case-sensitive presence fields and unknown missing readings."""
+    """Accept documented presence field spellings and keep missing readings unknown."""
     assert sensor_detection_state(payload) is expected
 
 
@@ -43,6 +45,9 @@ def test_detection_status_and_webhook(
     "payload",
     [
         {"Detected": 1},
+        {"detected": 1},
+        {"detected": "false"},
+        {"detected": None},
         {"moveDetected": "false"},
         {"moveDetected": None},
         {"detectionState": 1},
@@ -53,6 +58,25 @@ def test_reject_confused_motion_and_water_codes(payload: dict[str, Any]) -> None
     """Water Detector numeric detectionState must never be treated as motion."""
     with pytest.raises(TypeError, match="must be"):
         sensor_detection_state(payload)
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected"),
+    [
+        (
+            {"detectionState": "NOT_DETECTED", "detected": True},
+            DetectionState.NOT_DETECTED,
+        ),
+        ({"moveDetected": False, "detected": True}, DetectionState.NOT_DETECTED),
+        ({"Detected": False, "detected": True}, DetectionState.NOT_DETECTED),
+    ],
+)
+def test_detection_field_precedence(
+    payload: dict[str, Any],
+    expected: DetectionState,
+) -> None:
+    """The new alias must not override previously supported fields."""
+    assert sensor_detection_state(payload) is expected
 
 
 def test_unknown_motion_state() -> None:

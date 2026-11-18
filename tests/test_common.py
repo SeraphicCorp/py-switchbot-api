@@ -58,6 +58,9 @@ def test_reject_invalid_power_state(value: object) -> None:
     [
         ("open", DoorState.OPEN),
         ("OPEN", DoorState.OPEN),
+        ("opened", DoorState.OPEN),
+        ("OPENED", DoorState.OPEN),
+        ("Opened", DoorState.OPEN),
         ("close", DoorState.CLOSED),
         ("CLOSE", DoorState.CLOSED),
         ("closed", DoorState.CLOSED),
@@ -71,7 +74,7 @@ def test_parse_door_state(value: str, expected: DoorState) -> None:
     assert DoorState(value) is expected
 
 
-@pytest.mark.parametrize("value", ["unknown", "", True, 1, None])
+@pytest.mark.parametrize("value", ["unknown", "", " opened ", True, 1, None])
 def test_reject_invalid_door_state(value: object) -> None:
     """Unknown and boolean door values are not silently considered closed."""
     with pytest.raises(ValueError, match="is not a valid DoorState"):

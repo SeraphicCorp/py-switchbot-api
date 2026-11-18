@@ -21,11 +21,11 @@ class DoorState(Enum):
 
     @classmethod
     def _missing_(cls, value: object) -> DoorState | None:
-        """Accept uppercase values and the equivalent closed spelling."""
+        """Accept case differences and the equivalent opened/closed spellings."""
         if not isinstance(value, str):
             return None
         normalized = value.casefold()
-        if normalized == "open":
+        if normalized in {"open", "opened"}:
             return cls.OPEN
         if normalized in {"close", "closed"}:
             return cls.CLOSED
