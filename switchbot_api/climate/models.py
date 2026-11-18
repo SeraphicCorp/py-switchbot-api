@@ -2,8 +2,8 @@
 
 Air purifiers, humidifiers, the radiator thermostat, and Home Climate Panel
 belong here; circulator fans belong in fan. Both evaporative humidifiers use
-the raw device type Humidifier2. Their product labels and the existing
-Humidifier 2 spelling are also collected as aliases.
+the API device type Humidifier2. The existing Humidifier 2 spelling is kept
+as an alias.
 
 Status/webhook payloads remain ordinary dictionaries. Home Climate Panel has
 no documented control commands. Its numeric status brightness differs from
@@ -22,8 +22,6 @@ AIR_PURIFIER_TABLE_PM25: Final = "Air Purifier Table PM2.5"
 HUMIDIFIER: Final = "Humidifier"
 HUMIDIFIER_2: Final = "Humidifier2"
 HUMIDIFIER_2_SPACED: Final = "Humidifier 2"
-EVAPORATIVE_HUMIDIFIER: Final = "Evaporative Humidifier"
-EVAPORATIVE_HUMIDIFIER_AUTO_REFILL: Final = "Evaporative Humidifier (Auto-refill)"
 SMART_RADIATOR_THERMOSTAT: Final = "Smart Radiator Thermostat"
 HOME_CLIMATE_PANEL: Final = "Home Climate Panel"
 
@@ -35,8 +33,6 @@ CLIMATE_DEVICE_TYPES: Final[list[str]] = [
     HUMIDIFIER,
     HUMIDIFIER_2,
     HUMIDIFIER_2_SPACED,
-    EVAPORATIVE_HUMIDIFIER,
-    EVAPORATIVE_HUMIDIFIER_AUTO_REFILL,
     SMART_RADIATOR_THERMOSTAT,
     HOME_CLIMATE_PANEL,
 ]
