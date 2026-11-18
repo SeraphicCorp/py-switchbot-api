@@ -1,0 +1,1 @@
+"""Switch device models."""

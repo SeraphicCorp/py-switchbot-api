@@ -1,0 +1,1 @@
+"""Climate device commands."""
