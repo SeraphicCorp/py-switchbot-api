@@ -6,6 +6,7 @@ from switchbot_api.common.models import (
     ChargingStatus,
     DetectionState,
     DoorState,
+    OnlineStatus,
     PowerState,
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "Commands",
     "DetectionState",
     "DoorState",
+    "OnlineStatus",
     "PowerState",
 ]

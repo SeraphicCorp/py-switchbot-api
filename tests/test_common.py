@@ -40,6 +40,8 @@ def test_reject_invalid_power_state(value: object) -> None:
         ("CLOSE", DoorState.CLOSED),
         ("closed", DoorState.CLOSED),
         ("Closed", DoorState.CLOSED),
+        ("timeOutNotClose", DoorState.TIMEOUT_NOT_CLOSED),
+        ("TIMEOUTNOTCLOSE", DoorState.TIMEOUT_NOT_CLOSED),
     ],
 )
 def test_parse_door_state(value: str, expected: DoorState) -> None:

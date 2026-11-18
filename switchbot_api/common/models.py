@@ -5,11 +5,19 @@ from __future__ import annotations
 from enum import Enum
 
 
+class OnlineStatus(Enum):
+    """String connectivity states shared by vacuums and other devices."""
+
+    ONLINE = "online"
+    OFFLINE = "offline"
+
+
 class DoorState(Enum):
     """Door position shared by lock and sensor state payloads."""
 
     OPEN = "open"
     CLOSED = "close"
+    TIMEOUT_NOT_CLOSED = "timeOutNotClose"
 
     @classmethod
     def _missing_(cls, value: object) -> DoorState | None:
@@ -21,6 +29,8 @@ class DoorState(Enum):
             return cls.OPEN
         if normalized in {"close", "closed"}:
             return cls.CLOSED
+        if normalized == "timeoutnotclose":
+            return cls.TIMEOUT_NOT_CLOSED
         return None
 
 
