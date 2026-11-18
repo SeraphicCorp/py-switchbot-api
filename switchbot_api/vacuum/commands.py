@@ -1,7 +1,9 @@
-"""Vacuum commands; scalar parameters are strings and clean settings are objects.
+"""Vacuum commands with model-specific scalar and object parameters.
 
-S10/S20 support selfClean and addWaterForHumi. Other modern vacuums do not.
+S10/S20 support selfClean and addWaterForHumi. S30 supports numeric selfClean
+codes and does not document addWaterForHumi.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/robot-vacuum
+S30 source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands
@@ -65,6 +67,19 @@ class FloorCleaningRobotS20Commands(Commands):
     CHANGE_PARAMETERS = "changeParam"
     SELF_CLEAN = "selfClean"
     ADD_WATER_FOR_HUMIDIFIER = "addWaterForHumi"
+
+
+class FloorCleaningRobotS30Commands(Commands):
+    """S30 controls; successful responses may contain an empty body."""
+
+    START_CLEAN = "startClean"
+    PAUSE = "pause"
+    DOCK = "dock"
+    # A numeric value from 0 to 100.
+    SET_VOLUME = "setVolume"
+    # A numeric code from 1 to 4; code meanings await firmware confirmation.
+    SELF_CLEAN = "selfClean"
+    CHANGE_PARAMETERS = "changeParam"
 
 
 class K10ProComboCommands(Commands):

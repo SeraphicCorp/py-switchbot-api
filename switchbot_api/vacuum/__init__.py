@@ -3,6 +3,7 @@
 from .commands import (
     FloorCleaningRobotS10Commands,
     FloorCleaningRobotS20Commands,
+    FloorCleaningRobotS30Commands,
     K10ProComboCommands,
     K20ProCommands,
     MiniRobotVacuumK10Commands,
@@ -15,6 +16,7 @@ from .commands import (
 from .models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S30,
     K10_PRO_COMBO,
     K20_PRO,
     MINI_ROBOT_VACUUM_K10,
@@ -33,6 +35,10 @@ from .models import (
     VacuumWorkingStatus,
 )
 from .utils import (
+    s30_change_parameters,
+    s30_self_clean_parameter,
+    s30_start_clean_parameters,
+    s30_volume_parameter,
     vacuum_change_parameters,
     vacuum_fan_speed_parameter,
     vacuum_start_clean_parameters,
@@ -42,6 +48,7 @@ from .utils import (
 __all__ = [
     "FLOOR_CLEANING_ROBOT_S10",
     "FLOOR_CLEANING_ROBOT_S20",
+    "FLOOR_CLEANING_ROBOT_S30",
     "K10_PRO_COMBO",
     "K20_PRO",
     "MINI_ROBOT_VACUUM_K10",
@@ -53,6 +60,7 @@ __all__ = [
     "VACUUM_DEVICE_TYPES",
     "FloorCleaningRobotS10Commands",
     "FloorCleaningRobotS20Commands",
+    "FloorCleaningRobotS30Commands",
     "K10ProComboCommands",
     "K20ProCommands",
     "MiniRobotVacuumK10Commands",
@@ -68,6 +76,10 @@ __all__ = [
     "VacuumTaskType",
     "VacuumWaterLevel",
     "VacuumWorkingStatus",
+    "s30_change_parameters",
+    "s30_self_clean_parameter",
+    "s30_start_clean_parameters",
+    "s30_volume_parameter",
     "vacuum_change_parameters",
     "vacuum_fan_speed_parameter",
     "vacuum_start_clean_parameters",

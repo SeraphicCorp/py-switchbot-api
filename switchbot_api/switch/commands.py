@@ -1,6 +1,7 @@
 """Documented plug, relay, and garage command enums.
 
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/plugs-switches
+IT and Outdoor EU source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands
@@ -22,6 +23,22 @@ class PlugCommands(Commands):
 
 class PlugMiniEUCommands(Commands):
     """Plug Mini on/off/toggle actions; default parameter."""
+
+    ON = "turnOn"
+    OFF = "turnOff"
+    TOGGLE = "toggle"
+
+
+class PlugMiniITCommands(Commands):
+    """Plug Mini (IT) on/off/toggle actions with the default parameter."""
+
+    ON = "turnOn"
+    OFF = "turnOff"
+    TOGGLE = "toggle"
+
+
+class OutdoorPlugEUCommands(Commands):
+    """Outdoor Plug (EU) on/off/toggle actions with the default parameter."""
 
     ON = "turnOn"
     OFF = "turnOff"

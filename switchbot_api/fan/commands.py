@@ -1,9 +1,9 @@
 """Fan command enums from SwitchBot API v1.1.
 
-Commands inherit common.Commands. Scalar parameters are strings; power actions
-use default. Oscillation is reported by status but has no documented command
-in these device specifications.
+Commands inherit common.Commands. Power actions use default. Circulator fans
+use string settings, while Modern Ceiling Fan uses several integer settings.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/climate-control
+Modern Ceiling Fan source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands
@@ -68,3 +68,30 @@ class BatteryCirculatorFan2ProCommands(Commands):
     # String parameter: on or off.
     SET_OSCILLATION = "setOscillation"
     SET_VERTICAL_OSCILLATION = "setVerticalOscillation"
+
+
+class ModernCeilingFanCommands(Commands):
+    """Control the ceiling fan, main light and backlight."""
+
+    ON = "turnOn"
+    OFF = "turnOff"
+    TOGGLE = "toggle"
+    FAN_ON = "turnOnFan"
+    FAN_OFF = "turnOffFan"
+    SET_WIND_MODE = "setWindMode"
+    # Integer parameter: 1-100.
+    SET_WIND_SPEED = "setWindSpeed"
+    # Positive integer parameter in minutes.
+    CLOSE_DELAY = "closeDelay"
+    MAIN_LIGHT_ON = "turnOnMainLight"
+    MAIN_LIGHT_OFF = "turnOffMainLight"
+    # Integer parameter: 0-100.
+    SET_MAIN_BRIGHTNESS = "setMainBrightness"
+    BACK_LIGHT_ON = "turnOnBackLight"
+    BACK_LIGHT_OFF = "turnOffBackLight"
+    # Integer parameter: 0-100.
+    SET_BACK_BRIGHTNESS = "setBackBrightness"
+    # Integer parameter: 2700-6500 Kelvin.
+    SET_COLOR_TEMPERATURE = "setColorTemperature"
+    # Backlight RGB string: R:G:B.
+    SET_COLOR = "setColor"

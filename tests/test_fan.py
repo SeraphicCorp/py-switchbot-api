@@ -8,6 +8,8 @@ from aioresponses import CallbackResult, aioresponses
 import pytest
 
 from switchbot_api.fan import (
+    FAN_DEVICE_TYPES,
+    MODERN_CEILING_FAN,
     BatteryCirculatorFan2ProCommands,
     BatteryCirculatorFan2ProMode,
     BatteryCirculatorFan2ProNightLightMode,
@@ -15,10 +17,18 @@ from switchbot_api.fan import (
     CirculatorFanCommands,
     CirculatorFanMode,
     CirculatorFanNightLightMode,
+    ModernCeilingFanCommands,
+    ModernCeilingFanMode,
     StandingCirculatorFanCommands,
     fan_close_delay_parameter,
     fan_wind_mode_parameter,
     fan_wind_speed_parameter,
+    modern_ceiling_fan_brightness_parameter,
+    modern_ceiling_fan_close_delay_parameter,
+    modern_ceiling_fan_color_parameter,
+    modern_ceiling_fan_color_temperature_parameter,
+    modern_ceiling_fan_wind_mode_parameter,
+    modern_ceiling_fan_wind_speed_parameter,
 )
 from tests.const import MOCK_URL
 
@@ -88,6 +98,28 @@ def test_fan_rejects_untyped_mode() -> None:
         fan_wind_mode_parameter("direct")  # type: ignore[arg-type]
 
 
+def test_ceiling_fan_discovery_and_mode() -> None:
+    """Recognize the discovery type and keep webhook mode strings separate."""
+    assert MODERN_CEILING_FAN == "Modern Ceiling Fan"
+    assert MODERN_CEILING_FAN in FAN_DEVICE_TYPES
+    assert ModernCeilingFanMode("reverse") is ModernCeilingFanMode.REVERSE
+    with pytest.raises(ValueError, match="ModernCeilingFanMode"):
+        ModernCeilingFanMode(1)
+    with pytest.raises(ValueError, match="webhook-only"):
+        modern_ceiling_fan_wind_mode_parameter(ModernCeilingFanMode("custom"))
+    with pytest.raises(TypeError, match="ModernCeilingFanMode member"):
+        modern_ceiling_fan_wind_mode_parameter(1)  # type: ignore[arg-type]
+
+
+def test_ceiling_fan_delay_uses_positive_integer_minutes() -> None:
+    """Keep the integer value without scaling or copying the older fan limit."""
+    assert modern_ceiling_fan_close_delay_parameter(36_001) == 36_001
+    with pytest.raises(ValueError, match="minutes must be positive"):
+        modern_ceiling_fan_close_delay_parameter(0)
+    with pytest.raises(TypeError, match="minutes must be an integer"):
+        modern_ceiling_fan_close_delay_parameter(minutes=True)
+
+
 @pytest.mark.parametrize(
     ("command", "parameter", "expected_command", "expected_parameter"),
     [
@@ -141,17 +173,88 @@ def test_fan_rejects_untyped_mode() -> None:
             "setNightLightMode",
             "1",
         ),
+        (ModernCeilingFanCommands.ON, "default", "turnOn", "default"),
+        (ModernCeilingFanCommands.OFF, "default", "turnOff", "default"),
+        (ModernCeilingFanCommands.TOGGLE, "default", "toggle", "default"),
+        (ModernCeilingFanCommands.FAN_ON, "default", "turnOnFan", "default"),
+        (ModernCeilingFanCommands.FAN_OFF, "default", "turnOffFan", "default"),
+        (
+            ModernCeilingFanCommands.SET_WIND_MODE,
+            modern_ceiling_fan_wind_mode_parameter(ModernCeilingFanMode.REVERSE),
+            "setWindMode",
+            "reverse",
+        ),
+        (
+            ModernCeilingFanCommands.SET_WIND_SPEED,
+            modern_ceiling_fan_wind_speed_parameter(100),
+            "setWindSpeed",
+            100,
+        ),
+        (
+            ModernCeilingFanCommands.CLOSE_DELAY,
+            modern_ceiling_fan_close_delay_parameter(30),
+            "closeDelay",
+            30,
+        ),
+        (
+            ModernCeilingFanCommands.MAIN_LIGHT_ON,
+            "default",
+            "turnOnMainLight",
+            "default",
+        ),
+        (
+            ModernCeilingFanCommands.MAIN_LIGHT_OFF,
+            "default",
+            "turnOffMainLight",
+            "default",
+        ),
+        (
+            ModernCeilingFanCommands.SET_MAIN_BRIGHTNESS,
+            modern_ceiling_fan_brightness_parameter(0),
+            "setMainBrightness",
+            0,
+        ),
+        (
+            ModernCeilingFanCommands.BACK_LIGHT_ON,
+            "default",
+            "turnOnBackLight",
+            "default",
+        ),
+        (
+            ModernCeilingFanCommands.BACK_LIGHT_OFF,
+            "default",
+            "turnOffBackLight",
+            "default",
+        ),
+        (
+            ModernCeilingFanCommands.SET_BACK_BRIGHTNESS,
+            modern_ceiling_fan_brightness_parameter(100),
+            "setBackBrightness",
+            100,
+        ),
+        (
+            ModernCeilingFanCommands.SET_COLOR_TEMPERATURE,
+            modern_ceiling_fan_color_temperature_parameter(4000),
+            "setColorTemperature",
+            4000,
+        ),
+        (
+            ModernCeilingFanCommands.SET_COLOR,
+            modern_ceiling_fan_color_parameter(255, 0, 80),
+            "setColor",
+            "255:0:80",
+        ),
     ],
 )
 async def test_send_fan_command(
     client: SwitchBotAPI,
     responses: aioresponses,
     command: Commands,
-    parameter: str,
+    parameter: str | int,
     expected_command: str,
-    expected_parameter: str,
+    expected_parameter: str | int,
 ) -> None:
-    """Preserve family-specific modes and nightlight codes in the HTTP body."""
+    """Preserve the distinct circulator and ceiling fan request formats."""
     captured: list[dict[str, Any]] = []
 
     def capture(_: str, **kwargs: Any) -> CallbackResult:

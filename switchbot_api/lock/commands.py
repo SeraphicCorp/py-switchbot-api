@@ -4,6 +4,7 @@ All enums inherit common.Commands. Lock/latch actions use parameter default.
 Keypad password commands return their actual outcome asynchronously through
 webhooks; an accepted HTTP request does not establish completion.
 Source: https://github.com/OpenWonderLabs/SwitchBotAPI/tree/main/devices/locks-security
+Nano and UWB source: SwitchBot OpenAPI document, revision 11124.
 """
 
 from switchbot_api.common import Commands
@@ -19,6 +20,22 @@ class LockCommands(Commands):
 
 class LockLiteCommands(Commands):
     """Documented lock, unlock, and deadbolt/latch controls."""
+
+    LOCK = "lock"
+    UNLOCK = "unlock"
+    DEADBOLT = "deadbolt"
+
+
+class LockNanoCommands(Commands):
+    """Lock Nano controls with the default parameter."""
+
+    LOCK = "lock"
+    UNLOCK = "unlock"
+    DEADBOLT = "deadbolt"
+
+
+class UWBLockCommands(Commands):
+    """UWB Lock controls with the default parameter."""
 
     LOCK = "lock"
     UNLOCK = "unlock"

@@ -11,12 +11,15 @@ import pytest
 from switchbot_api.vacuum import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
+    FLOOR_CLEANING_ROBOT_S30,
     K10_PRO_COMBO,
     K20_PRO,
     ROBOT_VACUUM_K11,
     ROBOT_VACUUM_K11_PRO,
+    VACUUM_DEVICE_TYPES,
     FloorCleaningRobotS10Commands,
     FloorCleaningRobotS20Commands,
+    FloorCleaningRobotS30Commands,
     K10ProComboCommands,
     K20ProCommands,
     MiniRobotVacuumK10Commands,
@@ -31,6 +34,10 @@ from switchbot_api.vacuum import (
     VacuumSelfCleanMode,
     VacuumWaterLevel,
     VacuumWorkingStatus,
+    s30_change_parameters,
+    s30_self_clean_parameter,
+    s30_start_clean_parameters,
+    s30_volume_parameter,
     vacuum_change_parameters,
     vacuum_fan_speed_parameter,
     vacuum_start_clean_parameters,
@@ -210,6 +217,57 @@ def test_partial_change_rejects_invalid_types(settings: dict[str, Any]) -> None:
         vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, **settings)
 
 
+def test_s30_clean_parameters() -> None:
+    """Preserve S30-specific pass-through fields and numeric cleaning levels."""
+    assert FLOOR_CLEANING_ROBOT_S30 == "Robot Vacuum Cleaner S30"
+    assert FLOOR_CLEANING_ROBOT_S30 in VACUUM_DEVICE_TYPES
+    assert s30_start_clean_parameters(
+        VacuumCleanMode.SWEEP_MOP, VacuumFanLevel.STANDARD, water_level=1
+    ) == {"action": "sweep_mop", "param": {"fanLevel": 2, "waterLevel": 1, "times": 1}}
+    assert s30_start_clean_parameters("customAction", 1, "2", water_level=2) == {
+        "action": "customAction",
+        "param": {"fanLevel": 1, "waterLevel": 2, "times": "2"},
+    }
+    assert s30_change_parameters(water_level=VacuumWaterLevel.HIGH) == {"waterLevel": 2}
+    assert s30_change_parameters(times=3_000_000) == {"times": 3_000_000}
+
+
+def test_s30_change_parameter_validation() -> None:
+    """Reject empty changes and invalid levels without imposing legacy times bounds."""
+    with pytest.raises(ValueError, match="at least one"):
+        s30_change_parameters()
+    with pytest.raises(TypeError, match="fan_level must be an integer"):
+        s30_change_parameters(fan_level=True)
+    with pytest.raises(ValueError, match="water_level must be between 1 and 2"):
+        s30_change_parameters(water_level=3)
+
+
+def test_s30_rejects_nonstring_action() -> None:
+    """The action remains a wire string even though its values are open."""
+    with pytest.raises(TypeError, match="action must be a string"):
+        s30_start_clean_parameters(1, 2, water_level=1)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("code", [1, 2, 3, 4])
+def test_s30_self_clean_codes(code: int) -> None:
+    """Send documented code numbers while leaving their semantics unspecified."""
+    assert s30_self_clean_parameter(code) == code
+
+
+@pytest.mark.parametrize("code", [True, "1", 1.0])
+def test_s30_self_clean_requires_an_integer(code: Any) -> None:
+    """Reject strings and booleans that would otherwise resemble a valid code."""
+    with pytest.raises(TypeError, match="code must be an integer"):
+        s30_self_clean_parameter(code)
+
+
+@pytest.mark.parametrize("code", [0, 5])
+def test_s30_self_clean_rejects_unsupported_codes(code: int) -> None:
+    """Restrict the wire code range to the four documented values."""
+    with pytest.raises(ValueError, match="between 1 and 4"):
+        s30_self_clean_parameter(code)
+
+
 @pytest.mark.parametrize(
     ("speed", "expected"),
     [(0, "0"), (3, "3"), (VacuumFanSpeed.QUIET, "0"), (VacuumFanSpeed.MAX, "3")],
@@ -282,6 +340,28 @@ def test_volume_type(volume: Any) -> None:
             "selfClean",
         ),
         (
+            FloorCleaningRobotS30Commands.START_CLEAN,
+            s30_start_clean_parameters(VacuumCleanMode.SWEEP, 1, water_level=1),
+            "startClean",
+        ),
+        (FloorCleaningRobotS30Commands.PAUSE, "default", "pause"),
+        (FloorCleaningRobotS30Commands.DOCK, "default", "dock"),
+        (
+            FloorCleaningRobotS30Commands.SET_VOLUME,
+            s30_volume_parameter(80),
+            "setVolume",
+        ),
+        (
+            FloorCleaningRobotS30Commands.SELF_CLEAN,
+            s30_self_clean_parameter(4),
+            "selfClean",
+        ),
+        (
+            FloorCleaningRobotS30Commands.CHANGE_PARAMETERS,
+            s30_change_parameters(fan_level=3),
+            "changeParam",
+        ),
+        (
             FloorCleaningRobotS10Commands.ADD_WATER_FOR_HUMIDIFIER,
             "default",
             "addWaterForHumi",
@@ -308,10 +388,10 @@ async def test_vacuum_command_serialization(
     client: SwitchBotAPI,
     responses: aioresponses,
     command: Commands,
-    parameter: dict[str, Any] | str,
+    parameter: dict[str, Any] | str | int,
     expected: str,
 ) -> None:
-    """Send every family through the existing client with serializable values."""
+    """Serialize each family and accept empty success bodies without a command ID."""
     captured: list[dict[str, Any]] = []
 
     def capture(_: str, **kwargs: Any) -> CallbackResult:

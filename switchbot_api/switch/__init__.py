@@ -2,8 +2,10 @@
 
 from .commands import (
     GarageDoorOpenerCommands,
+    OutdoorPlugEUCommands,
     PlugCommands,
     PlugMiniEUCommands,
+    PlugMiniITCommands,
     PlugMiniJPCommands,
     PlugMiniUSCommands,
     RelaySwitch1Commands,
@@ -12,8 +14,10 @@ from .commands import (
 )
 from .models import (
     GARAGE_DOOR_OPENER,
+    OUTDOOR_PLUG_EU,
     PLUG,
     PLUG_MINI_EU,
+    PLUG_MINI_IT,
     PLUG_MINI_JP,
     PLUG_MINI_US,
     RELAY_SWITCH_1,
@@ -34,8 +38,10 @@ from .utils import (
 
 __all__ = [
     "GARAGE_DOOR_OPENER",
+    "OUTDOOR_PLUG_EU",
     "PLUG",
     "PLUG_MINI_EU",
+    "PLUG_MINI_IT",
     "PLUG_MINI_JP",
     "PLUG_MINI_US",
     "RELAY_SWITCH_1",
@@ -44,8 +50,10 @@ __all__ = [
     "SWITCH_DEVICE_TYPES",
     "GarageDoorOpenerCommands",
     "GarageDoorStatus",
+    "OutdoorPlugEUCommands",
     "PlugCommands",
     "PlugMiniEUCommands",
+    "PlugMiniITCommands",
     "PlugMiniJPCommands",
     "PlugMiniUSCommands",
     "RelayChannel",

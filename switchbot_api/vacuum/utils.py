@@ -124,3 +124,60 @@ def vacuum_change_parameters(
         msg = "at least one cleaning parameter is required"
         raise ValueError(msg)
     return parameters
+
+
+def s30_start_clean_parameters(
+    action: VacuumCleanMode | str,
+    fan_level: VacuumFanLevel | int,
+    times: Any = 1,
+    *,
+    water_level: VacuumWaterLevel | int,
+) -> dict[str, Any]:
+    """Build S30 startClean with validated levels and a caller-supplied action.
+
+    The documented examples use sweep and sweep_mop. The API does not define
+    an action allowlist or a type and range for the JSON value of times.
+    """
+    if isinstance(action, VacuumCleanMode):
+        action = str(action.value)
+    if not isinstance(action, str):
+        msg = "action must be a string or VacuumCleanMode member"
+        raise TypeError(msg)
+    return {
+        "action": action,
+        "param": {
+            "fanLevel": _fan_level(fan_level),
+            "waterLevel": _water_level(water_level),
+            "times": times,
+        },
+    }
+
+
+def s30_change_parameters(
+    *,
+    fan_level: VacuumFanLevel | int | None = None,
+    water_level: VacuumWaterLevel | int | None = None,
+    times: Any = None,
+) -> dict[str, Any]:
+    """Build a nonempty S30 changeParam update, passing supplied times through."""
+    parameters: dict[str, Any] = {}
+    if fan_level is not None:
+        parameters["fanLevel"] = _fan_level(fan_level)
+    if water_level is not None:
+        parameters["waterLevel"] = _water_level(water_level)
+    if times is not None:
+        parameters["times"] = times
+    if not parameters:
+        msg = "at least one cleaning parameter is required"
+        raise ValueError(msg)
+    return parameters
+
+
+def s30_volume_parameter(volume: int) -> int:
+    """Build S30 setVolume as an integer from 0 to 100."""
+    return integer_in_range(volume, 0, 100, "volume")
+
+
+def s30_self_clean_parameter(code: int) -> int:
+    """Build an S30 selfClean code without assuming the action for each code."""
+    return integer_in_range(code, 1, 4, "code")

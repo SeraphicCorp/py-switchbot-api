@@ -8,12 +8,17 @@ from typing import TYPE_CHECKING, Any
 from aioresponses import CallbackResult, aioresponses
 import pytest
 
-from switchbot_api.common import PowerState
+from switchbot_api.common import OnlineStatus, PowerState
 from switchbot_api.switch import (
+    OUTDOOR_PLUG_EU,
+    PLUG_MINI_IT,
+    SWITCH_DEVICE_TYPES,
     GarageDoorOpenerCommands,
     GarageDoorStatus,
+    OutdoorPlugEUCommands,
     PlugCommands,
     PlugMiniEUCommands,
+    PlugMiniITCommands,
     PlugMiniJPCommands,
     PlugMiniUSCommands,
     RelayChannel,
@@ -71,6 +76,44 @@ def test_reject_unknown_status_code(value: int) -> None:
 
 
 @pytest.mark.parametrize(
+    ("wire_type", "device_type"),
+    [("Plug Mini (IT)", PLUG_MINI_IT), ("Outdoor Plug (EU)", OUTDOOR_PLUG_EU)],
+)
+async def test_new_plug_status(
+    client: SwitchBotAPI,
+    responses: aioresponses,
+    wire_type: str,
+    device_type: str,
+) -> None:
+    """Keep watts numeric and distinguish REST connectivity from webhook flags."""
+    responses.get(
+        f"{MOCK_URL}/devices/plug-id/status",
+        payload={
+            "statusCode": 100,
+            "body": {
+                "deviceType": wire_type,
+                "switchStatus": 1,
+                "power": 10.3,
+                "onlineStatus": "online",
+            },
+        },
+    )
+    status = await client.get_status("plug-id")
+    assert status["deviceType"] == device_type
+    assert device_type in SWITCH_DEVICE_TYPES
+    assert switch_power_state(status["switchStatus"]) is PowerState.ON
+    assert status["power"] == 10.3
+    assert OnlineStatus(status["onlineStatus"]) is OnlineStatus.ONLINE
+    context: dict[str, Any] = {
+        "deviceType": wire_type,
+        "switchStatus": 0,
+        "online": False,
+    }
+    assert switch_power_state(context["switchStatus"]) is PowerState.OFF
+    assert context["online"] is False
+
+
+@pytest.mark.parametrize(
     ("mode", "expected"),
     [(RelaySwitchMode.TOGGLE, "0"), (RelaySwitchMode.MOMENTARY, "3")],
 )
@@ -118,6 +161,12 @@ def test_relay_position_types(position: Any) -> None:
     [
         (PlugCommands.ON, "default", "turnOn"),
         (PlugMiniEUCommands.TOGGLE, "default", "toggle"),
+        (PlugMiniITCommands.ON, "default", "turnOn"),
+        (PlugMiniITCommands.OFF, "default", "turnOff"),
+        (PlugMiniITCommands.TOGGLE, "default", "toggle"),
+        (OutdoorPlugEUCommands.ON, "default", "turnOn"),
+        (OutdoorPlugEUCommands.OFF, "default", "turnOff"),
+        (OutdoorPlugEUCommands.TOGGLE, "default", "toggle"),
         (PlugMiniJPCommands.OFF, "default", "turnOff"),
         (PlugMiniUSCommands.ON, "default", "turnOn"),
         (GarageDoorOpenerCommands.OFF, "default", "turnOff"),

@@ -8,7 +8,13 @@ from typing import TYPE_CHECKING, Any
 from aioresponses import CallbackResult, aioresponses
 import pytest
 
+from switchbot_api.common import DoorState
 from switchbot_api.lock import (
+    LOCK_DEVICE_TYPES,
+    LOCK_NANO_WEBHOOK,
+    SMART_LOCK_NANO,
+    SMART_SWITCHBOT_UWB_LOCK,
+    SWITCHBOT_UWB_LOCK_WEBHOOK,
     KeyCommandResult,
     KeypadCommands,
     KeypadTouchCommands,
@@ -16,6 +22,7 @@ from switchbot_api.lock import (
     KeypadVisionProCommands,
     LockCommands,
     LockLiteCommands,
+    LockNanoCommands,
     LockProCommands,
     LockProMatterEnabledCommands,
     LockState,
@@ -24,9 +31,11 @@ from switchbot_api.lock import (
     LockVisionCommands,
     LockVisionProCommands,
     PasscodeType,
+    UWBLockCommands,
     delete_key_parameters,
     get_key_command_result,
     keypad_create_key_parameters,
+    lock_door_state,
     vision_lock_create_key_parameters,
 )
 from tests.const import MOCK_URL
@@ -67,6 +76,45 @@ def test_reject_invalid_lock_state(value: object) -> None:
     """Never interpret an unknown state as locked or unlocked."""
     with pytest.raises(ValueError, match="is not a valid LockState"):
         LockState(value)
+
+
+@pytest.mark.parametrize(
+    ("device_type", "webhook_type", "wire_types"),
+    [
+        (SMART_LOCK_NANO, LOCK_NANO_WEBHOOK, ("Smart Lock Nano", "Lock Nano")),
+        (
+            SMART_SWITCHBOT_UWB_LOCK,
+            SWITCHBOT_UWB_LOCK_WEBHOOK,
+            ("Smart SwitchBot UWB Lock", "SwitchBot UWB Lock"),
+        ),
+    ],
+)
+def test_lock_device_type_identifiers(
+    device_type: str, webhook_type: str, wire_types: tuple[str, str]
+) -> None:
+    """Preserve the distinct REST and webhook identifiers."""
+    assert (device_type, webhook_type) == wire_types
+    assert device_type in LOCK_DEVICE_TYPES
+    assert webhook_type not in LOCK_DEVICE_TYPES
+
+
+@pytest.mark.parametrize("door_state", ["opened", "OPENED"])
+def test_new_lock_door_state(door_state: str) -> None:
+    """Read UWB REST and both webhook spellings as the common door position."""
+    assert lock_door_state({"doorState": door_state}) is DoorState.OPEN
+
+
+def test_nano_rest_without_door_state() -> None:
+    """An available lock state does not imply a known door position."""
+    status = {"deviceType": SMART_LOCK_NANO, "lockState": "unlocked"}
+    assert LockState(status["lockState"]) is LockState.UNLOCKED
+    assert lock_door_state(status) is None
+
+
+def test_unknown_lock_door_state() -> None:
+    """Unknown values must not be interpreted as a closed door."""
+    with pytest.raises(ValueError, match="DoorState"):
+        lock_door_state({"doorState": "unknown"})
 
 
 @pytest.mark.parametrize("kind", [PasscodeType.PERMANENT, PasscodeType.URGENT])
@@ -329,6 +377,12 @@ def test_key_command_rejects_unknown_result() -> None:
     [
         (LockCommands.LOCK, "default", "lock", "default"),
         (LockLiteCommands.DEADBOLT, "default", "deadbolt", "default"),
+        (LockNanoCommands.LOCK, "default", "lock", "default"),
+        (LockNanoCommands.UNLOCK, "default", "unlock", "default"),
+        (LockNanoCommands.DEADBOLT, "default", "deadbolt", "default"),
+        (UWBLockCommands.LOCK, "default", "lock", "default"),
+        (UWBLockCommands.UNLOCK, "default", "unlock", "default"),
+        (UWBLockCommands.DEADBOLT, "default", "deadbolt", "default"),
         (LockProCommands.UNLOCK, "default", "unlock", "default"),
         (
             LockProMatterEnabledCommands.NIGHT_LATCH_UNLOCK,
