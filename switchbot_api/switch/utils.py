@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from switchbot_api.common import PowerState
+from switchbot_api.common.utils import integer_in_range
 
 from .models import GarageDoorStatus, RelayChannel, RelaySwitchMode, SwitchStatus
 
@@ -31,13 +32,7 @@ def relay_mode_parameter(
 
 def relay_position_parameter(position: int) -> str:
     """Build Relay 2PM roller position; 0 fully opens and 100 fully closes."""
-    if isinstance(position, bool) or not isinstance(position, int):
-        msg = "position must be an integer"
-        raise TypeError(msg)
-    if not 0 <= position <= 100:
-        msg = "position must be between 0 and 100"
-        raise ValueError(msg)
-    return str(position)
+    return str(integer_in_range(position, 0, 100, "position"))
 
 
 def switch_power_state(

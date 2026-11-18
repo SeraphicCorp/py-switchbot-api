@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from switchbot_api.common.utils import integer_in_range
+
 from .models import (
     FLOOR_CLEANING_ROBOT_S10,
     FLOOR_CLEANING_ROBOT_S20,
@@ -26,29 +28,18 @@ _MODERN_ROBOTS = _WATER_ROBOTS | {
 }
 
 
-def _integer_value(value: int, minimum: int, maximum: int, name: str) -> int:
-    """Validate exact integer ranges, excluding booleans."""
-    if isinstance(value, bool) or not isinstance(value, int):
-        msg = f"{name} must be an integer"
-        raise TypeError(msg)
-    if not minimum <= value <= maximum:
-        msg = f"{name} must be between {minimum} and {maximum}"
-        raise ValueError(msg)
-    return value
-
-
 def _fan_level(value: VacuumFanLevel | int) -> int:
     """Build a modern JSON fanLevel."""
     if isinstance(value, VacuumFanLevel):
         return int(value.value)
-    return _integer_value(value, 1, 4, "fan_level")
+    return integer_in_range(value, 1, 4, "fan_level")
 
 
 def _water_level(value: VacuumWaterLevel | int) -> int:
     """Build a JSON waterLevel."""
     if isinstance(value, VacuumWaterLevel):
         return int(value.value)
-    return _integer_value(value, 1, 2, "water_level")
+    return integer_in_range(value, 1, 2, "water_level")
 
 
 def _validate_modern_robot(device_type: str) -> None:
@@ -62,12 +53,12 @@ def vacuum_fan_speed_parameter(speed: VacuumFanSpeed | int) -> str:
     """Build legacy PowLevel (0-3), distinct from modern fanLevel (1-4)."""
     if isinstance(speed, VacuumFanSpeed):
         return str(speed.value)
-    return str(_integer_value(speed, 0, 3, "speed"))
+    return str(integer_in_range(speed, 0, 3, "speed"))
 
 
 def vacuum_volume_parameter(volume: int) -> str:
     """Build setVolume, following the command tables' inclusive 0-100 range."""
-    return str(_integer_value(volume, 0, 100, "volume"))
+    return str(integer_in_range(volume, 0, 100, "volume"))
 
 
 def vacuum_start_clean_parameters(
@@ -97,7 +88,7 @@ def vacuum_start_clean_parameters(
         raise ValueError(msg)
     parameters = {
         "fanLevel": _fan_level(fan_level),
-        "times": _integer_value(times, 1, 2639999, "times"),
+        "times": integer_in_range(times, 1, 2639999, "times"),
     }
     if device_type in _WATER_ROBOTS:
         if water_level is None:
@@ -123,7 +114,7 @@ def vacuum_change_parameters(
     if fan_level is not None:
         parameters["fanLevel"] = _fan_level(fan_level)
     if times is not None:
-        parameters["times"] = _integer_value(times, 1, 2639999, "times")
+        parameters["times"] = integer_in_range(times, 1, 2639999, "times")
     if water_level is not None:
         if device_type == K10_PRO_COMBO:
             msg = "water_level is not documented for K10 Pro Combo changeParam"

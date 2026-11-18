@@ -211,12 +211,17 @@ def test_thermostat_temperature(value: float, expected: str) -> None:
     assert thermostat_temperature_parameter(value) == expected
 
 
-@pytest.mark.parametrize(
-    "value", [3.9, 35.1, float("nan"), float("inf"), -float("inf")]
-)
+@pytest.mark.parametrize("value", [3.9, 35.1])
 def test_thermostat_rejects_invalid_temperature(value: float) -> None:
-    """Reject out-of-range and non-finite targets."""
+    """Reject targets outside the device's temperature range."""
     with pytest.raises(ValueError, match="between 4 and 35"):
+        thermostat_temperature_parameter(value)
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+def test_thermostat_rejects_nonfinite_temperature(value: float) -> None:
+    """Reject non-finite values before formatting the temperature."""
+    with pytest.raises(ValueError, match="temperature must be finite"):
         thermostat_temperature_parameter(value)
 
 

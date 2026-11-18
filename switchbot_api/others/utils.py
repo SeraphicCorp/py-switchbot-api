@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import base64
 import binascii
-import math
 from urllib.parse import urlsplit
 
 from switchbot_api.common import PowerState
+from switchbot_api.common.utils import finite_number
 
 from .models import (
     ArtFrameDeleteImageMode,
@@ -90,12 +90,7 @@ def infrared_air_conditioner_parameter(
     power: PowerState,
 ) -> str:
     """Build temperature,mode,fan,power in Celsius with no invented range."""
-    if isinstance(temperature, bool) or not isinstance(temperature, (int, float)):
-        msg = "temperature must be a number"
-        raise TypeError(msg)
-    if not math.isfinite(temperature):
-        msg = "temperature must be finite"
-        raise ValueError(msg)
+    temperature = finite_number(temperature, "temperature")
     if not isinstance(mode, InfraredAirConditionerMode):
         msg = "mode must be an InfraredAirConditionerMode member"
         raise TypeError(msg)

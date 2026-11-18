@@ -1,16 +1,8 @@
 """Build documented Curtain and Blind Tilt position parameter strings."""
 
+from switchbot_api.common.utils import integer_in_range
+
 from .models import BlindTiltDirection, CurtainMode
-
-
-def _validate_position(position: int) -> None:
-    """Require an integer percentage without coercing floats or booleans."""
-    if isinstance(position, bool) or not isinstance(position, int):
-        msg = "position must be an integer"
-        raise TypeError(msg)
-    if not 0 <= position <= 100:
-        msg = "position must be between 0 and 100"
-        raise ValueError(msg)
 
 
 def curtain_position_parameter(
@@ -18,7 +10,7 @@ def curtain_position_parameter(
     mode: CurtainMode = CurtainMode.DEFAULT,
 ) -> str:
     """Build 0,mode,position for Curtain/3/4; 0 opens and 100 closes."""
-    _validate_position(position)
+    integer_in_range(position, 0, 100, "position")
     if not isinstance(mode, CurtainMode):
         msg = "mode must be a CurtainMode member"
         raise TypeError(msg)
@@ -30,7 +22,7 @@ def blind_tilt_position_parameter(
     position: int,
 ) -> str:
     """Build direction;position; even positions only, 0 closed and 100 open."""
-    _validate_position(position)
+    integer_in_range(position, 0, 100, "position")
     if not isinstance(direction, BlindTiltDirection):
         msg = "direction must be a BlindTiltDirection member"
         raise TypeError(msg)
@@ -42,5 +34,4 @@ def blind_tilt_position_parameter(
 
 def roller_shade_position_parameter(position: int) -> str:
     """Build the Roller Shade position string; 0 opens and 100 closes."""
-    _validate_position(position)
-    return str(position)
+    return str(integer_in_range(position, 0, 100, "position"))

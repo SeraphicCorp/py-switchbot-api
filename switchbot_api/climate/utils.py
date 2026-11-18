@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from switchbot_api.common.utils import finite_number, integer_in_range, rgb_component
+
 from .models import (
     AirPurifierFanGear,
     AirPurifierLightSensorMode,
@@ -15,22 +17,11 @@ from .models import (
 )
 
 
-def _integer_value(value: int, minimum: int, maximum: int, name: str) -> int:
-    """Validate a JSON integer range without coercing floats or booleans."""
-    if isinstance(value, bool) or not isinstance(value, int):
-        msg = f"{name} must be an integer"
-        raise TypeError(msg)
-    if not minimum <= value <= maximum:
-        msg = f"{name} must be between {minimum} and {maximum}"
-        raise ValueError(msg)
-    return value
-
-
 def humidifier_mode_parameter(mode: HumidifierMode | int) -> str:
     """Build auto, a percentage 0-100, or a preset code 101-103."""
     if isinstance(mode, HumidifierMode):
         return str(mode.value)
-    return str(_integer_value(mode, 0, 103, "mode"))
+    return str(integer_in_range(mode, 0, 103, "mode"))
 
 
 def evaporative_humidifier_mode_parameters(
@@ -43,7 +34,7 @@ def evaporative_humidifier_mode_parameters(
         raise TypeError(msg)
     parameters: dict[str, int] = {"mode": mode.value}
     if target_humidity is not None:
-        parameters["targetHumidify"] = _integer_value(
+        parameters["targetHumidify"] = integer_in_range(
             target_humidity, 0, 100, "target_humidity"
         )
     return parameters
@@ -97,9 +88,7 @@ def thermostat_mode_parameter(mode: SmartRadiatorThermostatMode) -> str:
 
 def thermostat_temperature_parameter(temperature: float) -> str:
     """Build a finite 4-35 celsius target without imposing an undocumented step."""
-    if isinstance(temperature, bool) or not isinstance(temperature, (int, float)):
-        msg = "temperature must be a number"
-        raise TypeError(msg)
+    temperature = finite_number(temperature, "temperature")
     if not 4 <= temperature <= 35:
         msg = "temperature must be between 4 and 35 celsius"
         raise ValueError(msg)
@@ -113,15 +102,15 @@ def air_purifier_light_color_parameters(
 ) -> dict[str, int]:
     """Build purifier light color as JSON RGB integers, not an R:G:B string."""
     return {
-        "red": _integer_value(red, 0, 255, "red"),
-        "green": _integer_value(green, 0, 255, "green"),
-        "blue": _integer_value(blue, 0, 255, "blue"),
+        "red": rgb_component(red, "red"),
+        "green": rgb_component(green, "green"),
+        "blue": rgb_component(blue, "blue"),
     }
 
 
 def air_purifier_brightness_parameter(brightness: int) -> int:
     """Build the numeric purifier setBrightness parameter, including zero."""
-    return _integer_value(brightness, 0, 100, "brightness")
+    return integer_in_range(brightness, 0, 100, "brightness")
 
 
 def air_purifier_light_sensor_parameter(mode: AirPurifierLightSensorMode) -> str:
@@ -148,7 +137,7 @@ def _auto_add_time_period(period: dict[str, Any]) -> dict[str, Any]:
         msg = "weekDay must contain at least one weekday"
         raise ValueError(msg)
     for day in weekdays:
-        _integer_value(day, 1, 7, "weekday")
+        integer_in_range(day, 1, 7, "weekday")
     for field in ("start", "end"):
         value = period[field]
         if not isinstance(value, str):
