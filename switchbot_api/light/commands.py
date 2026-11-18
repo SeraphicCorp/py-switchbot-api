@@ -17,7 +17,7 @@ class CandleWarmerLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
 
 
@@ -30,9 +30,9 @@ class CeilingLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 1-100.
+    # String parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -45,9 +45,9 @@ class CeilingLightProCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 1-100.
+    # String parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -77,11 +77,11 @@ class FloorLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -94,7 +94,7 @@ class RGBICNeonRopeLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
@@ -112,7 +112,7 @@ class RGBICNeonWireRopeLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
@@ -129,11 +129,11 @@ class RGBICWWFloorLampCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter: effectId 0-25.
     SET_LIGHT_EFFECT = "setLightEffect"
@@ -148,11 +148,11 @@ class RGBICWWStripLightCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter: effectId 0-25.
     SET_LIGHT_EFFECT = "setLightEffect"
@@ -169,7 +169,7 @@ class StripLightCommands(Commands):
     TOGGLE = "toggle"
     # String parameter: 1-100.
     SET_BRIGHTNESS = "setBrightness"
-    # String parameter: R:G:B, each component 0-255.
+    # String parameter: B:G:R in Home Assistant, each component 0-255.
     SET_COLOR = "setColor"
 
 
@@ -182,11 +182,11 @@ class StripLight3Commands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
 
 
@@ -231,11 +231,11 @@ class PermanentOutdoorLightsCommands(Commands):
     ON = "turnOn"
     OFF = "turnOff"
     TOGGLE = "toggle"
-    # Integer parameter: 0-100.
+    # String parameter: 0-100.
     SET_BRIGHTNESS = "setBrightness"
     # String parameter: R:G:B, each component 0-255.
     SET_COLOR = "setColor"
-    # Integer parameter: 2700-6500 kelvin.
+    # String parameter: 2700-6500 kelvin.
     SET_COLOR_TEMPERATURE = "setColorTemperature"
     # Object parameter with an integer effectId.
     SET_LIGHT_EFFECT = "setLightEffect"

@@ -34,9 +34,12 @@ from switchbot_api.light import (
     light_bars_music_parameters,
     light_bars_segment_color_parameters,
     light_brightness_parameter,
+    light_brightness_parameter_from_255,
+    light_brightness_to_255,
     light_color_parameter,
     light_color_temperature_parameter,
     light_effect_parameters,
+    strip_light_color_parameter,
 )
 from tests.const import MOCK_URL
 
@@ -50,6 +53,7 @@ if TYPE_CHECKING:
     "builder",
     [
         light_brightness_parameter,
+        light_brightness_parameter_from_255,
         light_color_temperature_parameter,
         light_effect_parameters,
     ],
@@ -77,11 +81,114 @@ def test_light_brightness_rejects_zero_for_one_based_commands(
         light_brightness_parameter(command, 0)
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        CandleWarmerLampCommands.SET_BRIGHTNESS,
+        CeilingLightCommands.SET_BRIGHTNESS,
+        CeilingLightProCommands.SET_BRIGHTNESS,
+        ColorBulbCommands.SET_BRIGHTNESS,
+        FloorLampCommands.SET_BRIGHTNESS,
+        PermanentOutdoorLightsCommands.SET_BRIGHTNESS,
+        RGBICNeonRopeLightCommands.SET_BRIGHTNESS,
+        RGBICNeonWireRopeLightCommands.SET_BRIGHTNESS,
+        RGBICWWFloorLampCommands.SET_BRIGHTNESS,
+        RGBICWWStripLightCommands.SET_BRIGHTNESS,
+        StripLight3Commands.SET_BRIGHTNESS,
+        StripLightCommands.SET_BRIGHTNESS,
+    ],
+)
+def test_ha_light_brightness_uses_string_parameters(command: Commands) -> None:
+    """Match the brightness payload of every model registered in HA Cloud."""
+    assert light_brightness_parameter(command, 50) == "50"
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        CeilingLightCommands.SET_COLOR_TEMPERATURE,
+        CeilingLightProCommands.SET_COLOR_TEMPERATURE,
+        ColorBulbCommands.SET_COLOR_TEMPERATURE,
+        FloorLampCommands.SET_COLOR_TEMPERATURE,
+        PermanentOutdoorLightsCommands.SET_COLOR_TEMPERATURE,
+        RGBICWWFloorLampCommands.SET_COLOR_TEMPERATURE,
+        RGBICWWStripLightCommands.SET_COLOR_TEMPERATURE,
+        StripLight3Commands.SET_COLOR_TEMPERATURE,
+    ],
+)
+def test_ha_light_color_temperature_uses_string_parameters(command: Commands) -> None:
+    """Match the color-temperature payload used by HA Cloud."""
+    assert light_color_temperature_parameter(command, 3000) == "3000"
+
+
+@pytest.mark.parametrize(
+    ("command", "brightness", "expected"),
+    [
+        (CeilingLightCommands.SET_BRIGHTNESS, 1, "1"),
+        (CeilingLightProCommands.SET_BRIGHTNESS, 2, "1"),
+        (ColorBulbCommands.SET_BRIGHTNESS, 1, "1"),
+        (StripLightCommands.SET_BRIGHTNESS, 2, "1"),
+        (CandleWarmerLampCommands.SET_BRIGHTNESS, 1, "0"),
+        (FloorLampCommands.SET_BRIGHTNESS, 128, "50"),
+        (CeilingLightCommands.SET_BRIGHTNESS, 255, "100"),
+    ],
+)
+def test_ha_brightness_scaling_respects_device_minimum(
+    command: Commands, brightness: int, expected: str
+) -> None:
+    """Keep HA's scale while raising low positive requests to a valid minimum."""
+    assert light_brightness_parameter_from_255(command, brightness) == expected
+
+
+def test_ha_zero_brightness_uses_the_separate_turn_off_path() -> None:
+    """Reserve the slider encoder for positive brightness requests."""
+    with pytest.raises(ValueError, match="brightness must be between 1 and 255"):
+        light_brightness_parameter_from_255(StripLightCommands.SET_BRIGHTNESS, 0)
+
+
+@pytest.mark.parametrize(
+    ("brightness", "expected"), [(None, None), (0, 0), (1, 2), (50, 127), (100, 255)]
+)
+def test_light_status_brightness_preserves_zero(
+    brightness: int | None, expected: int | None
+) -> None:
+    """Distinguish a reported zero from a missing brightness field."""
+    assert light_brightness_to_255(brightness) == expected
+
+
 def test_combined_brightness_range_is_distinct() -> None:
     """Standalone Light Bars brightness accepts zero; the combined command does not."""
     assert light_brightness_parameter(RGBICWWLightBarsCommands.SET_BRIGHTNESS, 0) == 0
     with pytest.raises(ValueError, match="brightness must be between 1 and 100"):
         light_bars_brightness_temperature_parameters(0, 3000)
+
+
+def test_models_outside_ha_keep_numeric_scalar_parameters() -> None:
+    """Keep Light Bars and RGBICWW Ceiling Light scalar values numeric."""
+    assert (
+        light_brightness_parameter(
+            RGBICWWCeilingLightCommands.SET_MAIN_LIGHT_BRIGHTNESS, 50
+        )
+        == 50
+    )
+    assert (
+        light_brightness_parameter(
+            RGBICWWCeilingLightCommands.SET_COLOR_LIGHT_BRIGHTNESS, 50
+        )
+        == 50
+    )
+    assert (
+        light_color_temperature_parameter(
+            RGBICWWCeilingLightCommands.SET_MAIN_LIGHT_COLOR_TEMP, 3000
+        )
+        == 3000
+    )
+    assert (
+        light_color_temperature_parameter(
+            RGBICWWLightBarsCommands.SET_COLOR_TEMPERATURE, 3000
+        )
+        == 3000
+    )
 
 
 @pytest.mark.parametrize(
@@ -146,7 +253,7 @@ def test_unlisted_effect_ids_are_not_limited_to_shared_presets() -> None:
             CandleWarmerLampCommands.SET_BRIGHTNESS,
             light_brightness_parameter(CandleWarmerLampCommands.SET_BRIGHTNESS, 0),
             "setBrightness",
-            0,
+            "0",
         ),
         (
             CeilingLightCommands.SET_COLOR_TEMPERATURE,
@@ -154,7 +261,7 @@ def test_unlisted_effect_ids_are_not_limited_to_shared_presets() -> None:
                 CeilingLightCommands.SET_COLOR_TEMPERATURE, 2700
             ),
             "setColorTemperature",
-            2700,
+            "2700",
         ),
         (CeilingLightProCommands.ON, "default", "turnOn", "default"),
         (
@@ -192,13 +299,33 @@ def test_unlisted_effect_ids_are_not_limited_to_shared_presets() -> None:
         ),
         (
             StripLightCommands.SET_BRIGHTNESS,
-            light_brightness_parameter(StripLightCommands.SET_BRIGHTNESS, 1),
+            light_brightness_parameter_from_255(StripLightCommands.SET_BRIGHTNESS, 1),
             "setBrightness",
             "1",
         ),
         (
+            StripLightCommands.SET_COLOR,
+            strip_light_color_parameter(255, 0, 0),
+            "setColor",
+            "0:0:255",
+        ),
+        (
+            StripLightCommands.SET_COLOR,
+            strip_light_color_parameter(0, 0, 255),
+            "setColor",
+            "255:0:0",
+        ),
+        (
+            StripLight3Commands.SET_COLOR,
+            light_color_parameter(255, 0, 0),
+            "setColor",
+            "255:0:0",
+        ),
+        (
             StripLight3Commands.SET_COLOR_TEMPERATURE,
-            "6500",
+            light_color_temperature_parameter(
+                StripLight3Commands.SET_COLOR_TEMPERATURE, 6500
+            ),
             "setColorTemperature",
             "6500",
         ),
@@ -285,7 +412,7 @@ async def test_send_lighting_command(
     expected_command: str,
     expected_parameter: dict[str, Any] | str | int,
 ) -> None:
-    """New enum members and structured parameters produce the documented JSON."""
+    """Encode scalar and structured parameters as expected on the wire."""
     captured: list[dict[str, Any]] = []
 
     def capture_request(_: str, **kwargs: Any) -> CallbackResult:

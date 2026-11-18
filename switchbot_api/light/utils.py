@@ -61,11 +61,14 @@ _TEMPERATURE_COMMANDS: Final[frozenset[Commands]] = frozenset(
         StripLight3Commands.SET_COLOR_TEMPERATURE,
     }
 )
-_STRING_SCALAR_COMMANDS: Final[frozenset[Commands]] = frozenset(
+# Keep the numeric formats of models outside the Home Assistant Cloud light set.
+_INTEGER_SCALAR_COMMANDS: Final[frozenset[Commands]] = frozenset(
     {
-        ColorBulbCommands.SET_BRIGHTNESS,
-        ColorBulbCommands.SET_COLOR_TEMPERATURE,
-        StripLightCommands.SET_BRIGHTNESS,
+        RGBICWWCeilingLightCommands.SET_MAIN_LIGHT_BRIGHTNESS,
+        RGBICWWCeilingLightCommands.SET_COLOR_LIGHT_BRIGHTNESS,
+        RGBICWWCeilingLightCommands.SET_MAIN_LIGHT_COLOR_TEMP,
+        RGBICWWLightBarsCommands.SET_BRIGHTNESS,
+        RGBICWWLightBarsCommands.SET_COLOR_TEMPERATURE,
     }
 )
 _PRESET_EFFECT_COMMANDS: Final[frozenset[Commands]] = frozenset(
@@ -92,7 +95,26 @@ def light_brightness_parameter(command: Commands, brightness: int) -> int | str:
         msg = "command must be a scalar lighting brightness command"
         raise ValueError(msg)
     value = integer_in_range(brightness, minimum, 100, "brightness")
-    return str(value) if command in _STRING_SCALAR_COMMANDS else value
+    return value if command in _INTEGER_SCALAR_COMMANDS else str(value)
+
+
+def light_brightness_parameter_from_255(
+    command: Commands, brightness: int
+) -> int | str:
+    """Encode a positive 1-255 brightness request using the device minimum.
+
+    Home Assistant handles a zero brightness request as a turn-off action.
+    """
+    value = integer_in_range(brightness, 1, 255, "brightness")
+    percentage = max(value * 100 // 255, _BRIGHTNESS_MINIMUMS.get(command, 0))
+    return light_brightness_parameter(command, percentage)
+
+
+def light_brightness_to_255(brightness: int | None) -> int | None:
+    """Scale a reported percentage to 0-255 while preserving zero and missing data."""
+    if brightness is None:
+        return None
+    return integer_in_range(brightness, 0, 100, "brightness") * 255 // 100
 
 
 def light_color_temperature_parameter(command: Commands, temperature: int) -> int | str:
@@ -101,7 +123,7 @@ def light_color_temperature_parameter(command: Commands, temperature: int) -> in
         msg = "command must be a scalar lighting color temperature command"
         raise ValueError(msg)
     value = integer_in_range(temperature, 2700, 6500, "temperature")
-    return str(value) if command in _STRING_SCALAR_COMMANDS else value
+    return value if command in _INTEGER_SCALAR_COMMANDS else str(value)
 
 
 def light_color_parameter(red: int, green: int, blue: int) -> str:
@@ -110,6 +132,14 @@ def light_color_parameter(red: int, green: int, blue: int) -> str:
     green = rgb_component(green, "green")
     blue = rgb_component(blue, "blue")
     return f"{red}:{green}:{blue}"
+
+
+def strip_light_color_parameter(red: int, green: int, blue: int) -> str:
+    """Build the original Strip Light's B:G:R parameter used by Home Assistant."""
+    red = rgb_component(red, "red")
+    green = rgb_component(green, "green")
+    blue = rgb_component(blue, "blue")
+    return f"{blue}:{green}:{red}"
 
 
 def _integer_code(value: int, name: str) -> int:

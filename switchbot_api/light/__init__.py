@@ -44,9 +44,12 @@ from switchbot_api.light.utils import (
     light_bars_music_parameters,
     light_bars_segment_color_parameters,
     light_brightness_parameter,
+    light_brightness_parameter_from_255,
+    light_brightness_to_255,
     light_color_parameter,
     light_color_temperature_parameter,
     light_effect_parameters,
+    strip_light_color_parameter,
 )
 
 __all__ = [
@@ -89,7 +92,10 @@ __all__ = [
     "light_bars_music_parameters",
     "light_bars_segment_color_parameters",
     "light_brightness_parameter",
+    "light_brightness_parameter_from_255",
+    "light_brightness_to_255",
     "light_color_parameter",
     "light_color_temperature_parameter",
     "light_effect_parameters",
+    "strip_light_color_parameter",
 ]
