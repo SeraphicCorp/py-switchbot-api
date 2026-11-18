@@ -175,10 +175,9 @@ async def test_send_curtain_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/curtain-id/commands", callback=capture_request)
-    # The existing client's TypeVar is narrower than its runtime Commands check.
     await client.send_command(
         "curtain-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameter,
     )
     assert captured == [

@@ -428,10 +428,9 @@ async def test_send_lock_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/lock-id/commands", callback=capture)
-    # The existing client's TypeVar is narrower than its runtime Commands check.
     await client.send_command(
         "lock-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameter,
     )
     assert captured == [

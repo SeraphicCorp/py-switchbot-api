@@ -2,7 +2,29 @@
 
 import pytest
 
-from switchbot_api.common import DoorState, PowerState
+from switchbot_api.commands import (
+    BotCommands as LegacyBotCommands,
+    Commands as LegacyCommands,
+)
+from switchbot_api.common import Commands, DoorState, PowerState
+from switchbot_api.common.commands import Commands as V2Commands
+from switchbot_api.light import ColorBulbCommands
+
+
+def test_v2_commands_have_an_independent_base() -> None:
+    """V2 commands must not inherit V1's unsupported capability lookup."""
+    assert Commands is V2Commands
+    assert issubclass(ColorBulbCommands, Commands)
+    assert not issubclass(ColorBulbCommands, LegacyCommands)
+    assert not hasattr(ColorBulbCommands, "get_supported_devices")
+    assert not hasattr(ColorBulbCommands, "is_supported")
+
+
+def test_legacy_command_capabilities_are_preserved() -> None:
+    """Separating V2 commands must leave V1 capability queries intact."""
+    assert LegacyBotCommands.get_supported_devices() == ["Bot"]
+    assert LegacyBotCommands.is_supported("Bot")
+    assert not LegacyBotCommands.is_supported("Color Bulb")
 
 
 @pytest.mark.parametrize(

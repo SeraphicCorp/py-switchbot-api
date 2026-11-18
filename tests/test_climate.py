@@ -290,10 +290,9 @@ async def test_send_climate_command(
         return CallbackResult(status=200, payload={"statusCode": 100, "body": {}})
 
     responses.post(f"{MOCK_URL}/devices/climate-id/commands", callback=capture)
-    # The existing client's TypeVar is narrower than its runtime Commands check.
     await client.send_command(
         "climate-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameter,
     )
     assert captured == [

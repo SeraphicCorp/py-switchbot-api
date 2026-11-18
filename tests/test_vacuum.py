@@ -282,7 +282,7 @@ async def test_vacuum_command_serialization(
     responses.post(f"{MOCK_URL}/devices/vacuum-id/commands", callback=capture)
     await client.send_command(
         "vacuum-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameter,
     )
     assert captured == [

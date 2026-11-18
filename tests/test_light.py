@@ -169,10 +169,9 @@ async def test_send_lighting_command(
         callback=capture_request,
     )
 
-    # The existing client's TypeVar is narrower than its runtime Commands check.
     await client.send_command(
         "light-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameters,
     )
 

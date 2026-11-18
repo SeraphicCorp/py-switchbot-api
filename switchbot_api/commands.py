@@ -5,6 +5,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import TypeVar
 
+from switchbot_api.common.commands import Commands as _V2Commands
+
 
 class Commands(Enum):
     """Base command class."""
@@ -546,4 +548,4 @@ class KataFriendsCommands(Commands):
         return ["Kata Friends"]
 
 
-T = TypeVar("T", bound=CommonCommands)
+T = TypeVar("T", bound=Commands | _V2Commands)

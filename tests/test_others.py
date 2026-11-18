@@ -282,7 +282,7 @@ async def test_other_device_commands(
     responses.post(f"{MOCK_URL}/devices/other-id/commands", callback=capture)
     await client.send_command(
         "other-id",
-        command,  # type: ignore[arg-type]
+        command,
         command_type=command_type,
         parameters=parameter,
     )

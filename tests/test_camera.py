@@ -48,8 +48,7 @@ async def test_send_camera_command(
         )
 
     responses.post(f"{MOCK_URL}/devices/camera-id/commands", callback=capture_request)
-    # The existing client's TypeVar is narrower than its runtime Commands check.
-    await client.send_command("camera-id", command)  # type: ignore[arg-type]
+    await client.send_command("camera-id", command)
     assert captured == [
         {
             "commandType": "command",

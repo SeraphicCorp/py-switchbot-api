@@ -168,7 +168,7 @@ async def test_switch_command_serialization(
     responses.post(f"{MOCK_URL}/devices/switch-id/commands", callback=capture)
     await client.send_command(
         "switch-id",
-        command,  # type: ignore[arg-type]
+        command,
         parameters=parameter,
     )
     assert captured == [
