@@ -14,13 +14,8 @@ from typing import Final
 BOT: Final = "Bot"
 REMOTE: Final = "Remote"
 AI_ART_FRAME: Final = "AI Art Frame"
-AI_ART_FRAME_2_DEVICE_TYPE: Final = "AI Art Frame 2"
+AI_ART_FRAME_2: Final = "AI Art Frame 2"
 AI_ART_FRAME_LUMA: Final = "AI Art Frame Luma"
-AI_ART_FRAME_2: Final = AI_ART_FRAME_LUMA  # Preserve the existing public constant.
-AI_ART_FRAME_2_DEVICE_TYPES: Final[list[str]] = [
-    AI_ART_FRAME_2_DEVICE_TYPE,
-    AI_ART_FRAME_LUMA,
-]
 WEATHER_STATION: Final = "WeatherStation"
 KATA_FRIENDS: Final = "Kata Friends"
 AI_MINDCLIP: Final = "AI MindClip"
@@ -29,7 +24,8 @@ OTHERS_DEVICE_TYPES: Final[list[str]] = [
     BOT,
     REMOTE,
     AI_ART_FRAME,
-    *AI_ART_FRAME_2_DEVICE_TYPES,
+    AI_ART_FRAME_2,
+    AI_ART_FRAME_LUMA,
     WEATHER_STATION,
     KATA_FRIENDS,
     AI_MINDCLIP,

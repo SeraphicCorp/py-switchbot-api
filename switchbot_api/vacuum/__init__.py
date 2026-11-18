@@ -26,6 +26,7 @@ from switchbot_api.vacuum.models import (
     ROBOT_VACUUM_CLEANER_S1_PLUS,
     ROBOT_VACUUM_K11,
     ROBOT_VACUUM_K11_PRO,
+    S10_S20_DEVICE_TYPES,
     VACUUM_DEVICE_TYPES,
     VacuumCleanMode,
     VacuumFanLevel,
@@ -40,9 +41,11 @@ from switchbot_api.vacuum.utils import (
     s30_self_clean_parameter,
     s30_start_clean_parameters,
     s30_volume_parameter,
+    vacuum_change_fan_speed_parameters,
     vacuum_change_parameters,
     vacuum_fan_speed_parameter,
     vacuum_start_clean_parameters,
+    vacuum_start_clean_parameters_from_preset,
     vacuum_volume_parameter,
 )
 
@@ -59,6 +62,7 @@ __all__ = [
     "ROBOT_VACUUM_CLEANER_S1_PLUS",
     "ROBOT_VACUUM_K11",
     "ROBOT_VACUUM_K11_PRO",
+    "S10_S20_DEVICE_TYPES",
     "VACUUM_DEVICE_TYPES",
     "FloorCleaningRobotS10Commands",
     "FloorCleaningRobotS20Commands",
@@ -82,8 +86,10 @@ __all__ = [
     "s30_self_clean_parameter",
     "s30_start_clean_parameters",
     "s30_volume_parameter",
+    "vacuum_change_fan_speed_parameters",
     "vacuum_change_parameters",
     "vacuum_fan_speed_parameter",
     "vacuum_start_clean_parameters",
+    "vacuum_start_clean_parameters_from_preset",
     "vacuum_volume_parameter",
 ]

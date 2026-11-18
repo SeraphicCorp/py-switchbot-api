@@ -19,8 +19,6 @@ from switchbot_api.others.commands import (
 from switchbot_api.others.models import (
     AI_ART_FRAME,
     AI_ART_FRAME_2,
-    AI_ART_FRAME_2_DEVICE_TYPE,
-    AI_ART_FRAME_2_DEVICE_TYPES,
     AI_ART_FRAME_LUMA,
     AI_MINDCLIP,
     BOT,
@@ -66,8 +64,6 @@ from switchbot_api.others.utils import (
 __all__ = [
     "AI_ART_FRAME",
     "AI_ART_FRAME_2",
-    "AI_ART_FRAME_2_DEVICE_TYPE",
-    "AI_ART_FRAME_2_DEVICE_TYPES",
     "AI_ART_FRAME_LUMA",
     "AI_MINDCLIP",
     "BOT",

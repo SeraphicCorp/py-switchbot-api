@@ -7,23 +7,19 @@ from typing import Any
 from switchbot_api.common.utils import integer_in_range
 from switchbot_api.vacuum.models import (
     FLOOR_CLEANING_ROBOT_S10,
-    FLOOR_CLEANING_ROBOT_S20,
-    FLOOR_CLEANING_ROBOT_S20_SHORT,
     K10_PRO_COMBO,
     K20_PRO,
     ROBOT_VACUUM_K11,
     ROBOT_VACUUM_K11_PRO,
+    S10_S20_DEVICE_TYPES,
     VacuumCleanMode,
     VacuumFanLevel,
     VacuumFanSpeed,
     VacuumWaterLevel,
 )
 
-_S20_DEVICE_TYPES = frozenset(
-    {FLOOR_CLEANING_ROBOT_S20, FLOOR_CLEANING_ROBOT_S20_SHORT}
-)
-_WATER_ROBOTS = _S20_DEVICE_TYPES | {FLOOR_CLEANING_ROBOT_S10}
-_MODERN_ROBOTS = _WATER_ROBOTS | {
+_S20_DEVICE_TYPES = S10_S20_DEVICE_TYPES - {FLOOR_CLEANING_ROBOT_S10}
+_MODERN_ROBOTS = S10_S20_DEVICE_TYPES | {
     K10_PRO_COMBO,
     K20_PRO,
     ROBOT_VACUUM_K11,
@@ -36,6 +32,16 @@ def _fan_level(value: VacuumFanLevel | int) -> int:
     if isinstance(value, VacuumFanLevel):
         return int(value.value)
     return integer_in_range(value, 1, 4, "fan_level")
+
+
+def _fan_level_for_preset(preset: str | None) -> VacuumFanLevel | None:
+    """Resolve a preset name to its modern numeric fan level."""
+    if preset is None:
+        return None
+    if not isinstance(preset, str):
+        msg = "fan speed preset must be a string"
+        raise TypeError(msg)
+    return VacuumFanLevel.__members__.get(preset.upper())
 
 
 def _water_level(value: VacuumWaterLevel | int) -> int:
@@ -84,7 +90,7 @@ def vacuum_start_clean_parameters(
         raise TypeError(msg)
     allowed_modes = (
         {VacuumCleanMode.SWEEP, VacuumCleanMode.SWEEP_MOP}
-        if device_type in _WATER_ROBOTS
+        if device_type in S10_S20_DEVICE_TYPES
         else {VacuumCleanMode.SWEEP, VacuumCleanMode.MOP}
     )
     if device_type in _S20_DEVICE_TYPES:
@@ -96,7 +102,7 @@ def vacuum_start_clean_parameters(
         "fanLevel": _fan_level(fan_level),
         "times": integer_in_range(times, 1, 2639999, "times"),
     }
-    if device_type in _WATER_ROBOTS:
+    if device_type in S10_S20_DEVICE_TYPES:
         if water_level is None:
             msg = "water_level is required for S10/S20 startClean"
             raise ValueError(msg)
@@ -105,6 +111,17 @@ def vacuum_start_clean_parameters(
         msg = "water_level is not documented for this device's startClean"
         raise ValueError(msg)
     return {"action": mode.value, "param": parameters}
+
+
+def vacuum_start_clean_parameters_from_preset(
+    device_type: str, fan_speed: str | None = None
+) -> dict[str, Any]:
+    """Build the HA sweep request with a quiet fallback and 1-4 fan levels."""
+    fan_level = _fan_level_for_preset(fan_speed) or VacuumFanLevel.QUIET
+    water_level = VacuumWaterLevel.LOW if device_type in S10_S20_DEVICE_TYPES else None
+    return vacuum_start_clean_parameters(
+        device_type, VacuumCleanMode.SWEEP, fan_level, water_level=water_level
+    )
 
 
 def vacuum_change_parameters(
@@ -130,6 +147,20 @@ def vacuum_change_parameters(
         msg = "at least one cleaning parameter is required"
         raise ValueError(msg)
     return parameters
+
+
+def vacuum_change_fan_speed_parameters(
+    device_type: str, fan_speed: str
+) -> dict[str, int]:
+    """Build the HA fan speed update with one cycle and the model's water field."""
+    fan_level = _fan_level_for_preset(fan_speed)
+    if fan_level is None:
+        msg = f"unknown fan speed preset: {fan_speed!r}"
+        raise ValueError(msg)
+    water_level = None if device_type == K10_PRO_COMBO else VacuumWaterLevel.LOW
+    return vacuum_change_parameters(
+        device_type, fan_level=fan_level, water_level=water_level, times=1
+    )
 
 
 def s30_start_clean_parameters(

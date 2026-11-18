@@ -11,8 +11,6 @@ import pytest
 from switchbot_api.common import PowerState
 from switchbot_api.others import (
     AI_ART_FRAME_2,
-    AI_ART_FRAME_2_DEVICE_TYPE,
-    AI_ART_FRAME_2_DEVICE_TYPES,
     AI_ART_FRAME_LUMA,
     OTHERS_DEVICE_TYPES,
     WEATHER_STATION,
@@ -49,10 +47,9 @@ if TYPE_CHECKING:
 
 def test_device_protocol_names() -> None:
     """Use deviceType values rather than product headings."""
-    assert AI_ART_FRAME_2_DEVICE_TYPE == "AI Art Frame 2"
-    assert AI_ART_FRAME_LUMA == AI_ART_FRAME_2 == "AI Art Frame Luma"
-    assert set(AI_ART_FRAME_2_DEVICE_TYPES) == {"AI Art Frame 2", "AI Art Frame Luma"}
-    assert set(AI_ART_FRAME_2_DEVICE_TYPES).issubset(OTHERS_DEVICE_TYPES)
+    assert AI_ART_FRAME_2 == "AI Art Frame 2"
+    assert AI_ART_FRAME_LUMA == "AI Art Frame Luma"
+    assert {AI_ART_FRAME_2, AI_ART_FRAME_LUMA}.issubset(OTHERS_DEVICE_TYPES)
     assert WEATHER_STATION == "WeatherStation"
 
 

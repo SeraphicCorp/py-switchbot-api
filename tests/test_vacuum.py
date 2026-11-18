@@ -17,6 +17,7 @@ from switchbot_api.vacuum import (
     K20_PRO,
     ROBOT_VACUUM_K11,
     ROBOT_VACUUM_K11_PRO,
+    S10_S20_DEVICE_TYPES,
     VACUUM_DEVICE_TYPES,
     FloorCleaningRobotS10Commands,
     FloorCleaningRobotS20Commands,
@@ -39,9 +40,11 @@ from switchbot_api.vacuum import (
     s30_self_clean_parameter,
     s30_start_clean_parameters,
     s30_volume_parameter,
+    vacuum_change_fan_speed_parameters,
     vacuum_change_parameters,
     vacuum_fan_speed_parameter,
     vacuum_start_clean_parameters,
+    vacuum_start_clean_parameters_from_preset,
     vacuum_volume_parameter,
 )
 from tests.const import MOCK_URL
@@ -102,6 +105,71 @@ def test_s20_device_types_include_the_short_alias() -> None:
     assert {FLOOR_CLEANING_ROBOT_S20, FLOOR_CLEANING_ROBOT_S20_SHORT}.issubset(
         VACUUM_DEVICE_TYPES
     )
+    assert {
+        FLOOR_CLEANING_ROBOT_S10,
+        FLOOR_CLEANING_ROBOT_S20,
+        FLOOR_CLEANING_ROBOT_S20_SHORT,
+    } == S10_S20_DEVICE_TYPES
+
+
+@pytest.mark.parametrize(
+    "device_type",
+    [
+        FLOOR_CLEANING_ROBOT_S10,
+        FLOOR_CLEANING_ROBOT_S20,
+        FLOOR_CLEANING_ROBOT_S20_SHORT,
+    ],
+)
+@pytest.mark.parametrize(
+    ("fan_speed", "expected_level"),
+    [("quiet", 1), ("standard", 2), ("strong", 3), ("max", 4)],
+)
+def test_s10_s20_ha_start_and_adjust_use_the_same_fan_level(
+    device_type: str, fan_speed: str, expected_level: int
+) -> None:
+    """Apply the modern fan range to startClean and changeParam."""
+    parameters = {"fanLevel": expected_level, "waterLevel": 1, "times": 1}
+    assert vacuum_start_clean_parameters_from_preset(device_type, fan_speed) == {
+        "action": "sweep",
+        "param": parameters,
+    }
+    assert vacuum_change_fan_speed_parameters(device_type, fan_speed) == parameters
+
+
+@pytest.mark.parametrize("fan_speed", [None, "unknown"])
+def test_ha_start_without_known_preset_uses_quiet(fan_speed: str | None) -> None:
+    """Use the enum's numeric quiet level when the cached preset is missing."""
+    assert vacuum_start_clean_parameters_from_preset(
+        FLOOR_CLEANING_ROBOT_S20_SHORT, fan_speed
+    ) == {
+        "action": "sweep",
+        "param": {"fanLevel": 1, "waterLevel": 1, "times": 1},
+    }
+
+
+@pytest.mark.parametrize(
+    ("device_type", "expected_update"),
+    [
+        (K10_PRO_COMBO, {"fanLevel": 3, "times": 1}),
+        (K20_PRO, {"fanLevel": 3, "waterLevel": 1, "times": 1}),
+        (ROBOT_VACUUM_K11, {"fanLevel": 3, "waterLevel": 1, "times": 1}),
+    ],
+)
+def test_ha_k_family_payload_structure(
+    device_type: str, expected_update: dict[str, int]
+) -> None:
+    """Keep the model-specific water field in the same commands as HA."""
+    assert vacuum_start_clean_parameters_from_preset(device_type, "strong") == {
+        "action": "sweep",
+        "param": {"fanLevel": 3, "times": 1},
+    }
+    assert vacuum_change_fan_speed_parameters(device_type, "strong") == expected_update
+
+
+def test_ha_fan_speed_update_rejects_unknown_preset() -> None:
+    """Require an explicit valid preset for a requested speed change."""
+    with pytest.raises(ValueError, match="unknown fan speed preset"):
+        vacuum_change_fan_speed_parameters(FLOOR_CLEANING_ROBOT_S10, "unknown")
 
 
 @pytest.mark.parametrize(
@@ -378,8 +446,13 @@ def test_volume_type(volume: Any) -> None:
         ),
         (
             FloorCleaningRobotS10Commands.CHANGE_PARAMETERS,
-            vacuum_change_parameters(FLOOR_CLEANING_ROBOT_S10, fan_level=2),
+            vacuum_change_fan_speed_parameters(FLOOR_CLEANING_ROBOT_S10, "standard"),
             "changeParam",
+        ),
+        (
+            FloorCleaningRobotS20Commands.START_CLEAN,
+            vacuum_start_clean_parameters_from_preset(FLOOR_CLEANING_ROBOT_S20_SHORT),
+            "startClean",
         ),
         (
             FloorCleaningRobotS20Commands.START_CLEAN,
