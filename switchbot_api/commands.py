@@ -546,4 +546,4 @@ class KataFriendsCommands(Commands):
         return ["Kata Friends"]
 
 
-T = TypeVar("T", bound=Commands)
+T = TypeVar("T", bound=CommonCommands)
